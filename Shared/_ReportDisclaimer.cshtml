@@ -1,0 +1,58 @@
+﻿<page id="PrintSrc" size="A4">
+    <div style="page-break-before:always;height:1122px;">
+        <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+            <!--- Report Header Include -->
+            @Html.Partial("_ReportHeader")
+            <!--- Report Header Include -->
+            <tr>
+                <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                <td valign="top">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td valign="top">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                    <tr>
+                                        <td>
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td width="88%"><p style="font-size:16px;  color:#000000; text-align:center; font-weight:bold; text-decoration:underline; text-transform:none; margin:0px;">Disclaimer</p></td>
+                                                    <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                                                </tr>
+                                                <tr><td colspan="2">&nbsp;</td></tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="top" align="center">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="text-align:justify;">
+                                                <tr>
+                                                    <td>
+                                                        Our reports and comments are confidential in nature and are meant only for the internal use of the client to make an assessment of the background of the applicant. They are not intended for publication or circulation to or sharing with any other person including the applicant nor are they to be reproduced or used for any other purpose, in whole or in part, without our prior written consent in each specific instance. <br>
+                                                        We request you to recognize that we are not the source of the data gathered and our reports are based on the information made available to us; therefore, we cannot guarantee the accuracy of information collected. Should additional information or documentation become available to us, which impacts the facts mentioned in our report, we reserve the right to amend our report accordingly.<br><br>
+                                                        You will appreciate that due to factors beyond our control, it may be possible that we are unable to get all the necessary information. Because of the limitations mentioned above, the results of our work with respect to the background checks should be considered only as a guide. Our reports and comments should not be considered a definitive pronouncement on the individual.
+                                                        <div style="text-align:center; padding-top:20px; font-size:16px; font-weight:bold;">End of Report</div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+            </tr>
+            <!--- Report Footer Address Include -->
+            @Html.Partial("_ReportFooterAddress")
+            <!--- Report Footer Address Include -->
+            <!--- Report Footer Include -->
+            @Html.Partial("_ReportFooter")
+            <!--- Report Footer Include -->
+        </table>
+    </div>
+</page>
+

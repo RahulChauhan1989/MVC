@@ -1,0 +1,30 @@
+﻿<div class="row">
+    <div class="col-md-5">
+        <div class="logo_inner">BGV</div>
+    </div>
+    @if (Session["CRPUserName"] != null)
+    {
+        <div class="col-md-6">
+            @if (Session["Designation"] != null)
+            {
+                <div class="user-top">@Session["TeamMemberName"].ToString() - (@Session["Designation"])</div>
+            }
+            else
+            {
+                <div class="user-top">@Session["TeamMemberName"].ToString()</div>
+            }
+        </div>
+        <div class="col-md-1">
+            <div class="logoff">@Html.ActionLink("Log Off", "Logout", "Account", new { area = "" }, new { @class = "btn bun-bg btn-default" })</div>
+        </div>
+    }
+    else
+    {
+        <div class="col-md-6">
+            <div class="user-top">&nbsp;</div>
+        </div>
+        <div class="col-md-1">
+            <div class="logoff">&nbsp;</div>
+        </div>
+    }
+</div> 

@@ -1,0 +1,18 @@
+﻿
+<div class="padremove">
+    <nav class="bs-docs-sidebar">
+        <ul class="nav bs-docs-sidenav">
+            @if (Session["NavLeftInsuffMenuDETL"] != null)
+            {
+                @Html.Raw(Session["NavLeftInsuffMenuDETL"].ToString());
+            }
+
+            @*<li><a href='@Url.Action("ManageAddressInsuff", "Insuff")'>Manage Address Insuff</a></li>
+            <li><a href='@Url.Action("ManageEmploymentInsuff", "Insuff"      )'>Manage Employment Insuff</a></li>
+            <li><a href='@Url.Action("ManageEducationInsuff", "Insuff"       )'>Manage Education Insuff</a></li>
+            <li><a href='@Url.Action("ManageCriminalInsuff", "Insuff"        )'>Manage Criminal Insuff</a></li>
+            <li><a href='@Url.Action("ManageNationalIdentityInsuff", "Insuff")'>Manage Identity Insuff</a></li>
+            <li><a href='@Url.Action("ManageReferenceInsuff", "Insuff"       )'>Manage Reference Insuff</a></li>*@
+        </ul>
+    </nav>
+</div>

@@ -1,0 +1,44 @@
+﻿@if (ViewBag.GetDocumentList != null && ViewBag.GetDocumentList.Count > 0)
+{
+<table width="100%">
+    <tr>
+        <td>
+            <div class="personal-details-head"><i class="fa fa-file-text-o" aria-hidden="true"></i> Document List :</div>
+        </td>
+    </tr>
+    <tr>
+        <td height="2"></td>
+    </tr>
+    <tr>
+        <td valign="top">
+           
+                <table class="table">
+                    <thead class="thead-inverse">
+                        <tr>
+                            <th class="top-head">Document Type</th>
+                            <th class="top-head">File Name</th>
+                            <th class="top-head">Upload From</th>
+                            <th class="top-head">Remarks</th>
+                            <th class="top-head">Upload Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.GetDocumentList)
+                        {
+                            <tr>
+                                <td class="name">@item.DocumentType</td>
+                                <td class="filename"><a target="_blank" href='@Url.Content("~/Documents/CandidateDocuments/ProvidedDocuments/" + @item.FileName)'>@item.FileName</a></td>
+                                <td class="name">@item.DocumentUploadFrom</td>
+                                <td class="name">@item.Remarks</td>
+                                <td class="name">@item.UploadDate</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td height="12" colspan="5"></td>
+                        </tr>
+                    </tbody>
+                </table>            
+        </td>
+    </tr>
+</table>
+}

@@ -1,0 +1,56 @@
+﻿
+
+@if (ViewBag.VerifiedDetails != null)
+{
+    <table>
+        <tr>
+            <td class="personal-details-head" colspan="2"><i class="fa fa-file-text-o" aria-hidden="true"></i> Verified Details By Partner :</td>
+        </tr>
+        <tr>
+            <td valign="top" colspan="2">
+                <table class="personal-details-frame">
+                    <tr>
+                        <td class="personal_name">Address  :</td>
+                        <td class="personal_name2" colspan="3">@ViewBag.VerifiedDetails.Address</td>
+                    </tr>
+                    <tr>
+                        <td class="personal_name">Landmark  :</td>
+                        <td class="personal_name2" colspan="3">
+                            @ViewBag.VerifiedDetails.Landmark
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="personal_name">Is Address Changed :</td>
+                        <td class="personal_name2">@ViewBag.VerifiedDetails.IsAddressChanged</td>
+                        <td class="personal_name">Duration of Stay :</td>
+                        <td class="personal_name2">@ViewBag.VerifiedDetails.DurationOfStay</td>
+                    </tr>
+                    <tr>
+                        <td class="personal_name">Accomodation Type :</td>
+                        <td class="personal_name2">@ViewBag.VerifiedDetails.AccomodationType </td>
+                        <td class="personal_name">Respondent Name :</td>
+                        <td class="personal_name2">@ViewBag.VerifiedDetails.RespName</td>
+                    </tr>
+                    <tr>
+                        <td class="personal_name">Respondent ID Details :</td>
+                        <td class="personal_name2">@ViewBag.VerifiedDetails.RespIdDetails </td>
+                        <td class="personal_name">Respondent Relationship :</td>
+                        <td class="personal_name2">@ViewBag.VerifiedDetails.RespRelation</td>
+                    </tr>
+                    <tr>
+                        <td class="personal_name">Respondent contact details :</td>
+                        <td class="personal_name2">@ViewBag.VerifiedDetails.RespContactDetails </td>
+                        <td class="personal_name">Neighbour Name And Nos :</td>
+                        <td class="personal_name2">@ViewBag.VerifiedDetails.NeighbourNameAndNos </td>
+                    </tr>
+                    <tr>
+                        <td class="personal_name">Any Other Comments  :</td>
+                        <td class="personal_name2" >@ViewBag.VerifiedDetails.AnyOtherComments</td>
+                        <td class="personal_name">FV Check Status :</td>
+                        <td class="personal_name2">@ViewBag.VerifiedDetails.PtrStatus </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+}

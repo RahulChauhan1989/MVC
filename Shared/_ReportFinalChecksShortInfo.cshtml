@@ -1,0 +1,96 @@
+﻿
+@if (Model != null && Model.PersonalChecksBriefDetails != null && Model.PersonalChecksBriefDetails.Count > 0 && !Model.FinalReport)
+{
+
+    <div class="row" style="background:#fff;">
+        <div class="col-md-12">
+            <table width="730" border="0" cellspacing="0" cellpadding="0" align="center">
+                <tr>
+                    <td valign="top">
+                        <table width="730" border="0" cellpadding="0" cellspacing="0">
+                            <!--- Report Header Include -->
+                            @Html.Partial("_ReportHeader")
+                            <!--- Report Header Include -->
+                            <tr>
+                                <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                                <td valign="top">
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td>
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                    <tr>
+                                                        <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="120" height="66"></td>
+                                                        <td width="94%"><p class="secur-head"></p> </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><p style="font-size:22px; font-family:calibri; color:#000080; text-align:center; font-weight:bold; text-decoration:underline; margin:10px 0px 10px 0px">Final Background Verification Report - Executive Summary</p></td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top">
+                                                <table width="100%" border="1" cellpadding="2" cellspacing="5">
+                                                    <tr>
+                                                        <td width="25%" bgcolor="#c0c0c0" style="font-size:16px; font-family:calibri;"><strong>Verified Data</strong></td>
+                                                        <td width="50%" bgcolor="#c0c0c0" style="text-align:center; font-size:16px; font-family:calibri;"><strong>Particulars</strong></td>
+                                                        @*<td width="10%" bgcolor="#c0c0c0" style="text-align:center; font-size:16px; font-family:calibri;"><strong>Status</strong></td>*@
+                                                        <td width="15%" bgcolor="#c0c0c0" style="text-align:center; font-size:16px; font-family:calibri;"><strong>Color Code</strong></td>
+                                                    </tr>
+                                                    @{
+                                                        foreach (var item in Model.PersonalChecksBriefDetails)
+                                                        {
+                                                            <tr class="verification-report">
+                                                                <td>@item.SubCheckFName</td>
+                                                                <td align="center">@item.SubCheckDetail</td>
+                                                                @*<td align="center">@item.Status</td>*@
+                                                                <td bgcolor="@item.ColorCode" align="center">@item.ColorName</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="footer-border">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <!--- Report Footer Address Include -->
+                                                @Html.Partial("_ReportFooterAddress")
+                                                <!--- Report Footer Address Include -->
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+                            </tr>
+                            <!--- Report Footer Include -->
+                            @Html.Partial("_ReportFooter")
+                            <!--- Report Footer Include -->
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td valign="bottom">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+                                                        }

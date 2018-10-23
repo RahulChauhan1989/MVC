@@ -1,0 +1,60 @@
+﻿@* Personal Details *@
+<table>
+@if (ViewBag.PersonalBind != null)
+{
+    <tr>
+        <td class="personal-details-head"><i class="fa fa-file-text-o" aria-hidden="true"></i> Personal Details :</td>
+        <td class="personal-details-head" align="right">@Html.ActionLink("Check Action History", "CheckActionHistory", "Verification", new { scid = Model.SubCheckRowID, pe = Model.PersonalRowID }, new { @class = "iframeActionHistories cboxElement btn btn-default" })</td>
+    </tr>
+    <tr>      
+                        
+                    <td valign="top" colspan="2">
+                        <table class="personal-details-frame">
+                            <tr>
+                                <td class="personal_name">Client Name :</td>
+                                <td class="personal_name2">@ViewBag.PersonalBind.ClientName</td>
+                                <td class="personal_name">Securitas Id :</td>
+                                <td class="personal_name2">
+                                    @ViewBag.PersonalBind.CompanyReferenceNo
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="personal_name">Unique Component ID :</td>
+                                <td class="personal_name2">
+                                    @ViewBag.PersonalBind.UniqueComponentID
+                                </td>
+                                <td class="personal_name">Sub Check :</td>
+                                <td class="personal_name2">@ViewBag.PersonalBind.SubReferenceID</td>
+                            </tr>
+                            <tr>
+                                <td class="personal_name">Candidate Name :</td>
+                                <td class="personal_name2">@ViewBag.PersonalBind.CandidateName</td>
+                                <td class="personal_name">Mobile No :</td>
+                                <td class="personal_name2">@ViewBag.PersonalBind.MobileNo</td>
+                            </tr>
+                            <tr>
+                                <td class="personal_name">Check Status :</td>
+                                <td class="personal_name2">@ViewBag.PersonalBind.CheckStatus </td>
+                                <td class="personal_name">&nbsp;</td>
+                                <td class="personal_name2">&nbsp;</td>
+                                @*<td class="personal_name">Allocated By</td>
+                                <td class="personal_name2">@ViewBag.PersonalBind.AllocatedTMBy</td>*@
+                            </tr>
+                        </table>
+
+                    </td>
+               
+    </tr>
+
+    @* Special Instrucation  *@
+    if (ViewBag.PersonalBind.SpecialInstructions != null)
+    {
+        <tr>
+            <td class="personal-details-head" colspan="2"><i class="fa fa-file-text-o" aria-hidden="true"></i> Special Instrucation :</td>
+        </tr>
+        <tr>
+            <td class="special_instrucation" colspan="2">@ViewBag.PersonalBind.SpecialInstructions</td>
+        </tr>
+    }
+}
+</table>

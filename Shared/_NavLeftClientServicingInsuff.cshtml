@@ -1,0 +1,11 @@
+﻿
+<div class="padremove">
+    <nav class="bs-docs-sidebar">
+        <ul class="nav bs-docs-sidenav">
+            @if (Session["NavLeftInsuffMenuForCS"] != null)
+            {
+                @Html.Raw(Session["NavLeftInsuffMenuForCS"].ToString());
+            }
+        </ul>
+    </nav>
+</div>

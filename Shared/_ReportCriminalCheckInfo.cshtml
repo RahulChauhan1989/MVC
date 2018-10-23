@@ -1,0 +1,1823 @@
+﻿
+@model ViewModels.ReportQCViewModel.InterimReportGenerateViewModel
+
+@if (Model != null && Model.CriminalProvidedList != null && Model.CriminalProvidedList.Count() > 0 && Model.AntecedentList != null && Model.AntecedentList.Count() > 0)
+{
+    foreach (var ProvidedInfo in Model.CriminalProvidedList)
+    {
+        var CriminalVerInfo = Model.CriminalVerifiedList.Where(ver => ver.ClientRowID == ProvidedInfo.ClientRowID).FirstOrDefault();
+        var antecentList = Model.AntecedentList.Where(a => a.CheckFamilyRowID == ProvidedInfo.CheckFamilyRowID && a.SubCheckRowID == ProvidedInfo.SubCheckRowID).ToList();
+
+        <page id="PrintSrc" size="A4">
+            <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+                <!--- Report Header Include -->
+                @Html.Partial("_ReportHeader")
+                <!--- Report Header Include -->
+                <tr>
+                    <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                    <td valign="top">
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td valign="top">
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td>
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                    <tr>
+                                                        <td width="88%"><p style="font-size:16px;  color:#000000; text-align:center; font-weight:bold; text-decoration:underline; text-transform:none; margin:0px;">@ProvidedInfo.SubCheckName</p></td>
+                                                        <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                                                    </tr>
+                                                    <tr><td colspan="2">&nbsp;</td></tr> 
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" align="right">
+                                                <table width="30%" border="1" cellspacing="5" cellpadding="5">
+                                                    <tr>
+                                                        @*<td width="50%" style="color-adjust:exact;background:#c0c0c0;font-size:14px;  font-weight:bold; padding:5px;">@ProvidedInfo.CheckStatus</td>*@
+                                                        @if (CriminalVerInfo != null && !string.IsNullOrEmpty(CriminalVerInfo.ColorName))
+                                                    {
+                                                        <td width="49%" style="color-adjust:exact;background:@CriminalVerInfo.ColorCode;font-size:14px;  font-weight:bold; padding:5px; text-align:center;">@CriminalVerInfo.ColorName</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td bgcolor="#fff" style="font-size:14px;  font-weight:bold; padding:5px; text-align:center;">@ProvidedInfo.CheckStatus</td>
+                                                    }
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" align="center">
+                                                <table width="100%" border="1" cellspacing="5" cellpadding="2">
+                                                    <tr>
+                                                        <td width="33%" style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Name of Candidate</td>
+                                                        <td style="padding-left:5px;"><label for="">@ProvidedInfo.CRV_Cand_Name</label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Vendor Reference</td>
+                                                        <td style="padding-left:5px;"><label for="">@ProvidedInfo.CRV_Sec_Ref_id</label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Unique ID</td>
+                                                        <td style="padding-left:5px;"><label for="">@ProvidedInfo.UniqueComponentID</label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Report Comment</td>
+                                                        @if (CriminalVerInfo != null && !string.IsNullOrEmpty(CriminalVerInfo.ReportComment))
+                                                        {
+                                                        <td style="padding-left:5px;"><label for="">@CriminalVerInfo.ReportComment</label></td>
+                                                        }
+                                                        else
+                                                        {
+                                                        <td style="padding-left:5px;"><label for="">Work In Progress</label></td>
+                                                        }
+
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td height="30">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" align="center">
+                                                <table width="100%" border="1" cellspacing="5" cellpadding="2">
+                                                    <tr>
+                                                        <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Details</td>
+                                                        <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Information Provided</td>
+                                                        <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Information Verified</td>
+                                                    </tr>
+
+                                                    @{
+                                                    if (CriminalVerInfo != null && CriminalVerInfo.CheckStatus == "RW-Approved-TM")
+                                                    {
+                                                        foreach (var item in antecentList)
+                                                        {
+                                                            if (item.FieldName == "CRV_Cand_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Cand_Name</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Cand_Name
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_DOB")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>
+                                                            @if (ProvidedInfo.CRV_DOB != null)
+                                                                        {
+                                                            @ProvidedInfo.CRV_DOB
+                                                                            // @ProvidedInfo.CRV_DOB.ToString("dd-MM-yyyy");
+                                                                        }
+                                                        </td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_DOB
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Father_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Father_Name</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Father_Name
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_First_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_First_Name</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_First_Name
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Last_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Last_Name</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Last_Name
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Nationality")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Nationality</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Nationality
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Name_Chngd_Effect_Frm")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Name_Chngd_Effect_Frm</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Name_Chngd_Effect_Frm
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Nationality_On_Passport")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Nationality_On_Passport</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Nationality_On_Passport
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Country_of_Issue")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Country_of_Issue</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Country_of_Issue
+                                                        </td>
+                                                    </tr>
+                                                            }
+
+                                                            if (item.FieldName == "CRV_Addr_Type")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Addr_Type</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Addr_Type
+                                                        </td>
+                                                    </tr>
+                                                            }
+
+
+                                                            if (item.FieldName == "CRV_Current_Addr")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Current_Addr</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Current_Addr
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Prev_Addr1")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Prev_Addr1</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Prev_Addr1
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Prev_Addr2")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Prev_Addr2</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Prev_Addr2
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Prev_Addr3")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Prev_Addr3</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Prev_Addr3
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Prev_Addr4")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Prev_Addr4</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Prev_Addr4
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Prev_Addr4")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Prev_Addr4</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Prev_Addr4
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Permanent_Addr")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Permanent_Addr</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Permanent_Addr
+                                                        </td>
+                                                    </tr>
+                                                            }
+
+                                                            if (item.FieldName == "CRV_Gender")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Gender</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Gender
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Identity_No")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Identity_No</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Identity_No
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Identity_Prov")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Identity_Prov</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Identity_Prov
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Doc_Received")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Doc_Received</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Doc_Received
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Dur_Yr_Covered")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Dur_Yr_Covered</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Dur_Yr_Covered
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Pol_Station_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Pol_Station_Name</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Pol_Station_Name
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Pol_Authority_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Pol_Authority_Name</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Pol_Authority_Name
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Pol_Authority_Desg")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Pol_Authority_Desg</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Pol_Authority_Desg
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Criminal_Verf")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Addr_Type</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Criminal_Verf
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Type_of_Revert")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Type_of_Revert</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Type_of_Revert
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Date_Addr_Verif")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@*@ProvidedInfo.CRV_Date_Addr_Verif*@</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Date_Addr_Verif
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Date_Verf")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@*@ProvidedInfo.CRV_Date_Verf*@</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Date_Verf
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Time_Verf")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@*@ProvidedInfo.CRV_Time_Verf*@</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Time_Verf
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Verfier_Cmmnts")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Verfier_Cmmnts</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Verfier_Cmmnts
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_St_Pol_Most_Wanted")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_St_Pol_Most_Wanted</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_St_Pol_Most_Wanted
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_CBI_Most_Wanted")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_CBI_Most_Wanted</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_CBI_Most_Wanted
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Interpol_Most_Wanted")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Interpol_Most_Wanted</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Interpol_Most_Wanted
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Allied_Terrorist_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Allied_Terrorist_Dataset</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Allied_Terrorist_Dataset
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Crimes_Dishonest_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Crimes_Dishonest_Dataset</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Crimes_Dishonest_Dataset
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Corruption_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Corruption_Dataset</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Global_Corruption_Dataset
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Financ_Rgltry_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Financ_Rgltry_Dataset</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Global_Financ_Rgltry_Dataset
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Fraud_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Fraud_Dataset</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Global_Fraud_Dataset
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Law_Enforce_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Law_Enforce_Dataset</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Global_Law_Enforce_Dataset
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Sex_Crime_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Sex_Crime_Dataset</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Sex_Crime_Dataset
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Terrorist_Risk")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Terrorist_Risk</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Global_Terrorist_Risk
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Money_Laund")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Money_Laund</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Global_Money_Laund
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Civil_Court_Action")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Civil_Court_Action</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Civil_Court_Action
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_District_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_District_Court</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_District_Court
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_State_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_State_Court</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_State_Court
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Civil_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Civil_Court</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Civil_Court
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Special_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Special_Court</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Special_Court
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Session_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Session_Court</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Session_Court
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Tribunals")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Tribunals</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Tribunals
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Any_Other_Cmmnts_CRV")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Any_Other_Cmmnts_CRV</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Any_Other_Cmmnts_CRV
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Magistrate_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Magistrate_Court</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Magistrate_Court
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_District_Civil_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_District_Civil_Court</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_District_Civil_Court
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_St_High_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_St_High_Court</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_St_High_Court
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Supreme_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Supreme_Court</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Supreme_Court
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Supreme_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Supreme_Court</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Supreme_Court
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Criminal_Appeal")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Criminal_Appeal</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Criminal_Appeal
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Private_Complain_Rpt")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Private_Complain_Rpt</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Private_Complain_Rpt
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others6")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others6</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Others6
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others7")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others7</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Others7
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others8")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others8</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Others8
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others9")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others9</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Others9
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others10")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others10</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Others10
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others11")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others11</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Others11
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others12")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others12</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Others12
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others13")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others13</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Others13
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others14")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others14</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Others14
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others15")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others15</td>
+                                                        <td>
+                                                            @CriminalVerInfo.CRV_Others15
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Reverse_Directory")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Reverse_Directory</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Reverse_Directory
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Residcl_Commrcl")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Residcl_Commrcl</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Residcl_Commrcl
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Stock_Exchnge")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Stock_Exchnge</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Stock_Exchnge
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Telphne_Directry_Srch")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Telphne_Directry_Srch</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Telphne_Directry_Srch
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Yellow_Pages")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Yellow_Pages</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Yellow_Pages
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Who_Domain")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Who_Domain</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Who_Domain
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_GoogleSearch")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_GoogleSearch</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_GoogleSearch
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_InfrastructureOfCmp")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_InfrastructureOfCmp</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_InfrastructureOfCmp
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Just_Dial")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Just_Dial</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Just_Dial
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Neighbor_Check1")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Neighbor_Check1</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Neighbor_Check1
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_NASCOM_Empanelment")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_NASCOM_Empanelment</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_NASCOM_Empanelment
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Photograph")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Photograph</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Photograph
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Physical_Site")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Physical_Site</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Physical_Site
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Reg_Company")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Reg_Company</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Reg_Company
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_PO_Courier_Check")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_PO_Courier_Check</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_PO_Courier_Check
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Network_Sol")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Network_Sol</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Network_Sol
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_ApprxEmpWorking")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_ApprxEmpWorking</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_ApprxEmpWorking
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_CID_No")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_CID_No</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_CID_No
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Cmpny_Addr")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Cmpny_Addr</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Cmpny_Addr
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Decoy_Call")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Decoy_Call</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Decoy_Call
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Cmpny_Website")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Cmpny_Website</td>
+                                                        <td>
+                                                            @CriminalVerInfo.ATA_Cmpny_Website
+                                                        </td>
+                                                    </tr>
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        foreach (var item in antecentList)
+                                                        {
+                                                            if (item.FieldName == "CRV_Cand_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Cand_Name</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_DOB")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>
+                                                            @if (ProvidedInfo.CRV_DOB != null)
+                                                                        {
+                                                            @ProvidedInfo.CRV_DOB
+                                                                            // @ProvidedInfo.CRV_DOB.ToString("dd-MM-yyyy");
+                                                                        }
+                                                        </td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Father_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Father_Name</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_First_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_First_Name</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Last_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Last_Name</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Nationality")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Nationality</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Name_Chngd_Effect_Frm")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Name_Chngd_Effect_Frm</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Nationality_On_Passport")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Nationality_On_Passport</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Country_of_Issue")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Country_of_Issue</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+
+                                                            if (item.FieldName == "CRV_Addr_Type")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Addr_Type</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+
+
+                                                            if (item.FieldName == "CRV_Current_Addr")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Current_Addr</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Prev_Addr1")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Prev_Addr1</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Prev_Addr2")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Prev_Addr2</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Prev_Addr3")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Prev_Addr3</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Prev_Addr4")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Prev_Addr4</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Prev_Addr4")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Prev_Addr4</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Permanent_Addr")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Permanent_Addr</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+
+                                                            if (item.FieldName == "CRV_Gender")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Gender</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Identity_No")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Identity_No</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Identity_Prov")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Identity_Prov</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Doc_Received")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Doc_Received</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Dur_Yr_Covered")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Dur_Yr_Covered</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Pol_Station_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Pol_Station_Name</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Pol_Authority_Name")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Pol_Authority_Name</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Pol_Authority_Desg")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Pol_Authority_Desg</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Criminal_Verf")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Addr_Type</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Type_of_Revert")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Type_of_Revert</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Date_Addr_Verif")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@*@ProvidedInfo.CRV_Date_Addr_Verif*@</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Date_Verf")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@*@ProvidedInfo.CRV_Date_Verf*@</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Time_Verf")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@*@ProvidedInfo.CRV_Time_Verf*@</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Verfier_Cmmnts")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Verfier_Cmmnts</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_St_Pol_Most_Wanted")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_St_Pol_Most_Wanted</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_CBI_Most_Wanted")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_CBI_Most_Wanted</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Interpol_Most_Wanted")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Interpol_Most_Wanted</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Allied_Terrorist_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Allied_Terrorist_Dataset</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Crimes_Dishonest_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Crimes_Dishonest_Dataset</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Corruption_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Corruption_Dataset</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Financ_Rgltry_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Financ_Rgltry_Dataset</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Fraud_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Fraud_Dataset</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Law_Enforce_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Law_Enforce_Dataset</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Sex_Crime_Dataset")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Sex_Crime_Dataset</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Terrorist_Risk")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Terrorist_Risk</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Global_Money_Laund")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Global_Money_Laund</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Civil_Court_Action")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Civil_Court_Action</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_District_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_District_Court</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_State_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_State_Court</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Civil_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Civil_Court</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Special_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Special_Court</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Session_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Session_Court</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Tribunals")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Tribunals</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Any_Other_Cmmnts_CRV")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Any_Other_Cmmnts_CRV</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Magistrate_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Magistrate_Court</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_District_Civil_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_District_Civil_Court</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_St_High_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_St_High_Court</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Supreme_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Supreme_Court</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Supreme_Court")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Supreme_Court</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Criminal_Appeal")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Criminal_Appeal</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Private_Complain_Rpt")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Private_Complain_Rpt</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others6")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others6</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others7")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others7</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others8")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others8</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others9")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others9</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others10")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others10</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others11")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others11</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others12")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others12</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others13")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others13</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others14")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others14</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "CRV_Others15")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.CRV_Others15</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Reverse_Directory")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Reverse_Directory</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Residcl_Commrcl")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Residcl_Commrcl</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Stock_Exchnge")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Stock_Exchnge</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Telphne_Directry_Srch")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Telphne_Directry_Srch</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Yellow_Pages")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Yellow_Pages</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Who_Domain")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Who_Domain</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_GoogleSearch")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_GoogleSearch</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_InfrastructureOfCmp")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_InfrastructureOfCmp</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Just_Dial")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Just_Dial</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Neighbor_Check1")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Neighbor_Check1</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_NASCOM_Empanelment")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_NASCOM_Empanelment</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Photograph")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Photograph</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Physical_Site")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Physical_Site</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Reg_Company")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Reg_Company</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_PO_Courier_Check")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_PO_Courier_Check</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Network_Sol")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Network_Sol</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_ApprxEmpWorking")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_ApprxEmpWorking</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_CID_No")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_CID_No</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Cmpny_Addr")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Cmpny_Addr</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Decoy_Call")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Decoy_Call</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                            if (item.FieldName == "ATA_Cmpny_Website")
+                                                            {
+                                                    <tr>
+                                                        <td>@item.AntecedentName :</td>
+                                                        <td>@ProvidedInfo.ATA_Cmpny_Website</td>
+                                                        <td>&nbsp;</td>
+                                                    </tr>
+                                                            }
+                                                        }
+                                                    }
+                                                    }
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+                </tr>
+                <!--- Report Footer Address Include -->
+                @Html.Partial("_ReportFooterAddress")
+                <!--- Report Footer Address Include -->
+                <!--- Report Footer Include -->
+                @Html.Partial("_ReportFooter")
+                <!--- Report Footer Include -->
+            </table>
+        </page>
+
+        if (Model.CandidateDocList != null)
+        {
+            foreach (var Doc in Model.CandidateDocList.Where(w => w.SubCheckRowID == ProvidedInfo.SubCheckRowID))
+            {
+                if (Doc.SubCheckRowID == ProvidedInfo.SubCheckRowID)
+                {
+                    FileInfo fin = new FileInfo(Server.MapPath(Model.DocPath + Doc.DocFile));
+                    if (fin.Exists && (fin.Extension.ToLower().Contains(".jpg") || fin.Extension.ToLower().Contains(".jpeg") || fin.Extension.ToLower().Contains(".png")))
+                    {
+                        <page id="PrintSrc" size="A4">
+                            <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+                                <!--- Report Header Include -->
+                                @Html.Partial("_ReportHeader")
+                                <!--- Report Header Include -->
+                                <tr>
+                                    <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                                    <td valign="top">
+                                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td valign="top">
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                            <td>
+                                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                    <tr>
+                                                                        <td width="88%"><p style="font-size:16px;  color:#000000; text-align:center; font-weight:bold; text-decoration:underline; text-transform:none; margin:0px;">@ProvidedInfo.SubCheckName (@Doc.DocumentType)</p></td>
+                                                                        <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                                                                    </tr>
+                                                                    <tr><td colspan="2">&nbsp;</td></tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="top">&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="top">
+                                                                @{
+                                                                    FileStream fs = new FileStream(Server.MapPath(Model.DocPath + Doc.DocFile), FileMode.Open, FileAccess.Read);
+                                                                    System.Drawing.Image image = System.Drawing.Image.FromStream(fs);
+
+                                                                    if (image.Height > 850)
+                                                                    {
+                                                                        <img src="@Url.Content(Model.DocPath + Doc.DocFile)" alt="@Doc.DocumentType" width="644" style="height:850px;" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img src="@Url.Content(Model.DocPath + Doc.DocFile)" alt="@Doc.DocumentType" width="644" />
+                                                                    }
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+                                </tr>
+                                <!--- Report Footer Address Include -->
+                                @Html.Partial("_ReportFooterAddress")
+                                <!--- Report Footer Address Include -->
+                                <!--- Report Footer Include -->
+                                @Html.Partial("_ReportFooter")
+                                <!--- Report Footer Include -->
+                                </table>
+                        </page>
+                    }
+                }
+            }
+        }
+    }
+}

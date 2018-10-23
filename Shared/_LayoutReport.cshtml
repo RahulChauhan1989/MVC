@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGV - @ViewBag.Title</title>
+    <link href='@Url.Content("~/Images/report.css")' rel="stylesheet" />
+</head>
+<body>
+    <div>
+        @RenderSection("DisplayTitle", required: false)
+        @RenderSection("DisplayErrorMessage", required: false)
+    </div>
+    <table width="793" align="center" style="background-color: #ffffff;border: 4px solid #999999;margin-bottom: 10px;">
+        <tr>
+            <td colspan="2">
+                <p style=" margin-bottom:24px; text-align:center">
+                    <input type="button" class="btn bun-bg btn-default" style="padding: 5px 10px 5px 10px;font-weight: bold;" value="Print Report" onclick="CallPrint('repo')" />
+                    <input type="button" class="btn bun-bg btn-default" style="padding: 5px 15px 5px 15px;font-weight: bold;" value="Close" style="text-align:right" onclick="window.close()" />
+                </p>
+            </td>
+        </tr>
+        @using (Html.BeginForm("ConverdReportPDFFileToWord", "ReportQC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <tr>
+                <td align="center">
+                    <p style=" margin-bottom:24px;">
+                        @Html.TextBox("file", "", new { type = "file", @class = "btn bun-bg btn-default", @accept = "pdf", @onchange = "return fileValidation1(this)", @style = "padding: 5px 10px 5px 10px;font-weight: bold;" })
+                    </p>
+                </td>
+                <td align="center">
+                    <input id="pdfConvertToWord" type="submit" style="padding: 5px 10px 5px 10px;font-weight: bold;" class="btn bun-bg btn-default" value="PDF Convert To Word" disabled="disabled" />
+                </td>
+
+            </tr>
+        }
+
+        @using (Html.BeginForm("UploadReportPDFFileBYRWTM", "ReportQC", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <tr>
+                <td align="center">
+                    <p style="margin-bottom:24px;">
+                        @Html.TextBox("file", "", new { type = "file", @class = "btn bun-bg btn-default", @accept = "pdf", @onchange = "return fileValidation(this)", @style = "padding: 5px 10px 5px 10px;font-weight: bold;" })
+                    </p>
+                </td>
+                <td align="center">
+                    <input id="pdfupload" type="submit" style="padding: 5px 10px 5px 10px;font-weight: bold;" class="btn bun-bg btn-default" value="Upload Final Report" disabled="disabled" />
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <div id="repo">
+        <table width="793" align="center">
+            <tr>
+                <td valign="top">
+                    @RenderSection("ReportPersonalInfo", required: false)
+                    @RenderSection("ReportChecksShortInfo", required: false)
+                    @RenderSection("ReportAddressCheckInfo", required: false)
+                    @RenderSection("ReportCriminalCheckInfo", required: false)
+                    @RenderSection("ReportEducationCheckInfo", required: false)
+                    @RenderSection("ReportEmploymentCheckInfo", required: false)
+                    @RenderSection("ReportNationalIdentityCheckInfo", required: false)
+                    @RenderSection("ReportReferenceCheckInfo", required: false)
+                    @RenderSection("ReportSpecialCheckInfo", required: false)
+                    @RenderSection("ReportDisclaimer", required: false)
+                    @RenderBody()
+                </td>
+            </tr>
+        </table>
+    </div>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+<script src='@Url.Content("~/Scripts/modernizr-2.8.3.js")'></script>
+<script src='@Url.Content("~/Scripts/jquery-3.1.1.min.js")'></script>
+
+<script language="javascript">
+    function fileValidation(fileInput) {
+        //var fileInput = document.getElementById('file');
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.pdf)$/i;
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Please upload file having extension .pdf only.');
+            fileInput.value = '';
+            $("#pdfupload").prop("disabled", true)
+            return false;
+        } else {
+            $("#pdfupload").prop("disabled", false);
+            return true;
+        }
+    }
+
+    function fileValidation1(fileInput) {
+        //var fileInput = document.getElementById('file');
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.pdf)$/i;
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Please upload file having extension .pdf only.');
+            fileInput.value = '';
+            $("#pdfConvertToWord").prop("disabled", true)
+            return false;
+        } else {
+            $("#pdfConvertToWord").prop("disabled", false);
+            return true;
+        }
+    }
+    function CallPrint(strid) {
+        var prtContent = document.getElementById(strid);
+        var WinPrint = window.open('', 'Report', 'left=0,top=0,width=800,height=600,toolbar=0,scrollbars=yes,status=0');
+        WinPrint.document.open();
+        WinPrint.document.write(
+            '<html>\n<head>' +
+            '<link href="/Images/report.css" rel="stylesheet" type="text/css" />' +
+            '\n</head>' +
+            '<body>' +
+            '<div> \n' + prtContent.innerHTML + ' \n</div> ' +
+            '</body>' +
+            '\n</html>'
+        );
+
+        WinPrint.document.close();
+        WinPrint.focus();
+        WinPrint.print();
+        //WinPrint.close();
+    }
+</script>

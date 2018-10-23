@@ -1,0 +1,102 @@
+﻿
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="~/Scripts/pdf.js"></script>    
+</head>
+<body>
+    <table>
+        <tr>
+            <td><h2>Generating pages:</h2>
+<progress id="PROGRESS" value=0></progress></td>
+        </tr>
+    </table>
+    
+</body>
+</html>
+
+@*<script>
+    debugger;
+    PDFJS.disableWorker = true; // due to CORS
+
+    var canvas = document.createElement('canvas'), // single off-screen canvas
+        ctx = canvas.getContext('2d'),             // to render to
+        pages = [],
+        currentPage = 1,
+        url = 'http://getcors.com/https://www.cca.edu/sites/default/files/pdf/08/word-to-pdf.pdf';
+
+    PDFJS.getDocument(url).then(function (pdf) {
+
+        PROGRESS.max = pdf.numPages; // just for demo
+        PROGRESS.value = 1; // just for demo
+
+        // init parsing of first page
+        if (currentPage <= pdf.numPages) getPage();
+
+        // main entry point/function for loop
+        function getPage() {
+
+            // when promise is returned do as usual
+            pdf.getPage(currentPage).then(function (page) {
+
+                var scale = 1.5;
+                var viewport = page.getViewport(scale);
+
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                var renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+
+                // now, tap into the returned promise from render:
+                page.render(renderContext).then(function () {
+
+                    // store compressed image data in array
+                    pages.push(canvas.toDataURL());
+
+                    if (currentPage < pdf.numPages) {
+                        currentPage++;
+                        PROGRESS.value = currentPage; // just for demo
+                        getPage();        // get next page
+                    }
+                    else {
+                        done();           // call done() when all pages are parsed
+                    }
+                });
+            });
+        }
+    });
+
+    function done() {
+        // NOTE: Just for demo - correct order is not guaranteed here
+        // as the drawPage is async. use same method as above to make
+        // sure the order is correct (not for-loop, but use the callback
+        // to get next page). To present a single page it won't be
+        // a problem though... (just use drawPage() directly)
+        for (var i = 0; i < pages.length; i++) {
+            drawPage(i, addPage);
+        }
+    }
+
+    function addPage(img) {
+        img.style.width = '100%';
+        img.style.height = '100%';
+        document.body.appendChild(img);
+    }
+
+    function drawPage(index, callback) {
+        var img = new Image;
+        img.onload = function () {
+            ctx.drawImage(this, 0, 0, ctx.canvas.width, ctx.canvas.height);
+            callback(this);          // invoke callback when we're done
+        }
+        img.src = pages[index];  // start loading the data-uri as source
+    }
+
+</script>*@

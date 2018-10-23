@@ -1,0 +1,18 @@
+﻿
+@model ViewModels.StateCheckBoxList
+
+<div class="col-md-12" style="height:300px;overflow:scroll;">
+    @foreach (var item in Model.checkBoxList)
+    {
+        <div class="col-md-6">
+            <input id="chks_@(item.StateRowID)"
+                   name="chks_@(item.StateRowID)"
+                   type="checkbox"
+                   class="statechk"
+                   value="@item.StateRowID"
+                   checked='@item.StateIsChecked' />
+            @item.StateName
+            <input type="text" class="create_package_size" style="float:right;width:67px;" id="VCost_@(item.StateRowID)" name="VCost_@(item.StateRowID)" />
+        </div>
+    }
+</div>

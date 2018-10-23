@@ -1,0 +1,346 @@
+﻿
+
+@model ViewModels.ReportQCViewModel.InterimReportGenerateViewModel
+
+@if (Model != null && Model.SpecialCheckProvidedList != null && Model.SpecialCheckProvidedList.Count() > 0 && Model.AntecedentList != null && Model.AntecedentList.Count() > 0)
+{
+    foreach (var ProvidedInfo in Model.SpecialCheckProvidedList)
+    {
+        var SPLCheckVerInfo = Model.SpecialCheckVerifiedList.Where(ver => ver.SpecialCheckRowID == ProvidedInfo.SpecialCheckRowID).FirstOrDefault();
+        var antecentList = Model.AntecedentList.Where(a => a.CheckFamilyRowID == ProvidedInfo.CheckFamilyRowID && a.SubCheckRowID == ProvidedInfo.SubCheckRowID).ToList();
+
+        <page id="PrintSrc" size="A4">
+            <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+                <!--- Report Header Include -->
+                @Html.Partial("_ReportHeader")
+                <!--- Report Header Include -->
+                <tr>
+                    <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                    <td valign="top">
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td valign="top">
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td>
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                    <tr>
+                                                        <td width="88%"><p style="font-size:16px;  color:#000000; text-align:center; font-weight:bold; text-decoration:underline; text-transform:none; margin:0px;">@ProvidedInfo.SubCheckName</p></td>
+                                                        <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                                                    </tr>
+                                                    <tr><td colspan="2">&nbsp;</td></tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" align="right">
+                                                <table width="30%" border="1" cellspacing="5" cellpadding="5">
+                                                    <tr>
+                                                        @*<td width="50%" style="color-adjust:exact;background:#c0c0c0;font-size:14px;  font-weight:bold; padding:5px;">@ProvidedInfo.CheckStatus</td>*@
+                                                        @if (SPLCheckVerInfo != null && !string.IsNullOrEmpty(SPLCheckVerInfo.ColorName))
+                                                            {
+                                                            <td width="49%" style="color-adjust:exact;background:@SPLCheckVerInfo.ColorCode;font-size:14px;  font-weight:bold; padding:5px; text-align:center;">@SPLCheckVerInfo.ColorName</td>
+                                                            }
+                                                            else
+                                                            {
+                                                            <td bgcolor="#fff" style="font-size:14px;  font-weight:bold; padding:5px; text-align:center;">@ProvidedInfo.CheckStatus</td>
+                                                            }
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" align="center">
+                                                <table width="100%" border="1" cellspacing="5" cellpadding="2">
+                                                    <tr>
+                                                        <td width="33%" style="color-adjust:exact;background:#c0c0c0;padding-left:5px;font-weight:bold;">Name of Candidate</td>
+                                                        <td style="padding-left:5px;"><label for="">@ProvidedInfo.SC_Cand_Name</label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Vendor Reference</td>
+                                                        <td style="padding-left:5px;"><label for="">@ProvidedInfo.SC_SecuritasID</label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Unique ID</td>
+                                                        <td style="padding-left:5px;"><label for="">@ProvidedInfo.UniqueComponentID</label></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Report Comment</td>
+                                                        @if (SPLCheckVerInfo != null && !string.IsNullOrEmpty(SPLCheckVerInfo.ReportComment))
+                                                            {
+                                                            <td style="padding-left:5px;"><label for="">@SPLCheckVerInfo.ReportComment</label></td>
+                                                            }
+                                                            else
+                                                            {
+                                                            <td style="padding-left:5px;"><label for="">Work In Progress</label></td>
+                                                            }
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td height="30">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top" align="center">
+                                                <table width="100%" border="1" cellspacing="5" cellpadding="2">
+                                                    <tr>
+                                                        <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Details</td>
+                                                        <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Information Provided</td>
+                                                        <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Information Verified</td>
+                                                    </tr>
+
+                                                    @{
+                                                            if (SPLCheckVerInfo != null && SPLCheckVerInfo.CheckStatus == "RW-Approved-TM")
+                                                            {
+                                                                foreach (var item in antecentList)
+                                                                {
+                                                                    if (item.FieldName == "SC_Cand_Name")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Cand_Name</td>
+                                                            <td>
+                                                                @SPLCheckVerInfo.SC_Cand_Name
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Father_Name")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Father_Name</td>
+                                                            <td>
+                                                                @SPLCheckVerInfo.SC_Father_Name
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_DOB")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_DOB</td>
+                                                            <td>
+                                                                @SPLCheckVerInfo.SC_DOB
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Others1")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Others1</td>
+                                                            <td>
+                                                                @SPLCheckVerInfo.SC_Others1
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Others2")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Others2</td>
+                                                            <td>
+                                                                @SPLCheckVerInfo.SC_Others2
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Others3")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Others3</td>
+                                                            <td>
+                                                                @SPLCheckVerInfo.SC_Others3
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Others4")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Others4</td>
+                                                            <td>
+                                                                @SPLCheckVerInfo.SC_Others4
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Others5")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Others5</td>
+                                                            <td>
+                                                                @SPLCheckVerInfo.SC_Others5
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                foreach (var item in antecentList)
+                                                                {
+                                                                    if (item.FieldName == "SC_Cand_Name")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Cand_Name</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Father_Name")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Father_Name</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_DOB")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_DOB</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Others1")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Others1</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Others2")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Others2</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Others3")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Others3</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Others4")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Others4</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "SC_Others5")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.SC_Others5</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                }
+                                                            }
+                                                    }
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+                </tr>
+                <!--- Report Footer Address Include -->
+                @Html.Partial("_ReportFooterAddress")
+                <!--- Report Footer Address Include -->
+
+                <!--- Report Footer Include -->
+                @Html.Partial("_ReportFooter")
+                <!--- Report Footer Include -->
+            </table>
+        </page>
+
+        if (Model.CandidateDocList != null)
+        {
+            foreach (var Doc in Model.CandidateDocList.Where(w => w.SubCheckRowID == ProvidedInfo.SubCheckRowID))
+            {
+                if (Doc.SubCheckRowID == ProvidedInfo.SubCheckRowID)
+                {
+                    FileInfo fin = new FileInfo(Server.MapPath(Model.DocPath + Doc.DocFile));
+                    if (fin.Exists && (fin.Extension.ToLower().Contains(".jpg") || fin.Extension.ToLower().Contains(".jpeg") || fin.Extension.ToLower().Contains(".png")))
+                    {
+                        <page id="PrintSrc" size="A4">
+                            <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+                                <!--- Report Header Include -->
+                                @Html.Partial("_ReportHeader")
+                                <!--- Report Header Include -->
+                                <tr>
+                                    <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                                    <td valign="top">
+                                        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td valign="top">
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                            <td>
+                                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                    <tr>
+                                                                        <td width="88%"><p style="font-size:16px;  color:#000000; text-align:center; font-weight:bold; text-decoration:underline; text-transform:none; margin:0px;">@ProvidedInfo.SubCheckName (@Doc.DocumentType)</p></td>
+                                                                        <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                                                                    </tr>
+                                                                    <tr><td colspan="2">&nbsp;</td></tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="top">&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="top">
+                                                                @{
+                                                                    FileStream fs = new FileStream(Server.MapPath(Model.DocPath + Doc.DocFile), FileMode.Open, FileAccess.Read);
+                                                                    System.Drawing.Image image = System.Drawing.Image.FromStream(fs);
+
+                                                                    if (image.Height > 850)
+                                                                    {
+                                                                        <img src="@Url.Content(Model.DocPath + Doc.DocFile)" alt="@Doc.DocumentType" width="644" style="height:850px;" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img src="@Url.Content(Model.DocPath + Doc.DocFile)" alt="@Doc.DocumentType" width="644" />
+                                                                    }
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+                                    </tr>
+                                    <!--- Report Footer Address Include -->
+                                    @Html.Partial("_ReportFooterAddress")
+                                    <!--- Report Footer Address Include -->
+
+                                    <!--- Report Footer Include -->
+                                    @Html.Partial("_ReportFooter")
+                                    <!--- Report Footer Include -->
+                                </table>
+                            </page>
+                    }
+                }
+            }
+        }
+    }
+}

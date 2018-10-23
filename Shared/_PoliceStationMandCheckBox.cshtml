@@ -1,0 +1,16 @@
+﻿
+    @foreach (var item in ViewBag.AddPoliceMandatoryList)
+    {
+        <div class="col-md-offset- col-md-3">
+            <input id="chk@(item.Text)"
+                   name="chk@(item.Text)"
+                   type="checkbox"
+                   value="@item.Text"
+                   checked="@item.Selected" />
+            <label for="chk@(item.Text)">@item.Value</label>
+        </div>
+    }
+
+
+
+

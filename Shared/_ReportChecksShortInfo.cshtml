@@ -1,0 +1,42 @@
+﻿
+@if(Model != null && Model.PersonalChecksBriefDetails != null && Model.PersonalChecksBriefDetails.Count > 0)
+{
+    <page id="PrintSrc" size="A4">
+        <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+            <!--- Report Header Include -->
+            @Html.Partial("_ReportHeader")
+            <!--- Report Header Include -->
+            <tr>
+                <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                <td valign="top">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        @if (Model.ReportTemplate == 1)
+                        {
+                            @Html.Partial("_ReportTemplate1ChecksShortInfo")
+                        }
+                        else if (Model.ReportTemplate == 2)
+                        {
+                            @Html.Partial("_ReportTemplate2ChecksShortInfo")
+                        }
+                        else if (Model.ReportTemplate == 3)
+                        {
+                            @Html.Partial("_ReportTemplate3ChecksShortInfo")
+                        }
+                        else if (Model.ReportTemplate == 4)
+                        {
+                            @Html.Partial("_ReportTemplate4ChecksShortInfo")
+                        }
+                    </table>
+                </td>
+                <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+            </tr>
+            <!--- Report Footer with Address Include -->
+            @Html.Partial("_ReportFooterAddress")
+            <!--- Report Footer with Address Include -->
+
+            <!--- Report Footer Include -->
+            @Html.Partial("_ReportFooter")
+            <!--- Report Footer Include -->
+        </table>
+    </page>
+}

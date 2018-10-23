@@ -1,0 +1,1444 @@
+﻿
+@model ViewModels.ReportQCViewModel.InterimReportGenerateViewModel
+
+@if (Model != null && Model.NationalIdentityProvidedList != null && Model.NationalIdentityProvidedList.Count() > 0 && Model.AntecedentList != null && Model.AntecedentList.Count() > 0)
+{
+    foreach (var ProvidedInfo in Model.NationalIdentityProvidedList)
+    {
+        var NationalIdentityVerInfo = Model.NationalIdentityVerifiedList.Where(ver => ver.NationalIdentityRowID == ProvidedInfo.NationalIdentityRowID).FirstOrDefault();
+        var antecentList = Model.AntecedentList.Where(a => a.CheckFamilyRowID == ProvidedInfo.CheckFamilyRowID && a.SubCheckRowID == ProvidedInfo.SubCheckRowID).ToList();
+        <page id="PrintSrc" size="A4">         
+                    <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+                        <!--- Report Header Include -->
+                        @Html.Partial("_ReportHeader")
+                        <!--- Report Header Include -->
+                        <tr>
+                            <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                            <td valign="top">
+                                <table width="100%" border="0" cellpadding="0" cellspacing="0">                                    
+                                    <tr>                                        
+                                        <td valign="top">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td>
+                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                            <tr>
+                                                                <td width="88%"><p style="font-size:16px;  color:#000000; text-align:center; font-weight:bold; text-decoration:underline; text-transform:none; margin:0px;">@ProvidedInfo.SubCheckName</p></td>
+                                                                <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                                                            </tr>
+                                                            <tr><td colspan="2">&nbsp;</td></tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top" align="right">
+                                                        <table width="30%" border="1" cellspacing="5" cellpadding="5">
+                                                            <tr>
+                                                                @*<td width="50%" style="color-adjust:exact;background:#c0c0c0;font-size:14px;  font-weight:bold; padding:5px;">@ProvidedInfo.CheckStatus</td>*@
+                                                                @if (NationalIdentityVerInfo != null && !string.IsNullOrEmpty(NationalIdentityVerInfo.ColorName))
+                                                            {
+                                                            <td width="49%" style="color-adjust:exact;background:@NationalIdentityVerInfo.ColorCode;font-size:14px;  font-weight:bold; padding:5px; text-align:center;">@NationalIdentityVerInfo.ColorName</td>
+                                                            }
+                                                            else
+                                                            {
+                                                            <td bgcolor="#fff" style="font-size:14px;  font-weight:bold; padding:5px; text-align:center;">@ProvidedInfo.CheckStatus</td>
+                                                            }
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top">&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top" align="center">
+                                                        <table width="100%" border="1" cellspacing="5" cellpadding="2">
+                                                            <tr>
+                                                                <td width="33%" style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Name of Candidate</td>
+                                                                <td style="padding-left:5px;"><label for="">@ProvidedInfo.NIC_Cand_Name</label></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Vendor Reference</td>
+                                                                <td style="padding-left:5px;"><label for="">@ProvidedInfo.NIC_Sec_Ref_id</label></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Unique ID</td>
+                                                                <td style="padding-left:5px;"><label for="">@ProvidedInfo.UniqueComponentID</label></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Report Comment</td>
+                                                                @if (NationalIdentityVerInfo != null && !string.IsNullOrEmpty(NationalIdentityVerInfo.ReportComment))
+                                                            {
+                                                            <td style="padding-left:5px;"><label for="">@NationalIdentityVerInfo.ReportComment</label></td>
+                                                            }
+                                                            else
+                                                            {
+                                                            <td style="padding-left:5px;"><label for="">Work In Progress</label></td>
+                                                            }
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td height="30">&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top" align="center">
+                                                        <table width="100%" border="1" cellspacing="5" cellpadding="2">
+                                                            <tr>
+                                                                <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Details</td>
+                                                                <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Information Provided</td>
+                                                                <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Information Verified</td>
+                                                            </tr>
+
+                                                            @{
+                                                            if (NationalIdentityVerInfo != null && NationalIdentityVerInfo.CheckStatus == "RW-Approved-TM")
+                                                            {
+
+                                                                foreach (var item in antecentList)
+                                                                {
+                                                                    if (item.FieldName == "NIC_Cand_Name")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Cand_Name</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Cand_Name
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Any_Other_Cmmnts_NIC")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Any_Other_Cmmnts_NIC</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Any_Other_Cmmnts_NIC
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_DOB1")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_DOB1</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_DOB1
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_ID_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_ID_No</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_ID_No
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Verified_By")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Verified_By</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Verified_By
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Date_Issue")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Date_Issue</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Date_Issue
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Expiry_Date")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Expiry_Date</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Expiry_Date
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Validity_Status")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Validity_Status</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Validity_Status
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Passport_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Passport_No</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Passport_No
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_SSN_NO")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_SSN_NO</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_SSN_NO
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Pan_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Pan_No</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Pan_No
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Voter_Id_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Voter_Id_No</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Voter_Id_No
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Aadhar_Card_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Aadhar_Card_No</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Aadhar_Card_No
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Place_Issue")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Place_Issue</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Place_Issue
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Place_Residnce")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Place_Residnce</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Place_Residnce
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Time_Verf")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Time_Verf</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Time_Verf
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Type_Id_Card")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Type_Id_Card</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Type_Id_Card
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Reg_Doc_Type")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Reg_Doc_Type</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Reg_Doc_Type
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_RegNo")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_RegNo</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_RegNo
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Name_Field_Executive")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Name_Field_Executive</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Name_Field_Executive
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_PinCode")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_PinCode</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_PinCode
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Relation_Key_Personal")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Relation_Key_Personal</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Relation_Key_Personal
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Verified_Frm")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Verified_Frm</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Verified_Frm
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Auth_Details_Name")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Auth_Details_Name</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Auth_Details_Name
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Dsg")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Dsg</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Dsg
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Eid")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Eid</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Eid
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_MobNo")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_MobNo</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_MobNo
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Name_Key_Personnel")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Name_Key_Personnel</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Name_Key_Personnel
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_AliasFname")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_AliasFname</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_AliasFname
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Alias_Lname")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Alias_Lname</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Alias_Lname
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Country_Iss_Passport")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Country_Iss_Passport</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Country_Iss_Passport
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Date_Verif")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Date_Verif</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Date_Verif
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Id_CardNo")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Id_CardNo</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Id_CardNo
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Identity_Prov")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Identity_Prov</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Identity_Prov
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Name_Changed_Effect_Frm")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Name_Changed_Effect_Frm</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Name_Changed_Effect_Frm
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Nationality")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Nationality</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Nationality
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_PhotoID_Verif")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_PhotoID_Verif</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_PhotoID_Verif
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Any_Other_Remarks_NIC")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Any_Other_Remarks_NIC</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_Any_Other_Remarks_NIC
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails6")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails6</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_OtherDetails6
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails7")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails7</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_OtherDetails7
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails8")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails8</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_OtherDetails8
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails9")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails9</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_OtherDetails9
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails10")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails10</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_OtherDetails10
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails11")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails11</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_OtherDetails11
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails12")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails12</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_OtherDetails12
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails13")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails13</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_OtherDetails13
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails14")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails14</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_OtherDetails14
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails15")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails15</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.NIC_OtherDetails15
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Reverse_Directory")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Reverse_Directory</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Reverse_Directory
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Residcl_Commrcl")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Residcl_Commrcl</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Residcl_Commrcl
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Stock_Exchnge")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Stock_Exchnge</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Stock_Exchnge
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Telphne_Directry_Srch")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Telphne_Directry_Srch</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Telphne_Directry_Srch
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Yellow_Pages")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Yellow_Pages</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Yellow_Pages
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Who_Domain")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Who_Domain</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Who_Domain
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_GoogleSearch")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_GoogleSearch</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_GoogleSearch
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_InfrastructureOfCmp")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_InfrastructureOfCmp</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_InfrastructureOfCmp
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Just_Dial")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Just_Dial</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Just_Dial
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Neighbor_Check1")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Neighbor_Check1</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Neighbor_Check1
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_NASCOM_Empanelment")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_NASCOM_Empanelment</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_NASCOM_Empanelment
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Photograph")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Photograph</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Photograph
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Physical_Site")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Physical_Site</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Physical_Site
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Reg_Company")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Reg_Company</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Reg_Company
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_PO_Courier_Check")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_PO_Courier_Check</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_PO_Courier_Check
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Network_Sol")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Network_Sol</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Network_Sol
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_ApprxEmpWorking")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_ApprxEmpWorking</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_ApprxEmpWorking
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_CID_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_CID_No</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_CID_No
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Cmpny_Addr")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Cmpny_Addr</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Cmpny_Addr
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Decoy_Call")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Decoy_Call</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Decoy_Call
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Cmpny_Website")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Cmpny_Website</td>
+                                                            <td>
+                                                                @NationalIdentityVerInfo.ATA_Cmpny_Website
+                                                            </td>
+                                                        </tr>
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+
+                                                                foreach (var item in antecentList)
+                                                                {
+                                                                    if (item.FieldName == "NIC_Cand_Name")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Cand_Name</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Any_Other_Cmmnts_NIC")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Any_Other_Cmmnts_NIC</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_DOB1")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_DOB1</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_ID_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_ID_No</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Verified_By")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Verified_By</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Date_Issue")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Date_Issue</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Expiry_Date")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Expiry_Date</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Validity_Status")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Validity_Status</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Passport_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Passport_No</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_SSN_NO")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_SSN_NO</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Pan_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Pan_No</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Voter_Id_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Voter_Id_No</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Aadhar_Card_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Aadhar_Card_No</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Place_Issue")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Place_Issue</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Place_Residnce")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Place_Residnce</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Time_Verf")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Time_Verf</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Type_Id_Card")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Type_Id_Card</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Reg_Doc_Type")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Reg_Doc_Type</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_RegNo")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_RegNo</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Name_Field_Executive")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Name_Field_Executive</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_PinCode")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_PinCode</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Relation_Key_Personal")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Relation_Key_Personal</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Verified_Frm")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Verified_Frm</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Auth_Details_Name")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Auth_Details_Name</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Dsg")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Dsg</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Eid")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Eid</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_MobNo")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_MobNo</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Name_Key_Personnel")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Name_Key_Personnel</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_AliasFname")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_AliasFname</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Alias_Lname")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Alias_Lname</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Country_Iss_Passport")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Country_Iss_Passport</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Date_Verif")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Date_Verif</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Id_CardNo")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Id_CardNo</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Identity_Prov")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Identity_Prov</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Name_Changed_Effect_Frm")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Name_Changed_Effect_Frm</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Nationality")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Nationality</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_PhotoID_Verif")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_PhotoID_Verif</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_Any_Other_Remarks_NIC")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_Any_Other_Remarks_NIC</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails6")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails6</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails7")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails7</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails8")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails8</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails9")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails9</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails10")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails10</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails11")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails11</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails12")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails12</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails13")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails13</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails14")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails14</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "NIC_OtherDetails15")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.NIC_OtherDetails15</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Reverse_Directory")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Reverse_Directory</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Residcl_Commrcl")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Residcl_Commrcl</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Stock_Exchnge")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Stock_Exchnge</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Telphne_Directry_Srch")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Telphne_Directry_Srch</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Yellow_Pages")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Yellow_Pages</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Who_Domain")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Who_Domain</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_GoogleSearch")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_GoogleSearch</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_InfrastructureOfCmp")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_InfrastructureOfCmp</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Just_Dial")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Just_Dial</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Neighbor_Check1")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Neighbor_Check1</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_NASCOM_Empanelment")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_NASCOM_Empanelment</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Photograph")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Photograph</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Physical_Site")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Physical_Site</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Reg_Company")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Reg_Company</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_PO_Courier_Check")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_PO_Courier_Check</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Network_Sol")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Network_Sol</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_ApprxEmpWorking")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_ApprxEmpWorking</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_CID_No")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_CID_No</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Cmpny_Addr")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Cmpny_Addr</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Decoy_Call")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Decoy_Call</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Cmpny_Website")
+                                                                    {
+                                                        <tr>
+                                                            <td>@item.AntecedentName :</td>
+                                                            <td>@ProvidedInfo.ATA_Cmpny_Website</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                                    }
+                                                                }
+                                                            }
+                                                            }
+
+                                                        </table>
+                                                    </td>
+                                                </tr>                                               
+                                            </table>
+                                        </td>                                       
+                                    </tr>                                    
+                                </table>
+                            </td>
+                            <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+                        </tr>
+                        <!--- Report Footer Address Include -->
+                        @Html.Partial("_ReportFooterAddress")
+                        <!--- Report Footer Address Include -->
+                        <!--- Report Footer Include -->
+                        @Html.Partial("_ReportFooter")
+                        <!--- Report Footer Include -->
+                    </table>                
+            </page>
+
+        if (Model.CandidateDocList != null)
+        {
+            foreach (var Doc in Model.CandidateDocList.Where(w => w.SubCheckRowID == ProvidedInfo.SubCheckRowID))
+            {
+                if (Doc.SubCheckRowID == ProvidedInfo.SubCheckRowID)
+                {
+                    FileInfo fin = new FileInfo(Server.MapPath(Model.DocPath + Doc.DocFile));
+                    if (fin.Exists && (fin.Extension.ToLower().Contains(".jpg") || fin.Extension.ToLower().Contains(".jpeg") || fin.Extension.ToLower().Contains(".png")))
+                    {
+                       <page id="PrintSrc" size="A4">                   
+                                <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+                                    <!--- Report Header Include -->
+                                    @Html.Partial("_ReportHeader")
+                                    <!--- Report Header Include -->
+                                    <tr>
+                                        <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                                        <td valign="top">
+                                            <table width="100%" border="0" cellpadding="0" cellspacing="0">                                             
+                                                <tr>                                               
+                                                    <td valign="top">
+                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                            <tr>
+                                                                <td>
+                                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                        <tr>
+                                                                            <td width="88%"><p style="font-size:16px;  color:#000000; text-align:center; font-weight:bold; text-decoration:underline; text-transform:none; margin:0px;">@ProvidedInfo.SubCheckName (@Doc.DocumentType)</p></td>
+                                                                            <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                                                                        </tr>
+                                                                        <tr><td colspan="2">&nbsp;</td></tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td valign="top">&nbsp;</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td valign="top">
+                                                                    @{
+                                                                        FileStream fs = new FileStream(Server.MapPath(Model.DocPath + Doc.DocFile), FileMode.Open, FileAccess.Read);
+                                                                        System.Drawing.Image image = System.Drawing.Image.FromStream(fs);
+
+                                                                        if (image.Height > 850)
+                                                                        {
+                                                                            <img src="@Url.Content(Model.DocPath + Doc.DocFile)" alt="@Doc.DocumentType" width="644" style="height:850px;" />
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <img src="@Url.Content(Model.DocPath + Doc.DocFile)" alt="@Doc.DocumentType" width="644" />
+                                                                        }
+                                                                    }
+                                                                </td>
+                                                            </tr>                                                        
+                                                        </table>
+                                                    </td>                                                
+                                                </tr>                                           
+                                            </table>
+                                        </td>
+                                        <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+                                    </tr>
+                                    <!--- Report Footer with Address Include -->
+                                    @Html.Partial("_ReportFooterAddress")
+                                    <!--- Report Footer with Address Include -->
+                                    <!--- Report Footer Include -->
+                                    @Html.Partial("_ReportFooter")
+                                    <!--- Report Footer Include -->
+                                </table>
+                        </page>
+                    }
+                }
+            }
+        }
+    }
+}

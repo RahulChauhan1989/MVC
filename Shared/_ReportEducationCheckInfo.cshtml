@@ -1,0 +1,1357 @@
+﻿
+@model ViewModels.ReportQCViewModel.InterimReportGenerateViewModel
+
+@if (Model != null && Model.EducationProvidedList != null && Model.EducationProvidedList.Count() > 0 && Model.AntecedentList != null && Model.AntecedentList.Count() > 0)
+{
+    foreach (var ProvidedInfo in Model.EducationProvidedList)
+    {
+        var EducationVerInfo = Model.EducationVerifiedList.Where(ver => ver.EducationRowID == ProvidedInfo.EducationRowID).FirstOrDefault();
+        var antecentList = Model.AntecedentList.Where(a => a.CheckFamilyRowID == ProvidedInfo.CheckFamilyRowID && a.SubCheckRowID == ProvidedInfo.SubCheckRowID).ToList();
+
+        <page id="PrintSrc" size="A4">
+           
+                    <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+                        <!--- Report Header Include -->
+                        @Html.Partial("_ReportHeader")
+                        <!--- Report Header Include -->
+                        <tr>
+                            <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                            <td valign="top">
+                                <table width="100%" border="0" cellpadding="0" cellspacing="0">                                  
+                                    <tr>                                      
+                                        <td valign="top">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td>
+                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                            <tr>
+                                                                <td width="88%"><p style="font-size:16px;  color:#000000; text-align:center; font-weight:bold; text-decoration:underline; text-transform:none; margin:0px;">@ProvidedInfo.SubCheckName</p></td>
+                                                                <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                                                            </tr>
+                                                            <tr><td colspan="2">&nbsp;</td></tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top" align="right">
+                                                        <table width="30%" border="1" cellspacing="5" cellpadding="5">
+                                                            <tr>
+                                                                @*<td width="50%" style="color-adjust:exact;background:#c0c0c0;font-size:14px;  font-weight:bold; padding:5px;">&nbsp;</td>*@
+                                                                @if (EducationVerInfo != null && !string.IsNullOrEmpty(EducationVerInfo.ColorName))
+                                                            {
+                                                                <td style="color-adjust:exact;background:@EducationVerInfo.ColorCode;font-size:14px;  font-weight:bold; padding:5px; text-align:center;">@EducationVerInfo.ColorName</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td bgcolor="#fff" style="font-size:14px;  font-weight:bold; padding:5px; text-align:center;">@ProvidedInfo.CheckStatus</td>
+                                                            }
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top">&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top" align="center">
+                                                        <table width="100%" border="1" cellspacing="5" cellpadding="2">
+                                                            <tr>
+                                                                <td width="33%" style="color-adjust:exact;background:#c0c0c0;font-weight:bold; padding-left:5px;">Name of Candidate</td>
+                                                                <td style="padding-left:5px;"><label for="">@ProvidedInfo.EV_Cand_Name</label></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="color-adjust:exact;background:#c0c0c0;font-weight:bold; padding-left:5px;">Vendor Reference</td>
+                                                                <td style="padding-left:5px;"><label for="">@ProvidedInfo.EV_Sec_Ref_id</label></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Unique ID</td>
+                                                                <td style="padding-left:5px;"><label for="">@ProvidedInfo.UniqueComponentID</label></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="color-adjust:exact;background:#c0c0c0;padding-left:5px; font-weight:bold;">Report Comment</td>
+                                                                @if (EducationVerInfo != null && !string.IsNullOrEmpty(EducationVerInfo.ReportComment))
+                                                            {
+                                                                <td style="padding-left:5px;"><label for="">@EducationVerInfo.ReportComment</label></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td style="padding-left:5px;"><label for="">Work In Progress</label></td>
+                                                            }
+
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td height="30">&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top" align="center">
+                                                        <table width="100%" border="1" cellspacing="5" cellpadding="2">
+                                                            <tr>
+                                                                <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Details</td>
+                                                                <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Information Provided</td>
+                                                                <td width="33%" style="color-adjust:exact;background:#c0c0c0;text-align:center; font-size:14px;  font-weight:700;">Information Verified</td>
+                                                            </tr>
+
+                                                            @{
+                                                            if (EducationVerInfo != null && EducationVerInfo.CheckStatus == "RW-Approved-TM")
+                                                            {
+                                                                foreach (var item in antecentList)
+                                                                {
+
+                                                                    if (item.FieldName == "EV_Cand_Name")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Cand_Name</td>
+                                                                <td>
+                                                                    @ViewBag.VerifyInfoEV_Cand_Name
+                                                                </td>
+                                                            </tr>
+                                                                    }
+
+                                                                    if (item.FieldName == "EV_Cand_Name_Supp_Edu_Doc")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Cand_Name_Supp_Edu_Doc</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Cand_Name_Supp_Edu_Doc
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Colg_Schl_Inst_Name")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>
+                                                                    @ProvidedInfo.EV_Colg_Schl_Inst_Name
+                                                                </td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Colg_Schl_Inst_Name
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Colg_Schl_Inst_Add_ConDet")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Colg_Schl_Inst_Add_ConDet</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Colg_Schl_Inst_Add_ConDet
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Affl_University_Name")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Affl_University_Name</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Colg_Unvrsty_Affl
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Degree_Name")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Degree_Name</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Degree_Name
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Mode_Of_Edu")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Mode_Of_Edu</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Mode_Of_Edu
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Enroll_RollNo")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Enroll_RollNo</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Enroll_RollNo
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_RegNo_RegCode")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_RegNo_RegCode</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_RegNo_RegCode
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Dur_Course")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Dur_Course</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Dur_Course
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Course_Status")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Course_Status</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Course_Status
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Specialization")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Specialization</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Specialization
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Period_Course")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Period_Course</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Period_Course
+                                                                </td>
+                                                            </tr>
+
+                                                                    }
+                                                                    if (item.FieldName == "EV_Yr_Passing")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Yr_Passing</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Yr_Passing
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Rslt_Obtain")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Rslt_Obtain</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Rslt_Obtain
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Mode_of_Verf")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Mode_of_Verf</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Mode_of_Verf
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Refre_Name_Dsg")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Refre_Name_Dsg</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Refre_Name_Dsg
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Refre_Eid")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Refre_Eid</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Refre_Eid
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Refre_ConNo")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Refre_ConNo</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Refre_ConNo
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Attch_Doc_Genuine")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Attch_Doc_Genuine</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Attch_Doc_Genuine
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Any_Other_Cmmnts_EduV")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Any_Other_Cmmnts_EduV</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Any_Other_Cmmnts_EduV
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Verb_Verf_Date")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Verb_Verf_Date</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Verb_Verf_Date
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Wrtn_Verf_Date")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Wrtn_Verf_Date</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Wrtn_Verf_Date
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Other_Remarks")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Other_Remarks</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Other_Remarks
+                                                                </td>
+                                                            </tr>
+                                                                    }
+
+                                                                    if (item.FieldName == "EV_Division_CGPA")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Division_CGPA</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Division_CGPA
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Official_Fee_Proof")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Official_Fee_Proof</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Official_Fee_Proof
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Colg_Unvrsty_Affl")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Colg_Unvrsty_Affl</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Colg_Unvrsty_Affl
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others2")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others2</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others2
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others3")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others3</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others3
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others4")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others4</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others4
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others5")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others5</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others5
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others6")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others6</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others6
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others7")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others7</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others7
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others8")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others8</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others8
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others9")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others9</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others9
+
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others10")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others10</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others10
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others11")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others11</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others11
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others12")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others12</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others12
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others13")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others13</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others13
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others14")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others14</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others14
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others15")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others15</td>
+                                                                <td>
+                                                                    @EducationVerInfo.EV_Others15
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Reverse_Directory")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Reverse_Directory</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Reverse_Directory
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Residcl_Commrcl")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Residcl_Commrcl</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Residcl_Commrcl
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Stock_Exchnge")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Stock_Exchnge</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Stock_Exchnge
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Telphne_Directry_Srch")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Telphne_Directry_Srch</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Telphne_Directry_Srch
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Yellow_Pages")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Yellow_Pages</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Yellow_Pages
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Who_Domain")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Who_Domain</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Who_Domain
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_GoogleSearch")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_GoogleSearch</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_GoogleSearch
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_InfrastructureOfCmp")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_InfrastructureOfCmp</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_InfrastructureOfCmp
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Just_Dial")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Just_Dial</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Just_Dial
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Neighbor_Check1")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Neighbor_Check1</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Neighbor_Check1
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_NASCOM_Empanelment")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_NASCOM_Empanelment</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_NASCOM_Empanelment
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Photograph")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Photograph</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Photograph
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Physical_Site")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Physical_Site</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Physical_Site
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Reg_Company")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Reg_Company</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Reg_Company
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_PO_Courier_Check")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_PO_Courier_Check</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_PO_Courier_Check
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Network_Sol")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Network_Sol</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Network_Sol
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_ApprxEmpWorking")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_ApprxEmpWorking</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_ApprxEmpWorking
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_CID_No")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_CID_No</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_CID_No
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Cmpny_Addr")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Cmpny_Addr</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Cmpny_Addr
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Decoy_Call")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Decoy_Call</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Decoy_Call
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Cmpny_Website")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Cmpny_Website</td>
+                                                                <td>
+                                                                    @EducationVerInfo.ATA_Cmpny_Website
+
+                                                                </td>
+                                                            </tr>
+                                                                    }
+                                                                }
+
+                                                            }
+                                                            else
+                                                            {
+                                                                foreach (var item in antecentList)
+                                                                {
+
+                                                                    if (item.FieldName == "EV_Cand_Name")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Cand_Name</td>
+                                                                <td>
+                                                                    @ViewBag.VerifyInfoEV_Cand_Name
+                                                                </td>
+                                                            </tr>
+                                                                    }
+
+                                                                    if (item.FieldName == "EV_Cand_Name_Supp_Edu_Doc")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Cand_Name_Supp_Edu_Doc</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Colg_Schl_Inst_Name")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>
+                                                                    @ProvidedInfo.EV_Colg_Schl_Inst_Name
+                                                                </td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Colg_Schl_Inst_Add_ConDet")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Colg_Schl_Inst_Add_ConDet</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Affl_University_Name")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Affl_University_Name</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Degree_Name")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Degree_Name</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Mode_Of_Edu")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Mode_Of_Edu</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Enroll_RollNo")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Enroll_RollNo</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_RegNo_RegCode")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_RegNo_RegCode</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Dur_Course")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Dur_Course</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Course_Status")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Course_Status</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Specialization")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Specialization</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Period_Course")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Period_Course</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+
+                                                                    }
+                                                                    if (item.FieldName == "EV_Yr_Passing")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Yr_Passing</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Rslt_Obtain")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Rslt_Obtain</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Mode_of_Verf")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Mode_of_Verf</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Refre_Name_Dsg")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Refre_Name_Dsg</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Refre_Eid")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Refre_Eid</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Refre_ConNo")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Refre_ConNo</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Attch_Doc_Genuine")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Attch_Doc_Genuine</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Any_Other_Cmmnts_EduV")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Any_Other_Cmmnts_EduV</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Verb_Verf_Date")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Verb_Verf_Date</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Wrtn_Verf_Date")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Wrtn_Verf_Date</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Other_Remarks")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Other_Remarks</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+
+                                                                    if (item.FieldName == "EV_Division_CGPA")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Division_CGPA</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Official_Fee_Proof")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Official_Fee_Proof</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Colg_Unvrsty_Affl")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Colg_Unvrsty_Affl</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others2")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others2</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others3")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others3</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others4")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others4</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others5")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others5</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others6")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others6</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others7")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others7</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others8")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others8</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others9")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others9</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others10")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others10</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others11")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others11</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others12")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others12</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others13")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others13</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others14")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others14</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "EV_Others15")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.EV_Others15</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Reverse_Directory")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Reverse_Directory</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Residcl_Commrcl")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Residcl_Commrcl</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Stock_Exchnge")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Stock_Exchnge</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Telphne_Directry_Srch")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Telphne_Directry_Srch</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Yellow_Pages")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Yellow_Pages</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Who_Domain")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Who_Domain</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_GoogleSearch")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_GoogleSearch</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_InfrastructureOfCmp")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_InfrastructureOfCmp</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Just_Dial")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Just_Dial</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Neighbor_Check1")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Neighbor_Check1</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_NASCOM_Empanelment")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_NASCOM_Empanelment</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Photograph")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Photograph</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Physical_Site")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Physical_Site</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Reg_Company")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Reg_Company</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_PO_Courier_Check")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_PO_Courier_Check</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Network_Sol")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Network_Sol</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_ApprxEmpWorking")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_ApprxEmpWorking</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_CID_No")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_CID_No</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Cmpny_Addr")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Cmpny_Addr</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Decoy_Call")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Decoy_Call</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                    if (item.FieldName == "ATA_Cmpny_Website")
+                                                                    {
+                                                            <tr>
+                                                                <td>@item.AntecedentName :</td>
+                                                                <td>@ProvidedInfo.ATA_Cmpny_Website</td>
+                                                                <td>&nbsp;</td>
+                                                            </tr>
+                                                                    }
+                                                                }
+                                                            }
+                                                            }
+
+
+                                                        </table>
+                                                    </td>
+                                                </tr>                                                
+                                            </table>
+                                        </td>                                       
+                                    </tr>                                   
+                                </table>
+                            </td>
+                            <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+                        </tr>
+                        <!--- Report Footer with Address Include -->
+                        @Html.Partial("_ReportFooterAddress")
+                        <!--- Report Footer with Address Include -->
+
+                        <!--- Report Footer Include -->
+                        @Html.Partial("_ReportFooter")
+                        <!--- Report Footer Include -->
+                    </table>
+                
+        </page>
+
+        if (Model.CandidateDocList != null)
+        {
+            foreach (var Doc in Model.CandidateDocList.Where(w => w.SubCheckRowID == ProvidedInfo.SubCheckRowID))
+            {
+                if (Doc.SubCheckRowID == ProvidedInfo.SubCheckRowID)
+                {
+                    FileInfo fin = new FileInfo(Server.MapPath(Model.DocPath + Doc.DocFile));
+                    if (fin.Exists && (fin.Extension.ToLower().Contains(".jpg") || fin.Extension.ToLower().Contains(".jpeg") || fin.Extension.ToLower().Contains(".png")))
+                    {
+                        <page id="PrintSrc" size="A4">
+                            <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+                                <!--- Report Header Include -->
+                                @Html.Partial("_ReportHeader")
+                                <!--- Report Header Include -->
+                                <tr>
+                                    <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                                    <td valign="top">
+                                        <table width="100%" border="0" cellpadding="0" cellspacing="0">                                                                                                       
+                                            <tr>
+                                                <td valign="top">
+                                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                        <tr>
+                                                            <td>
+                                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                                    <tr>
+                                                                        <td width="88%"><p style="font-size:16px;  color:#000000; text-align:center; font-weight:bold; text-decoration:underline; text-transform:none; margin:0px;">@ProvidedInfo.SubCheckName (@Doc.DocumentType)</p></td>
+                                                                        <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                                                                    </tr>
+                                                                    <tr><td colspan="2">&nbsp;</td></tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="top">&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td valign="top">
+                                                                @{
+                                                                    FileStream fs = new FileStream(Server.MapPath(Model.DocPath + Doc.DocFile), FileMode.Open, FileAccess.Read);
+                                                                    System.Drawing.Image image = System.Drawing.Image.FromStream(fs);
+
+                                                                    if (image.Height > 850)
+                                                                    {
+                                                                        <img src="@Url.Content(Model.DocPath + Doc.DocFile)" alt="@Doc.DocumentType" width="644" style="height:850px;" />
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <img src="@Url.Content(Model.DocPath + Doc.DocFile)" alt="@Doc.DocumentType" width="644" />
+                                                                    }
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    </table>                                                                                                                
+                                                    </tr>                                                                                                       
+                                        </table>
+                                    </td>
+                                    <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+                                </tr>
+                                <!--- Report Footer with Address Include -->
+                                @Html.Partial("_ReportFooterAddress")
+                                <!--- Report Footer with Address Include -->
+
+                                <!--- Report Footer Include -->
+                                @Html.Partial("_ReportFooter")
+                                <!--- Report Footer Include -->
+                            </table>
+                    </page>
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,169 @@
+﻿
+
+<div class="col-md-12 padremove">
+    @{
+        if (ViewBag.ManagerDashboard != null)
+        {
+            ViewModels.ClientViewModel.DashboardManagerClientServicingViewModel item = ViewBag.ManagerDashboard;
+
+            <table width="98%" border="1" bordercolor="#595c5a" align="center">
+                <tr class="green_bg">
+                    <td>Total WIP</td>
+                    <td>Pending with candidate</td>
+                    <td>Pending with HR</td>
+                    <td>Non-initiated</td>
+                    <td>YTR Hold</td>
+                    <td>Rejection WIP</td>
+                    <td>Re-open</td>
+                    <td>Priority</td>
+                    <td>Insuff WIP</td>
+                </tr>
+                <tr class="links">
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "WIP" })'>@item.totWIP</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "Pendingwithcandidate" })'> @item.totPendingwithcandidate</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "PendingwithHR" })'> @item.totPendingwithHR </a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "NonInitiated" })'> @item.totNonInitiated </a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "YTRHold" })'>@item.totYTRHold</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "RejectionWIP" })'> @item.totRejectionWIP</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "ReOpen" })'>@item.totReOpen</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "Priority" })'>@item.totPriority</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "InsuffWIP" })'>@item.totInsuffWIP</a></td>
+                </tr>
+                <tr>
+                    <td height="50" colspan="9">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="yellow_bg">Today's Due</td>
+                    <td class="green_bg">Due in Next 3 days</td>
+                    <td class="green_bg">In TAT 4-7 days</td>
+                    <td class="red_bg">BT- 1-2 days</td>
+                    <td class="red_bg">BT 3-5 days</td>
+                    <td class="red_bg">BT 5-10 days</td>
+                    <td class="red_bg">BT 10 days+</td>
+                    <td class="green_bg">1-check Pending</td>
+                    <td class="green_bg">Insuff Pending 5+ Days</td>
+                </tr>
+                <tr class="links">
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, tatdays = 1 })'>@item.totTodaysDue</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, tatdays = 2 })'>@item.totDueinNext3days</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, tatdays = 3 })'>@item.totInTAT4to7days</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, tatdays = 4 })'>@item.totBT1to2days</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, tatdays = 5 })'>@item.totBT3to5days</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, tatdays = 6 })'>@item.totBT5to10days</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, tatdays = 7 })'>@item.totBT10daysPlus</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "1checkPending" })'> @item.tot1checkPending</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "InsuffPending5Day" })'> @item.totInsuffPending5Day</a></td>
+                </tr>
+                <tr>
+                    <td height="50" colspan="9">&nbsp;</td>
+                </tr>
+                <tr class="green_bg">
+                    <td>WIP Revenue</td>
+                    <td>Insufficiency</td>
+                    <td>WIP YTR</td>
+                    <td>QC Pending</td>
+                    <td>Funds Approval</td>
+                    <td>Approval pending</td>
+                    <td>Escalated</td>
+                    <td>Exported</td>
+                    <td>Out TAT %</td>
+                </tr>
+                <tr class="links">
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "WIPRevenue" })'> @item.totWIPRevenue</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "Insufficiency" })'> @item.totInsufficiency</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "WIPYTR" })'> @item.totWIPYTR</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "WIPDEQC" })'>@item.totQCPending</a></td>
+                    <td><a href='@Url.Action("ManageFundPendingChecksForSpoc", "ClientServicing", null)'>@item.totFundApproval</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "ApprovalPending" })'> @item.totApprovalPending </a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "Escalated" })'>@item.totEscalated</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "Closed" })'>@item.totExprted</a></td>
+                    <td><a href='@Url.Action("ClientServicingDashboardInfo", "ClientServicing", new {ClientRowID=ViewBag.ClientID, CaseStatus = "OutTAT" })'>@item.totOutTatInPercent</a></td>
+                </tr>
+            </table>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-12" style="text-align:center;">
+                    <span class="delete"> No selected Client, Please Select A Client.</span>
+                </div>
+            </div>
+            <div class="row"><div class="col-md-12">&nbsp;</div></div>
+            <table width="98%" border="1" bordercolor="#595c5a" align="center">
+                    <tr class="green_bg">
+                        <td>Total WIP</td>
+                        <td>Pending with candidate</td>
+                        <td>Pending with HR</td>
+                        <td>Non-initiated</td>
+                        <td>YTR Hold</td>
+                        <td>Rejection WIP</td>
+                        <td>Re-open</td>
+                        <td>Priority</td>
+                        <td>Insuff WIP</td>
+                    </tr>
+                    <tr class="links">
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                    </tr>
+                    <tr>
+                        <td height="50" colspan="9">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td class="yellow_bg">Today's Due</td>
+                        <td class="green_bg">Due in Next 3 days</td>
+                        <td class="green_bg">In TAT 4-7 days</td>
+                        <td class="red_bg">BT- 1-2 days</td>
+                        <td class="red_bg">BT 3-5 days</td>
+                        <td class="red_bg">BT 5-10 days</td>
+                        <td class="red_bg">BT 10 days+</td>
+                        <td class="green_bg">1-check Pending</td>
+                        <td class="green_bg">Insuff Pending 5+ Days</td>
+                    </tr>
+                    <tr class="links">
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                    </tr>
+                    <tr>
+                        <td height="50" colspan="9">&nbsp;</td>
+                    </tr>
+                    <tr class="green_bg">
+                        <td>WIP Revenue</td>
+                        <td>Insufficiency</td>
+                        <td>WIP YTR</td>
+                        <td>QC Pending</td>
+                        <td>Funds Approval</td>
+                        <td>Approval pending</td>
+                        <td>Escalated</td>
+                        <td>Exported</td>
+                        <td>Out TAT %</td>
+                    </tr>
+                    <tr class="links">
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                        <td><a href="#">0</a></td>
+                    </tr>
+                </table>
+        }
+
+    }
+</div>

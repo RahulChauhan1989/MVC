@@ -1,0 +1,47 @@
+﻿<tr>
+    <td valign="top">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td width="94%"><p style="font-size:19px;  color:#000080; text-align:center; font-weight:bold; text-decoration:underline; padding:10px 0px 10px 0px;">Background Verification Report - Executive Summary</p></td>
+                            <td width="6%" align="right"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <table width="100%" border="1" cellpadding="2" cellspacing="5">
+                        <tr>
+                            <td width="25%" style="font-size:16px;  color-adjust:exact; background:#c0c0c0; padding-left:5px;"><strong>Verified Data</strong></td>
+                            <td width="50%" style="text-align:center; color-adjust:exact; background:#c0c0c0; font-size:16px; "><strong>Particulars</strong></td>
+                            @*<td width="10%" style="text-align:center; color-adjust:exact; background:#c0c0c0; font-size:16px; "><strong>Status</strong></td>*@
+                            <td width="15%" style="text-align:center; color-adjust:exact; background:#c0c0c0; font-size:16px; "><strong>Status (Color)</strong></td>
+                        </tr>
+                        @{
+                            foreach (var item in Model.PersonalChecksBriefDetails)
+                            {
+                                <tr style=" font-size:12px; font-weight:bold; padding:5px;">
+                                    <td style=" padding-left:5px;">@item.SubCheckFName</td>
+                                    <td align="center">@item.SubCheckDetail</td>
+                                    @*<td align="center">@item.Status</td>*@
+                                    <td style="color-adjust:exact; background:@item.ColorCode" align="center">@item.ColorName</td>
+                                </tr>
+                            }
+                        }
+                        <tr>
+                            <td width="25%" style="font-size:16px; ">FINAL REPORT</td>
+                            <td width="50%" colspan="2"  style="text-align:center; font-size:16px; color-adjust:exact; background:@Model.FinalColorCode;">@Model.FinalColor</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+

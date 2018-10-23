@@ -1,0 +1,37 @@
+﻿@model ViewModels.DistrictCheckBoxList
+
+@if (Model.checkBoxList != null && Model.checkBoxList.Count > 0)
+{
+    <div class="col-md-12">        
+        @{ short stateid = 0;}
+        @foreach (var item in Model.checkBoxList)
+        {
+           
+                if (stateid == 0)
+                {
+                stateid = item.StateRowID;
+                <div  class="col-md-12" style="border-bottom:1px solid #000;margin-top:15px;"><b>@item.StateName</b></div>
+                @*<hr style="border-top:1px solid #000;margin-top:0;" />*@
+                }
+
+                if (stateid != item.StateRowID)
+                {
+                stateid = item.StateRowID;
+                <br />
+                <div  class="col-md-12" style="border-bottom:1px solid #000;margin-top:15px;"><b>@item.StateName</b></div>
+                @*<hr style="border-top:1px solid #000;margin-top:0;" />*@
+                }
+            <div class="col-md-6">
+                <input id="chkd_@(item.StateRowID)_@(item.DistrictRowID)"
+                       name="chkd_@(item.StateRowID)_@(item.DistrictRowID)"
+                       type="checkbox"
+                       class="Districtchk"
+                       value="@item.DistrictRowID"
+                       checked='@item.DistrictIsChecked' />
+                @item.DistrictName
+                @*<label for="chk@(item.DistrictRowID)">@item.DistrictName</label>*@
+
+            </div>
+        }
+    </div>
+}

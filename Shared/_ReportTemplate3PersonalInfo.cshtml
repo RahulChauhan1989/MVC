@@ -1,0 +1,68 @@
+﻿<tr>
+    <td valign="top">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            @if (Model.FinalReport)
+                            {
+                                <td width="94%"><p style="font-size:32px; color:#777777; text-decoration:underline; text-align:center; margin:0px 0px 0px 0px; font-weight:bold;">SECURITAS INDIA</p> <p  style="text-align: center;border: 2px solid #808080;box-shadow: 0px 1px 2px 1px #c0c0c0;color: #808080;text-transform: uppercase;padding: 5px;width: 35%;font-weight: bolder;margin: 25px 0px 20px 183px;letter-spacing: 0.5px;font-size:14px;">REPORT TYPE INTERIM</p></td>
+                            }
+                            else
+                            {
+                                <td width="94%"><p style="font-size:32px; color:#777777; text-decoration:underline; text-align:center; margin:0px 0px 0px 0px; font-weight:bold;">SECURITAS INDIA</p> <p  style="text-align: center;border: 2px solid #808080;box-shadow: 0px 1px 2px 1px #c0c0c0;color: #808080;text-transform: uppercase;padding: 5px;width: 35%;font-weight: bolder;margin: 25px 0px 20px 183px;letter-spacing: 0.5px;font-size:14px;">REPORT TYPE FINAL</p></td>
+                            }
+                            <td width="6%" align="right"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%" border="1" cellpadding="2" cellspacing="5" style="border-spacing: 3px;">
+                        <tr>
+                            <td colspan="4" style="text-align:center; background:#c0c0c0; font-size:16px; font-weight:bold; padding:3px;">Background Screening Report</td>
+                        </tr>
+                        <tr>
+                            <td style="background:#c0c0c0; font-size:13px;  font-weight:bold; padding:5px; text-align:justify;">Name of subject</td>
+                            <td colspan="4" style="background:#c0c0c0; font-size:13px;  font-weight:normal; padding:5px;">@Model.PersonalName</td>
+                        </tr>
+                        <tr>
+                            <td width="20%" style="font-size:12px;  font-weight:bold; padding:5px;">Date of Initiation</td>
+                            <td width="30%" style="font-size:12px;  font-weight:normal; padding:5px;">@if (Model.CreatedDate != null) { <span>@Model.CreatedDate.ToString("dd/MMM/yyyy")</span> } else { <span>N/A</span> }</td>
+                            <td width="20%" style="font-size:12px;  font-weight:bold; padding:5px;">Date of Report</td>
+                            <td width="20%" style="font-size:12px;  font-weight:normal; padding:5px;">@if (Model.ReportDate != null) { <span>@Model.ReportDate.ToString("dd/MMM/yyyy")</span> } else { <span>N/A</span> }</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px;  font-weight:bold; padding:5px;">Client</td>
+                            <td style="font-size:12px;  font-weight:normal; padding:5px;">@Model.ClientName</td>
+                            <td style="font-size:12px;  font-weight:bold; padding:5px;">Client Reference</td>
+                            <td style="font-size:12px;  font-weight:normal; padding:5px;">@Model.ClientRefID</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px;  font-weight:bold; padding:5px;">Securitas Reference Id</td>
+                            <td style="font-size:12px;  font-weight:normal; padding:5px;">@Model.CompanyRefNo</td>
+                            <td style="font-size:12px;  font-weight:bold; padding:5px;">Date of Birth</td>
+                            <td style="font-size:12px;  font-weight:normal; padding:5px;">@if (Model.DOB != null) { <span>@Model.DOB.ToString("dd/MMM/yyyy")</span> } else { <span>N/A</span> }</td>
+                        </tr>
+                        <tr>
+                            @*<td style="font-size:12px;  font-weight:bold; padding:5px;">Entity (Subsidiary)</td>
+                            <td style="font-size:12px;  font-weight:normal; padding:5px;">TATA Communications Transformation Services Limited</td>*@
+                            <td style="font-size:12px;  font-weight:bold; padding:5px;">Color Code</td>
+                            <td colspan="3" style="color-adjust:exact; background:@Model.FinalColorCode;">@Model.FinalColor</td>
+                        </tr>
+                    </table>                    
+                </td>
+            </tr>
+            <tr>
+                <td height="30">&nbsp;</td>
+            </tr>   
+            <tr>
+                <td align="center">
+                    <img src='@Url.Content("~/Images/fivecolor.jpg")' />
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>

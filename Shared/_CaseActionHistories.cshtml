@@ -1,0 +1,55 @@
+﻿
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+
+<link href="~/Content/admin.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/colorbox.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+
+<script src="~/Scripts/jquery-3.1.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/modernizr-2.8.3.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<table width="100% ">
+    <tr>
+        <td class="personal-details-head"><i class="fa fa-file-text-o" aria-hidden="true"></i> Case Action History :</td>
+    </tr>
+    <tr>
+        <td height="2"></td>
+    </tr>
+    <tr>
+        <td valign="top">
+            @if (ViewBag.CaseActionHistories != null && ViewBag.CaseActionHistories.Count > 0)
+            {
+                <table class="table">
+                    <thead class="thead-inverse">
+                        <tr>
+                            <th class="top-head">Case Status</th>
+                            <th class="top-head">Remarks</th>
+                            <th class="top-head">Updated By</th>
+                            <th class="top-head">Date Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.CaseActionHistories)
+                        {
+                            <tr>
+                                <td class="name">@item.CaseStatus</td>
+                                <td class="name">@item.Remarks</td>
+                                <td class="name">@item.UpdatedByNameDesig</td>
+                                <td class="name">@item.UpdatedDate.ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="errormsg">No Action Performed!</div>
+            }
+        </td>
+    </tr>
+</table>

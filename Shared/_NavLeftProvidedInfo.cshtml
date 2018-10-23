@@ -1,0 +1,11 @@
+﻿
+<div class="padremove">
+    <nav class="bs-docs-sidebar">
+        <ul class="nav bs-docs-sidenav">
+            @if (Session["NavTeamMemberDE"] != null)
+            {                
+               @Html.Raw(Session["NavTeamMemberDE"].ToString());
+            }
+        </ul>
+    </nav>
+</div>

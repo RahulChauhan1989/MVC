@@ -1,0 +1,46 @@
+﻿<div class="padremove">
+    <nav class="bs-docs-sidebar">
+        <ul class="nav bs-docs-sidenav">
+
+            @if (Session["Designation"] != null && (Session["Designation"].ToString() != "Team Member-Emp-Research" && Session["Designation"].ToString() != "Team Member-Edu-Research"))
+            {
+                <li><a href='@Url.Action("ManageCompany", "Master")'>Company</a></li>
+                @*<li><a href='@Url.Action("ManageBranchOffice", "Master")'>Branch Office</a></li>*@
+                <li><a href='@Url.Action("ManageCountry", "Master")'>Country</a></li>
+                <li><a href='@Url.Action("ManageStates", "Master")'>State</a></li>
+                <li><a href='@Url.Action("ManageDistricts", "Master")'>District</a></li>
+                <li><a href='@Url.Action("ManageLocations", "Master")'>Location</a></li>
+                @*<li><a href='@Url.Action("ManagePincode", "Master")'>Pincode</a></li>*@
+                <li><a href='@Url.Action("ManageCategory", "Master")'>Category</a></li>
+                <li><a href='@Url.Action("ManageDepartments", "Master")'>Department</a></li>
+                <li><a href='@Url.Action("ManageDesignations", "Master")'>Designation</a></li>
+                <li><a href='@Url.Action("ManageHolidays", "Master")'>Holiday</a></li>
+                <li><a href='@Url.Action("ManageBillingCycle", "Master")'>Billing Cycle</a></li>
+                <li><a href='@Url.Action("ManageDegreeTypes", "Master")'>Degree Master</a></li>
+                <li><a href='@Url.Action("ManageUniversities", "Master")'>University Master</a></li>
+                <li><a href='@Url.Action("ManageColleges", "Master")'>College Master</a></li>
+                <li><a href='@Url.Action("ManageEmployers", "Master")'>Employer Master</a></li>
+                <li><a href='@Url.Action("ManagePoliceStation", "Master")'>Police Station</a></li>
+                <li><a href='@Url.Action("ManageVendors", "Master")'>Partner Master</a></li>
+                <li><a href='@Url.Action("ManageCheckFamily", "Master")'>Check Family</a></li>
+                <li><a href='@Url.Action("ManageSubCheckFamily", "Master")'>Sub Check Family</a></li>
+                <li><a href='@Url.Action("ManageDisposition", "Master")'>Disposition Master</a></li>
+                <li><a href='@Url.Action("ManageSeverityGrid", "Master")'>Severity Grid Master</a></li>
+                <li><a href='@Url.Action("ManageAntecedent", "Master")'>Antecedents Master</a></li>
+            }
+            else
+            {
+                if (Session["Designation"].ToString() == "Team Member-Emp-Research")
+                {
+                    <li><a href='@Url.Action("ManageEmployers", "Master")'>Employer Master</a></li>
+                }
+                else if (Session["Designation"].ToString() == "Team Member-Edu-Research")
+                {
+                    <li><a href='@Url.Action("ManageUniversities", "Master")'>University Master</a></li>
+                    <li><a href='@Url.Action("ManageColleges", "Master")'>College Master</a></li>
+                }
+            }
+            
+        </ul>
+    </nav>
+</div>

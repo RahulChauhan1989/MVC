@@ -1,0 +1,163 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <nav class="navbar navbar-default navbar-static-top" role="navigation">
+            <div class="container">
+                <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        @{
+                            string Designation = Convert.ToString(Session["Designation"]);
+                            string Department = Convert.ToString(Session["Department"]);
+
+                            if (Session["Department"] != null && Session["Designation"] != null)
+                            {
+                                if (Department == "Admin" || Department == "HR")
+                                {
+                                    <li><a href='@Url.Action("Index", "Home")'><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+
+                                    if (Designation == "Master Management" || Designation == "Administrator")
+                                    {
+                                        <li><a href='@Url.Action("Index", "Master")'>Master Management</a></li>
+                                    }
+
+                                    if (Designation == "UserRights Management" || Designation == "Administrator" || Designation == "Manager-HR" || Designation == "Team Member-HR")
+                                    {
+                                        <li><a href='@Url.Action("Index", "HRMgmt")'>HR Management</a></li>
+                                    }
+
+                                    if (Designation == "Client Management" || Designation == "Administrator")
+                                    {
+                                        <li><a href='@Url.Action("Index", "Client")'>Client Management</a></li>
+                                    }
+
+                                    if (Designation == "Head of Operation")
+                                    {
+                                        <li><a href='@Url.Action("Index", "ProvidedInfo")'>Operation Management</a></li>
+                                        @*<li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Verification Module <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href='@Url.Action("ManagerAllocationToTeamLeader", "Verification")'>Allocated Manager Jobs</a></li>
+                                    <li><a href='@Url.Action("TeamLeaderAllocationToTeamMember", "Verification")'>Allocated TeamLeader Jobs</a></li>
+                                    <li><a href='@Url.Action("ManageTeamMemberChecks", "Verification")'>Manage Team Member Checks Jobs</a></li>
+                                </ul>
+                            </li>*@
+                                    }
+                                }
+                                else
+                                {
+                                    <li><a href='@Url.Action("SelectDesignation", "Home")' id="liSelectDesg"><i class="fa fa-home" aria-hidden="true"></i> Home </a></li>
+
+                                    if (Department == "Data Entry")
+                                    {
+                                        <li><a href='@Url.Action("Index", "ProvidedInfo")'>Dashboard </a></li>
+                                    }
+
+                                    if (Department == "Data Entry" && Designation == "Team Leader-DE")
+                                    {
+                                        <li><a href='@Url.Action("DataEntryREAllocationByDETL", "ProvidedInfo")'>RE-Allocation Management </a></li>
+                                        <li><a href='@Url.Action("Index", "Insuff")'>Insufficiency Management </a></li>
+                                        <li><a href='@Url.Action("ManageReviewRequestedChecksForDETL", "Insuff")'>Review Requested Management </a></li>
+                                    }
+
+                                    @*if (Department == "Data Entry" && Designation == "Team Member-DE-QC")
+                                    {
+                                        <li><a href='@Url.Action("ManageRejectedChecksByDepTMForDEQC", "Insuff")'>Rejected Checks By TeamMember</a></li>
+                                    }*@
+
+                                    if (Department == "Data Entry" && Designation == "Team Member-DE-Scan")
+                                    {
+                                        <li><a href='@Url.Action("ManageInsuffChecksForUploadDoc", "Insuff")'>Insufficiency Management </a></li>
+                                        <li><a href='@Url.Action("ManageRejectedChecksForDEScan", "Insuff")'>Rejected Management </a></li>
+
+                                    }
+
+                                    if ((Department == "Address" || Department == "Employment" || Department == "Education" || Department == "Criminal" || Department == "Reference" || Department == "National Identity" || Department == "Special Check") && Designation != "Team Member-Emp-Research" &&  Designation != "Team Member-Edu-Research")
+                                    {
+                                        <li><a href='@Url.Action("Index", "Verification")'> Dashboard </a></li>
+                                    }
+
+                                    if (Designation == "Team Member-Emp-Research")
+                                    {
+                                        <li><a href='@Url.Action("ManageResearchEmploymentChecks", "ProvidedInfo")'>Manage Employment Research</a></li>
+                                        <li><a href='@Url.Action("ManageEmployers", "Master")'>Employer Master</a></li>
+                                        <li><a href='@Url.Action("ManageBeyondEmployers", "Master")'>Beyond 180days Employers</a></li>
+                                    }
+
+                                    if (Designation == "Team Member-Edu-Research")
+                                    {
+                                        <li><a href='@Url.Action("ManageResearchEducationChecks", "ProvidedInfo")'>Manage Education Research</a></li>
+                                        <li><a href='@Url.Action("ManageColleges", "Master")'>College Master</a></li>
+                                        <li><a href='@Url.Action("ManageBeyondColleges", "Master")'>Beyond 180days Colleges</a></li>
+                                    }
+
+                                    if (Designation == "Team Leader-Emp" || Designation == "Team Leader-Add" || Designation == "Team Leader-Edu" || Designation == "Team Leader-Cri" || Designation == "Team Leader-Ref" || Designation == "Team Leader-Ide")
+                                    {
+                                        <li><a href='@Url.Action("ManageReviewRequestedChecksForDepartmentTL", "Insuff")'>Review Requested Management </a></li>
+                                        <li><a href='@Url.Action("ManageFundPendingChecksForDeprtTL", "Verification")'>Funds Pending Management </a></li>
+                                        <li><a href='@Url.Action("TeamLeaderReAllocationToTeamMember", "Verification")'>Re-Allocation Management </a></li>
+                                    }
+
+                                    if (Designation == "Team Leader-SPL")
+                                    {
+                                        <li><a href='@Url.Action("ManageReviewRequestedChecksForDepartmentTL", "Insuff")'>Review Requested Management </a></li>                                       
+                                        <li><a href='@Url.Action("TeamLeaderReAllocationToTeamMember", "Verification")'>Re-Allocation Management </a></li>
+                                    }
+
+                                    if (Department == "Report QC" && Designation == "Manager-Rpt-QC")
+                                    {
+                                        <li><a href='@Url.Action("Index", "ReportQC")'>Dashboard</a></li>
+                                    }
+
+                                    if (Department == "Report QC" && Designation == "Team Leader-Rpt-QC")
+                                    {
+                                        <li><a href='@Url.Action("Index", "ReportQC")'>Dashboard</a></li>
+                                        @*<li><a href='@Url.Action("ManageAllCandidateListForReportQCTL", "ReportQC")'>Cases For ReportQC TL</a></li>*@
+                                    }
+
+                                    if (Department == "Report QC" && Designation == "Team Member-Rpt-QC")
+                                    {
+                                        <li><a href='@Url.Action("Index", "ReportQC")'>Dashboard</a></li>
+                                        <li><a href='@Url.Action("ManageAllCandidateListForReportQCTeamMember", "ReportQC")'>Cases For ReportQC TM</a></li>
+                                    }
+
+                                    if (Department == "Physical Verification")
+                                    {
+                                        <li><a href='@Url.Action("Index", "PVerification")'>Dashboard</a></li>
+                                    }
+
+                                    if (Department == "Client Servicing")
+                                    {
+                                        <li><a href='@Url.Action("Index", "ClientServicing")'>Dashboard </a></li>
+                                        <li><a href='@Url.Action("InsuffMgmtForClientServicing", "ClientServicing")'>Insufficiency Cases </a></li>
+                                    }
+                                    @*if (Department == "Address" || (Department == "Education" && Designation != "Team Member-Edu-Research") || (Department == "Employment" && Designation != "Team Member-Emp-Research") || Department == "Reference" || Department == "Criminal" || Department == "Identity" || Department == "Other Checks")
+                                    {
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Verification Module <b class="caret"></b></a>
+                                            <ul class="dropdown-menu">
+                                                @{
+                                                    if (Designation == "Manager-Add")
+                                                    {
+                                                        <li><a href='@Url.Action("ManagerAllocationToTeamLeader", "Verification")'>Allocated Manager Jobs</a></li>
+                                                    }
+                                                    if (Designation == "Team Leader-Add")
+                                                    {
+                                                        <li><a href='@Url.Action("TeamLeaderAllocationToTeamMember", "Verification")'>Allocated TeamLeader Jobs</a></li>
+                                                    }
+                                                    if (Designation == "Team Member-Add")
+                                                    {
+                                                        <li><a href='@Url.Action("ManageTeamMemberChecks", "Verification")'>Manage Team Member Checks Jobs</a></li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </li>
+                                    }*@
+                                }
+                            }
+                        }
+                                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>

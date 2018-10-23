@@ -1,0 +1,42 @@
+﻿<tr>
+    <td valign="top">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td width="94%"><p style="font-size:19px;  color:#000080; text-align:center; font-weight:bold; text-decoration:underline; padding:10px 0px 10px 0px;"></p> </td>
+                            <td width="6%" align="right"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>   
+            <tr>
+                <td height="30">&nbsp;</td>
+            </tr>  
+            <tr>
+                <td valign="top">
+                    <table width="100%" border="1" cellpadding="2" cellspacing="5" style="border-spacing: 3px;">
+                        <tr>
+                            <td colspan="2" style="background:#c0c0c0; color:#000; padding:5px; font-weight:bold; text-align:center; font-size:14px;">Report Summary</td>
+                        </tr>
+                        <tr>
+                            <td width="50%" style="background:#c0c0c0; font-size:14px; color:#000; text-align:justify; font-weight:bold; padding:5px;">Component</td>
+                            <td width="50%" style="background:#c0c0c0; font-size:14px; color:#000; text-align:justify; font-weight:bold; padding:5px;">Status (Color)</td>
+                        </tr>                        
+                        @{
+                            foreach (var item in Model.PersonalChecksBriefDetails)
+                            {
+                                <tr>
+                                    <td style="font-size:12px;  font-weight:bolder; padding:5px; text-align:left;">@item.SubCheckFName</td>
+                                    <td style="padding-left:5px;" ><span style="color:@item.ColorCode;">@item.ColorName</span></td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+

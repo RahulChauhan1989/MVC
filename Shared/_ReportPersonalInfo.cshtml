@@ -1,0 +1,110 @@
+﻿
+@if (Model != null)
+{
+    <page id="PrintSrc" size="A4">
+        <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+            <!--- Report Header Include -->
+            @Html.Partial("_ReportHeader")
+            <!--- Report Header Include -->
+            <tr>
+                <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                <td valign="top">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        @if (Model.ReportTemplate == 1)
+                        {
+                            @Html.Partial("_ReportTemplate1PersonalInfo")
+                        }
+                        else if (Model.ReportTemplate == 2)
+                        {
+                            @Html.Partial("_ReportTemplate2PersonalInfo")
+                        }
+                        else if (Model.ReportTemplate == 3)
+                        {
+                            @Html.Partial("_ReportTemplate3PersonalInfo")
+                        }
+                        else if (Model.ReportTemplate == 4)
+                        {
+                            @Html.Partial("_ReportTemplate4PersonalInfo")
+                        }
+                    </table>
+                </td>
+                <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+            </tr>            
+            <!--- Report Footer with Address Include -->
+            @Html.Partial("_ReportFooterAddress")
+            <!--- Report Footer with Address Include -->
+
+            <!--- Report Footer Include -->
+            @Html.Partial("_ReportFooter")
+            <!--- Report Footer Include -->
+        </table>
+    </page>
+
+    if (Model.CandidateCaseDocList != null)
+    {
+        foreach (var Doc in Model.CandidateCaseDocList)
+        {
+            FileInfo fin = new FileInfo(Server.MapPath(Model.DocPath + Doc.DocFile));
+            if (fin.Exists && (fin.Extension.ToLower().Contains(".jpg") || fin.Extension.ToLower().Contains(".jpeg") || fin.Extension.ToLower().Contains(".png")))
+            {
+               <page id="PrintSrc" size="A4">
+                    <table width="793" border="0" cellspacing="0" cellpadding="0" align="center">
+                        <!--- Report Header Include -->
+                        @Html.Partial("_ReportHeader")
+                        <!--- Report Header Include -->
+                        <tr>
+                            <td width="2%" align="left" valign="bottom" style="border-left:2px solid #999999;">&nbsp;</td>
+                            <td valign="top">
+                                <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td valign="top">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td>
+                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                            <tr>
+                                                                <td width="88%"><p style="font-size:16px;  color:#000000; text-align:center; font-weight:bold; text-decoration:underline; text-transform:none; margin:0px;">@Doc.DocumentType</p></td>
+                                                                <td width="6%" valign="top"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                                                            </tr>
+                                                            <tr><td colspan="2">&nbsp;</td></tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top">&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td valign="top">
+                                                        @{ 
+                                                            FileStream fs = new FileStream(Server.MapPath(Model.DocPath + Doc.DocFile), FileMode.Open, FileAccess.Read);
+                                                            System.Drawing.Image image = System.Drawing.Image.FromStream(fs);
+
+                                                            if (image.Height > 850)
+                                                            {
+                                                                <img src="@Url.Content(Model.DocPath + Doc.DocFile)" alt="@Doc.DocumentType" width="644" style="height:850px;" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <img src="@Url.Content(Model.DocPath + Doc.DocFile)" alt="@Doc.DocumentType" width="644" />
+                                                            }
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td style="border-right:2px solid #999999;" align="left" valign="top">&nbsp;</td>
+                        </tr>
+                        <!--- Report Footer with Address Include -->
+                        @Html.Partial("_ReportFooterAddress")
+                        <!--- Report Footer with Address Include -->
+                        <!--- Report Footer Include -->
+                        @Html.Partial("_ReportFooter")
+                        <!--- Report Footer Include -->
+                    </table>
+                </page>
+            }
+        }
+    }
+}

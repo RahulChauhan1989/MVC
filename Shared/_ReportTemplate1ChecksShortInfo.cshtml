@@ -1,0 +1,49 @@
+﻿<tr>
+    <td valign="top">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>                            
+                            <td width="94%"><p style="font-size:19px;  color:#000080; text-align:center; font-weight:bold; text-decoration:underline; padding:10px 0px 10px 0px;">Background Verification Report – Executive Summary</p></td>
+                            <td width="6%" align="right"><img src='@Url.Content("~/Images/logo.jpg")' width="71" height="40"></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <table width="100%" border="1" cellpadding="2" cellspacing="5">
+                        @{
+                            string checkName = string.Empty;
+                            foreach (var item in Model.PersonalChecksBriefDetails)
+                            {
+                                if (checkName != item.CheckFName)
+                                {
+                                    <tr>
+                                        <td colspan="4" bgcolor="#c0c0c0" style="font-size:18px; color-adjust:exact; background:#c0c0c0; padding:5px; text-align:center;"> <strong> @item.CheckFName</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="20%"  style="font-size:14px; color-adjust:exact; background:#c0c0c0; padding-left:5px;"><strong>Type of Check</strong></td>
+                                        <td width="50%"  style="font-size:14px; color-adjust:exact; background:#c0c0c0; text-align:center;"><strong>Brief Details</strong></td>
+                                        <td width="17%"  style="font-size:14px; color-adjust:exact; background:#c0c0c0; text-align:center;"><strong>Status (Color)</strong></td>
+                                    </tr>
+                                    checkName = item.CheckFName;
+                                }
+                                <tr style=" font-size:12px; font-weight:bold; padding:5px;">
+                                    <td style="padding-left:5px;">@item.SubCheckFName</td>
+                                    <td align="center">@item.SubCheckDetail</td>
+                                    <td style="color-adjust:exact; background:@item.ColorCode;" align="center">@item.ColorName</td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </td>
+            </tr> 
+        </table>
+    </td>
+</tr>
+

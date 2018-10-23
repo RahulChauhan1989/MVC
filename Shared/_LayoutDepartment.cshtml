@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGV - @ViewBag.Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link href='@Url.Content("~/Content/bootstrap.min.css")' rel="stylesheet" type="text/css" />
+    <link href='@Url.Content("~/Content/bootstrap-theme.min.css")' rel="stylesheet" />
+    <link href='@Url.Content("~/Content/Site.css")' rel="stylesheet" type="text/css" />
+    <script src='@Url.Content("~/Scripts/modernizr-2.8.3.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery-3.1.1.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/DisableBackForwordBtn.js")'></script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="header">
+                    @Html.Partial("_Header")
+                    <div class="row">
+                        <div class="col-md-12">
+                            <nav class="navbar navbar-default navbar-static-top" role="navigation">
+                                &nbsp;
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="master-middle">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table width="100%" align="center">
+                                <tr>
+                                    <td width="16%" valign="top" class="left-frame_depart">
+                                        <div class="col-md-12 padremove">
+                                            <div class="panel-group" id="accordion">
+                                                @{
+                                                    IEnumerable<ViewModels.HRViewModels.TeamDepartmentViewModel> model = ViewBag.TeamDepartments;
+                                                    if (model != null && model.Count() > 0)
+                                                    {
+                                                        byte Count = 0;
+                                                        foreach (var item in model)
+                                                        {
+                                                            Count++;
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <h4 class="panel-title">
+                                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_@Count">
+                                                                            <span class="glyphicon glyphicon-th">
+                                                                            </span> @item.DepartmentName
+                                                                        </a>
+                                                                    </h4>
+                                                                </div>
+                                                                @if (Count == 1)
+                                                                {
+                                                                    <div id="collapse_@Count" class="panel-collapse collapse in">
+                                                                        <div class="panel-body">
+                                                                            <table class="table">
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <span class="glyphicon glyphicon-menu-right text-primary"></span>
+                                                                                        @Html.ActionLink(item.DesignationName, "RedirectToDashboard", "Home", new { @teamdeptid = item.TeamDepartmentRowID }, null)
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div id="collapse_@Count" class="panel-collapse collapse">
+                                                                        <div class="panel-body">
+                                                                            <table class="table">
+                                                                                <tr>
+                                                                                    <td>
+                                                                                        <span class="glyphicon glyphicon-menu-right text-primary"></span>
+                                                                                        @Html.ActionLink(item.DesignationName, "RedirectToDashboard", "Home", new { @teamdeptid = item.TeamDepartmentRowID }, null)
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="detail-change">Please select department and designation for this member!</div>
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td width="1%" valign="top">&nbsp;</td>
+                                     <td valign="top" class="right-frame">
+                                        @RenderSection("DisplayTitle", required: false)
+                                        @RenderSection("NavigationButton", required: false)
+                                        @RenderSection("DisplayErrorMessage", required: false)
+                                        @RenderBody()
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    @Html.Partial("_Footer")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src='@Url.Content("~/Scripts/bootstrap.min.js")'></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

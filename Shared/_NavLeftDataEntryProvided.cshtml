@@ -1,0 +1,14 @@
+﻿
+
+<div class="padremove">
+    <nav class="bs-docs-sidebar">
+        <ul class="nav bs-docs-sidenav">
+            @if (Session["NavInputDataMenuList"] != null)
+            {
+                @Html.Raw(Session["NavInputDataMenuList"].ToString());
+            }
+        </ul>
+    </nav>
+</div>
+
+

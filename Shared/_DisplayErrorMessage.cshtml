@@ -1,0 +1,26 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        @{
+            if (ViewBag.ErrorMsg != null)
+            {
+                <div class="errormsg">@ViewBag.ErrorMsg.ToString()</div>
+            }
+            else if (TempData["ErrorMsg"] != null)
+            {
+                <div class="errormsg">@TempData["ErrorMsg"].ToString()</div>
+            }
+
+            if (ViewBag.SuccessMsg != null)
+            {
+                <div class="successmsg">@ViewBag.SuccessMsg.ToString()</div>
+            }
+            else if (TempData["SuccessMsg"] != null)
+            {
+                <div class="successmsg">@TempData["SuccessMsg"].ToString()</div>
+            }
+
+            <div class="errormsg">@Html.ValidationMessage("")</div>
+        }
+    </div>
+</div>
+

@@ -1,0 +1,90 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <ul id="tabs">
+            @{
+                if (Session["ClientContract"] != null && (Convert.ToByte(Session["ClientContract"]) == 1))
+                {
+                    <li class = "tabs1" id="@ViewBag.ContractCssClass">@Html.ActionLink("Upload Contract", "ManageClientContract", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                }
+                else
+                {
+                    <li id="@ViewBag.ContractCssClass">@Html.ActionLink("Upload Contract", "ManageClientContract", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                }
+
+                if (Session["PricingType"] != null && (Convert.ToByte(Session["PricingType"]) == 2 || Convert.ToByte(Session["PricingType"]) == 3))
+                {
+                    if (Session["ClientCheck"] != null && (Convert.ToByte(Session["ClientCheck"]) == 1))
+                    {
+                            <li class = "tabs1" id="@ViewBag.CheckCssClass">@Html.ActionLink("Manage Checks", "ManageClientChecks", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                    }
+                    else
+                    {
+                        <li id="@ViewBag.CheckCssClass">@Html.ActionLink("Manage Checks", "ManageClientChecks", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                    }
+                }
+
+                if (Session["PricingType"] != null && (Convert.ToByte(Session["PricingType"]) == 1 || Convert.ToByte(Session["PricingType"]) == 3))
+                {
+                    if (Session["ClientPackage"] != null && (Convert.ToByte(Session["ClientPackage"]) == 1))
+                    {
+                        <li class = "tabs1" id="@ViewBag.PackageCssClass">@Html.ActionLink("Manage Packages", "ManagePackages", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                    }
+                    else
+                    {
+                        <li id="@ViewBag.PackageCssClass">@Html.ActionLink("Manage Packages", "ManagePackages", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                    }
+                }
+
+                if (Session["clientDisposition"] != null && (Convert.ToByte(Session["clientDisposition"]) == 1))
+                {
+                    <li class = "tabs1" id="@ViewBag.DispostionCssClass">@Html.ActionLink("Manage Disposition", "ManageClientCheckDispositions", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                }
+                else
+                {
+                    <li id="@ViewBag.DispostionCssClass">@Html.ActionLink("Manage Disposition", "ManageClientCheckDispositions", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                }
+
+                if (Session["ClientSeveritie"] != null && (Convert.ToByte(Session["ClientSeveritie"]) == 1))
+                {
+                    <li class = "tabs1" id="@ViewBag.SeverityCssClass">@Html.ActionLink("Manage ColorCode", "ManageClientSeverity", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                }
+                else
+                {
+                    <li id="@ViewBag.SeverityCssClass">@Html.ActionLink("Manage ColorCode", "ManageClientSeverity", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                }
+
+                if (Session["ClientHoliday"] != null && (Convert.ToByte(Session["ClientHoliday"]) == 1))
+                {
+                    <li class = "tabs1" id="@ViewBag.HolyCssClass">@Html.ActionLink("Manage Holiday", "ManageClientHoliDay", "Client", new { CId = ViewBag.ClientID },null)</li>
+                }
+                else
+                {
+                    <li id="@ViewBag.HolyCssClass">@Html.ActionLink("Manage Holiday", "ManageClientHoliDay", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                }
+
+                if (Session["ClientTeamMember"] != null && (Convert.ToByte(Session["ClientTeamMember"]) == 1))
+                {
+                    <li class = "tabs1" id="@ViewBag.TeamCssClass">@Html.ActionLink("Manage Team Members", "ManageClientTeamMembers", "Client", new { CId = ViewBag.ClientID },null)</li>
+                }
+                else
+                {
+                    <li  id="@ViewBag.TeamCssClass">@Html.ActionLink("Manage Team Members", "ManageClientTeamMembers", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                }
+
+                if (Session["MailSendBy"] != null && Convert.ToByte(Session["MailSendBy"]) == 1)
+                {
+                    if (Session["ClientMail"] != null && (Convert.ToByte(Session["ClientMail"]) == 1))
+                    {
+                        <li class = "tabs1" id="@ViewBag.MailCssClass">@Html.ActionLink("Mail Configuration", "ClientMail", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                    }
+                    else
+                    {
+                        <li id="@ViewBag.MailCssClass">@Html.ActionLink("Mail Configuration", "ClientMail", "Client", new { CId = ViewBag.ClientID }, null)</li>
+                    }
+                }
+            }
+        </ul>
+
+        <div class="client-table-frame">&nbsp;</div>
+    </div>
+</div>
