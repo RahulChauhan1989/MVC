@@ -1,0 +1,272 @@
+﻿@model ViewModels.VendorViewModel
+@{
+    ViewBag.Title = "Partner Details";
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.VendorName, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.VendorName)
+                    </div>
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.Address)
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CountryName, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.CountryName)
+                    </div>
+                    @Html.LabelFor(model => model.StateName, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.StateName)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.DistrictRowID, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.DistrictName)
+                    </div>
+                    @Html.LabelFor(model => model.LocationName, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.LocationName)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.PinCode, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.PinCode)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.EmpanelmentDate, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.EmpanelmentDate)
+                    </div>
+
+
+                    @Html.LabelFor(model => model.RenewalDate, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.RenewalDate)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.AuditStatus, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.AuditStatus)
+                    </div>
+
+
+                    @Html.LabelFor(model => model.AuditStatusDate, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.AuditStatusDate)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.ModeOfInitiation, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.ModeOfInitiation)
+                    </div>
+
+
+                    @Html.LabelFor(model => model.OtherInitiation, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.OtherInitiation)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.SpecialInstruction, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.SpecialInstruction)
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.ModeOfPayment, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.ModeOfPayment)
+                    </div>
+
+
+                    @Html.LabelFor(model => model.PayableAT, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.PayableAT)
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.FavourOf, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.FavourOf)
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.VendorContactPerson, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.VendorContactPerson)
+                    </div>
+                    @Html.LabelFor(model => model.VendorEmaiID, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.VendorEmaiID)
+                    </div>
+                </div>
+            </div>
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.VendorMobileNo, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.VendorMobileNo)
+                    </div>
+                    @Html.LabelFor(model => model.VendorContactNo, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.VendorContactNo)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.PanNo, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.PanNo)
+                    </div>
+                    @Html.LabelFor(model => model.PanDoc, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @if (!string.IsNullOrEmpty(Model.PanDoc))
+                        {
+                        <a target="_blank" href="~/Documents/MasterDocuments/Vendor/@Model.PanDoc">Download</a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.PanNo, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.PanNo)
+                    </div>
+                    @Html.LabelFor(model => model.PanDoc, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @if (!string.IsNullOrEmpty(Model.PanDoc))
+                        {
+                            <a target="_blank" href="~/Documents/MasterDocuments/Vendor/@Model.PanDoc">Download</a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.IDProofNo, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.IDProofNo)
+                    </div>
+                    @Html.LabelFor(model => model.IDProofDoc, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @if (!string.IsNullOrEmpty(Model.IDProofDoc))
+                        {
+                            <a target="_blank" href="~/Documents/MasterDocuments/Vendor/@Model.IDProofDoc">Download</a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.ServiceTaxCertificateNo, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.ServiceTaxCertificateNo)
+                    </div>
+                    @Html.LabelFor(model => model.ServiceTaxCertificateDoc, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @if (!string.IsNullOrEmpty(Model.ServiceTaxCertificateDoc))
+                        {
+                            <a target="_blank" href="~/Documents/MasterDocuments/Vendor/@Model.ServiceTaxCertificateDoc">Download</a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.RegistrationCertificateNo, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.RegistrationCertificateNo)
+                    </div>
+                    @Html.LabelFor(model => model.RegistrationCertificateDoc, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @if (!string.IsNullOrEmpty(Model.RegistrationCertificateDoc))
+                        {
+                            <a target="_blank" href="~/Documents/MasterDocuments/Vendor/@Model.RegistrationCertificateDoc">Download</a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model. AgreementDocs, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @if (!string.IsNullOrEmpty(Model.RegistrationCertificateDoc))
+                        {
+                            <a target="_blank" href="~/Documents/MasterDocuments/Vendor/@Model.RegistrationCertificateDoc">Download</a>
+                        }
+                    </div>
+                    @Html.LabelFor(model => model.RegistrationCertificateDoc, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @if (!string.IsNullOrEmpty(Model.RegistrationCertificateDoc))
+                        {
+                            <a target="_blank" href="~/Documents/MasterDocuments/Vendor/@Model.RegistrationCertificateDoc">Download</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

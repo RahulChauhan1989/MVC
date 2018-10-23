@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewBag.Title = "Manage Pincode";
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        @using (Html.BeginForm("ManagePincode", "Master", FormMethod.Get))
+                        {
+                            <div class="form-horizontal">
+                                <div class="form-group branch search-frame">
+                                    <label class="col-md-3 control-label">Enter Pincode :</label>
+                                    <div class="col-md-5">
+                                        @Html.TextBox("Search", null, new { @class = "form-control", placeholder = "Ex. Pincode..." })
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input class="btn bun-bg btn-default" type="submit" value="Search" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-2 branch search-frame">
+                        <a href='@Url.Action("AddPincode","Master")' class="btn bun-bg btn-default"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Pincode</a>
+                    </div>
+                    <div class="col-md-2 branch search-frame">
+                        <a href='@Url.Action("ExportPincode", "Master")' class="btn bun-bg btn-default"><i class="fa fa-download" aria-hidden="true"></i> Export </a>
+                    </div>
+                </div>
+                @if (Model != null && Model.Pincodes != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            @{
+
+                                WebGrid grid = new WebGrid(rowsPerPage: Model.PageSize, ajaxUpdateContainerId: "grid");
+                                grid.Bind(Model.Pincodes, autoSortAndPage: false, rowCount: Model.TotalRecords);
+                            }
+                            @grid.GetHtml(
+                                    htmlAttributes: new { id = "grid", @class = "table" },
+                                    headerStyle: "thead-inverse",
+                                    rowStyle: "ordertxt",
+                                    footerStyle: "custpaging",
+                                    mode: WebGridPagerModes.All,
+                                    columns: new[]
+                                    {
+                                    grid.Column(header: "S.No.", style:"col-md-1", format: item => item.WebGrid.Rows.IndexOf(item) + 1 + Math.Round(Convert.ToDouble(grid.TotalRowCount / grid.PageCount) / grid.RowsPerPage) * grid.RowsPerPage * grid.PageIndex),
+                                    grid.Column(columnName: "CountryName", header: "Country", canSort: true, style:"col-md-1"),
+                                    grid.Column(columnName: "StateName", header: "State", canSort: true, style:"col-md-1"),
+                                    grid.Column(columnName: "DistrictName", header: "District", canSort: true, style:"col-md-1"),
+                                    grid.Column(columnName: "Pincode", header: "Pincode", canSort: true, style:"col-md-1"),
+
+                                    //grid.Column(header : "Edit", format : (item) => {
+                                    //    var link = Html.ActionLink("Edit", "EditPincode", "Master", new { id = item.PincodeRowID }, null);
+                                    //    return link;
+                                    //}, style:"edit col-md-1"),
+
+                                    //grid.Column("Delete", canSort: false, format: (item)=> {
+                                    //    string DeleteLink = string.Format("<a href=\"#\" id=\"Delete_{0}\" class=\"delete\" >{1}</a>", item.PincodeRowID, "Delete");
+                                    //    return new HtmlString(DeleteLink);
+                                    //}, style:"delete col-md-1")
+                                }
+                            )
+                            <div class="total-record">Total Records: @Model.TotalRecords</div>
+                        </div>
+                    </div>
+                                }
+            </div>
+        </div>
+    </div>
+</div>

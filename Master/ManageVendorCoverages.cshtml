@@ -1,0 +1,159 @@
+﻿
+@{
+    ViewBag.Title = "Manage Partner Coverage (" + ViewBag.VendorName +")";
+}
+@{
+    //@ViewBag.NavigationBtnBack
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageVendors", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnBack = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+
+
+    //@ViewBag.NavigationBtnAddNew
+    string faIconAddNew = string.Format("<i class='fa fa-plus-circle' aria-hidden='true'></i> Add Coverage");
+    string hyperLinkAddNew = Html.ActionLink("linkTitle", "AddVendorCoverage", "Master", new { vid=Request.QueryString["vid"]}, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnAddNew = new HtmlString(hyperLinkAddNew.ToString().Replace("linkTitle", faIconAddNew));
+
+
+    //@ViewBag.NavigationBtnExportExcel
+    string faIconExportExcel = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Excel");
+    string hyperLinkExportExcel = Html.ActionLink("linkTitle", "ExportVendorCoverage", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnExportExcel = new HtmlString(hyperLinkExportExcel.ToString().Replace("linkTitle", faIconExportExcel));
+
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section NavigationButton{ @Html.Partial("_NavigationButton") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        @using (Html.BeginForm("ManageVendorCoverages", "Master", FormMethod.Get))
+                        {
+                            <div class="form-horizontal">
+                                <div class="form-group branch search-frame">
+                                    <label class="col-md-3 control-label">Check Partner :</label>
+                                    <div class="col-md-5">
+                                        @Html.TextBox("Search", null, new { @class = "form-control", placeholder = "Ex. Check family name..." })
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input class="btn bun-bg btn-default" type="submit" value="Search" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    
+                </div>
+                @if (Model != null && Model.VendorCoverages != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            @{
+
+                                WebGrid grid = new WebGrid(rowsPerPage: Model.PageSize, ajaxUpdateContainerId: "grid");
+                                grid.Bind(Model.VendorCoverages, autoSortAndPage: false, rowCount: Model.TotalRecords);
+                            }
+                            @grid.GetHtml(
+                                   htmlAttributes: new { id = "grid", @class = "table" },
+                                    headerStyle: "thead-inverse",
+                                    rowStyle: "ordertxt",
+                                    footerStyle: "custpaging",
+                                    mode: WebGridPagerModes.All,
+                                    columns: new[]
+                                    {
+                                    grid.Column(header: "S.No.", style:"col-md-1", format: item => item.WebGrid.Rows.IndexOf(item) + 1 + Math.Round(Convert.ToDouble(grid.TotalRowCount / grid.PageCount) / grid.RowsPerPage) * grid.RowsPerPage * grid.PageIndex),
+                                    grid.Column(columnName: "CheckFamilyName", header: "CheckFamily", canSort: true, style:"col-md-2"),
+                                    grid.Column(columnName: "CountryName", header: "Country", canSort: false, style:"col-md-1"),
+                                    grid.Column(columnName: "StateName", header: "State", canSort: false, style:"col-md-2"),
+                                    grid.Column(columnName: "VendorCost", header: "Price", canSort: false, style:"col-md-1"),
+                                    grid.Column(columnName: "Level1TAT", header: "TAT L-1", canSort: false, style:"col-md-1"),
+                                    grid.Column(columnName: "Level2TAT", header: "TAT L-2", canSort: false, style:"col-md-1"),
+
+                                    grid.Column(header: "Active", canSort: false, format: (item) => {
+                                    string strActive=string.Empty;
+                                    if (item.Status == 1)
+                                       {
+                                           strActive += "<input name="+ item.VendorCoverageRowID +" id="+ item.VendorCoverageRowID +" checked='true' type='checkbox' onchange='adchange(this)' />";
+                                       }
+                                    else
+                                       {
+                                           strActive += "<input name="+ item.VendorCoverageRowID +" id="+ item.VendorCoverageRowID +" type='checkbox' onchange='adchange(this)' />";
+                                       }
+                                       return new HtmlString(strActive);
+                                       },style:"delete col-md-1"),
+
+                                    grid.Column(header : "", format : (item) => {
+                                        var link = Html.ActionLink("Manage Districts", "ManageVendorCoverageDistricts", "Master", new { vid=item.VendorRowID ,vcoverageid= item.VendorCoverageRowID }, null);
+                                        return link;
+                                    }, style:"edit col-md-2"),
+
+                                    grid.Column(header : "", format : (item) => {
+                                        var link = Html.ActionLink("Edit", "EditVendorCoverage", "Master", new { id = item.VendorCoverageRowID }, null);
+                                        return link;
+                                    }, style:"edit col-md-1"),
+                                }
+                            )
+                            <div class="total-record">Total Records: @Model.TotalRecords</div>
+                        </div>
+                    </div>
+                                }
+
+                <div class="all-button-bg">
+                    @Html.ActionLink("Back", "ManageVendors", "Master", null, new { @class = "btn bun-bg btn-default" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+       function adchange(ChkData) {
+            var id = ChkData.id;
+            var checkeds = ChkData.checked;
+            var flag = "";
+            if (ChkData.checked == true) {
+                flag = confirm('Are you sure to Enable this Record ?');
+            }
+            if (ChkData.checked == false) {
+                flag = confirm('Are you sure to Disable this Record ?');
+            }
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("VendorCoverageActive", "Master")',
+                    data: { "id": id, "checkeds": checkeds },
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data.result == true) {
+                            alert("Record Update Successfully!!");
+                            setTimeout(function () { window.location.replace("ManageVendorCoverages?vid=" + Request.QueryString["vid"]); }, 500);
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+            else {
+                if (ChkData.checked == false) {
+                    ChkData.checked = true;
+                }
+                else {
+                    ChkData.checked = false;
+                }
+            }
+        }
+    </script>
+}

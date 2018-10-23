@@ -1,0 +1,344 @@
+﻿@model ViewModels.EmployerViewModel
+
+@{
+    ViewBag.Title = "Employer Details";
+
+
+    if (Session["Department"] != null && Session["Department"].ToString() != "Employment" && Session["Department"].ToString() != "Physical Verification" && Session["Department"].ToString() != "Report QC")
+    {
+        string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+        string hyperLink = Html.ActionLink("linkTitle", "ManageEmployers", "Master", null, new { @class = "headerbacklink" }).ToString();
+        ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+
+        @section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+    }
+    else
+    {
+        <script>
+            $(document).ready(function () {
+                $('#liSelectDesg').css("display", "none");
+            })
+        </script>
+    }
+}
+
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.CompanyName)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.CompanyStatus, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.CompanyStatus)
+                </div>
+
+                @Html.LabelFor(model => model.COtherStatus, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.COtherStatus)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.CompanyLegalStatus, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.CompanyLegalStatus)
+                </div>
+                @Html.LabelFor(model => model.COtherLegalStatus, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.COtherLegalStatus)
+                </div>
+            </div>
+
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.CompanyAddress, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.CompanyAddress)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.CountryRowID, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.CountryName)
+                </div>
+                @Html.LabelFor(model => model.StateRowID, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.StateName)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.DistrictRowID, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.DistrictName)
+                </div>
+                @Html.LabelFor(model => model.LocationRowID, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.LocationName)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.Website, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.Website)
+                </div>
+                @Html.LabelFor(model => model.CINNumber, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.CINNumber)
+                </div>
+            </div>
+
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.PaidUpCapital, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.PaidUpCapital)
+                </div>
+                @Html.LabelFor(model => model.ModeOfInitiation, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.ModeOfInitiation)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.OtherInitiation, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.OtherInitiation)
+                </div>
+                @Html.LabelFor(model => model.MandatoryDocument, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.MandatoryDocument)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.OtherDocumentDetail, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.OtherDocumentDetail)
+                </div>
+                @Html.LabelFor(model => model. SpecialInstruction, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.SpecialInstruction)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.AdditionalCosting, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.AdditionalCosting)
+                </div>
+                @Html.LabelFor(model => model.AdditionalCost, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.AdditionalCost)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.ModeOfPayment, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.ModeOfPayment)
+                </div>
+
+
+                @Html.LabelFor(model => model.PayableAT, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.PayableAT)
+                </div>
+            </div>
+
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.ConcernPersonName, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.ConcernPersonName)
+                </div>
+
+
+                @Html.LabelFor(model => model.DesigConcernPerson, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.DesigConcernPerson)
+                </div>
+            </div>
+
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.OfficialLandlineNo, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.OfficialLandlineNo)
+                </div>
+
+
+                @Html.LabelFor(model => model.MobileNo, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.MobileNo)
+                </div>
+            </div>
+
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.OfficialEmailId, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.OfficialEmailId)
+                </div>
+            </div>
+
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.PVInitiated, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.PVInitiated)
+                </div>
+
+
+                @Html.LabelFor(model => model.PVInitAtAddressProof, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @if (!string.IsNullOrEmpty(Model.PVInitAtAddressProof))
+                    {
+                    <a target="_blank" href="~/Documents/MasterDocuments/Employer/@Model.PVInitAtAddressProof">Download</a>
+                    }
+                </div>
+            </div>
+
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.PVInitAtAddress, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.PVInitAtAddress)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.RegisteredOnMCA, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.RegisteredOnMCA)
+                </div>
+                @Html.LabelFor(model => model.MCARegProof, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @if (!string.IsNullOrEmpty(Model.MCARegProof))
+                    {
+                        <a target="_blank" href="~/Documents/MasterDocuments/Employer/@Model.MCARegProof">Download</a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.OtherDocumentAdded, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.OtherDocumentAdded)
+                </div>
+                @Html.LabelFor(model => model.OtherDocumentNo, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.OtherDocumentNo)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.OtherDocProof, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @if (!string.IsNullOrEmpty(Model.OtherDocProof))
+                    {
+                        <a target="_blank" href="~/Documents/MasterDocuments/Employer/@Model.OtherDocProof">Download</a>
+                    }
+                </div>
+
+                @Html.LabelFor(model => model.Snapshot, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @if (!string.IsNullOrEmpty(Model.Snapshot))
+                    {
+                        <a target="_blank" href="~/Documents/MasterDocuments/Employer/@Model.Snapshot">Download</a>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.VerificationTATLevel1, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.VerificationTATLevel1)
+                </div>
+
+
+                @Html.LabelFor(model => model.VerificationTATLevel2, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.VerificationTATLevel2)
+                </div>
+            </div>
+
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.AdditionalComments, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.AdditionalComments)
+                </div>
+
+
+                @Html.LabelFor(model => model.Other1, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.Other1)
+                </div>
+            </div>
+
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.Other2, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.Other2)
+                </div>
+
+
+                @Html.LabelFor(model => model.Other3, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.Other3)
+                </div>
+            </div>
+        </div>
+        <div class="form-horizontal">
+            <div class="form-group branch">
+                @Html.LabelFor(model => model.Other4, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.Other4)
+                </div>
+
+
+                @Html.LabelFor(model => model.Other5, htmlAttributes: new { @class = "col-md-3" })
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.Other5)
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+

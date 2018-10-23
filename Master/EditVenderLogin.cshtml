@@ -1,0 +1,109 @@
+﻿@model ViewModels.PartnerViewModels.UpdateMasterVendorLoginViewModel
+@{
+    ViewBag.Title = "Edit Partner Login";
+}
+
+@{
+    
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageVenderLogin", "Master", new {vid=Model.VendorRowID }, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                @Html.HiddenFor(model => model.VendorRowID)
+                @Html.HiddenFor(model => model.VendorLoginRowID)
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.UserID, htmlAttributes: new { @class = "col-md-2 control-label colonsymbl required" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.UserID, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.UserID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.UPass, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.UPass, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
+                        @Html.ValidationMessageFor(model => model.UPass, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.UserType, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(model => model.UserType, new List<SelectListItem>
+                                      { new SelectListItem{Text="Vender only", Value="0"},
+                                          new SelectListItem{Text="Vernder's User", Value="1"},
+                                          
+                                          }, "-- User Type --",
+                                      new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.UserType, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch" id="CPerson" hidden="hidden">
+                    @Html.LabelFor(model => model.ContactPerson, htmlAttributes: new { @class = "col-md-2 control-label colonsymbl" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.ContactPerson, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ContactPerson, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch" id="MNo" hidden="hidden">
+                    @Html.LabelFor(model => model.MobileNo, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.MobileNo, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.MobileNo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">&nbsp;</div>
+                <div class="all-button-bg">
+                    @Html.ActionLink("Back", "ManageVenderLogin", "Master", new { vid = Model.VendorRowID }, new { @class = "btn bun-bg btn-default" })
+                    <input class="btn bun-bg btn-default" type="submit" onclick="return validateForm()" value="Submit" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/EventValidations.js")'></script>
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+
+<script type="text/jscript">
+    $(document).ready(function () {       
+        var PaymentMode = $('#UserType').val();
+        if (PaymentMode == '1') {
+            $('#CPerson').prop("hidden", false);
+            $('#MNo').prop("hidden", false);
+        }
+        else {
+            $('#CPerson').prop("hidden", true);
+            $('#MNo').prop("hidden", true);
+        }       
+    });
+
+    $('#UserType').change(function () {
+        var PaymentMode = $('#UserType').val();
+        if (PaymentMode == '1') {
+            $('#CPerson').prop("hidden", false);
+            $('#MNo').prop("hidden", false);
+        }
+        else {
+            $('#CPerson').prop("hidden", true);
+            $('#MNo').prop("hidden", true);
+        }
+    });
+</script>
+}

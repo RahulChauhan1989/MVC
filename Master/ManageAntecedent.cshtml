@@ -1,0 +1,231 @@
+﻿
+@{
+    ViewBag.Title = "Manage Antecedent";
+}
+@{
+    //@ViewBag.NavigationBtnAddNew
+    //string faIconAddNew = string.Format("<i class='fa fa-plus-circle' aria-hidden='true'></i> Add Antecedent");
+    //string hyperLinkAddNew = Html.ActionLink("linkTitle", "AddAntecedent", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnAddNew = new HtmlString(hyperLinkAddNew.ToString().Replace("linkTitle", faIconAddNew));
+
+
+    //@ViewBag.NavigationBtnExportExcel
+    string faIconExportExcel = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Excel");
+    string hyperLinkExportExcel = Html.ActionLink("linkTitle", "ExportAntecedent", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnExportExcel = new HtmlString(hyperLinkExportExcel.ToString().Replace("linkTitle", faIconExportExcel));
+
+    ////@ViewBag.NavigationBtnBackExportPDF
+    //string faIconExportPDF = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export PDF");
+    //string hyperLinkExportPDF = Html.ActionLink("linkTitle", "ExportAntecedentInPDF", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnBackExportPDF = new HtmlString(hyperLinkExportPDF.ToString().Replace("linkTitle", faIconExportPDF));
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section NavigationButton{ @Html.Partial("_NavigationButton") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                @using (Html.BeginForm("ManageAntecedent", "Master", FormMethod.Get))
+                {
+                    <div class="form-horizontal ">
+                        <div class="form-group branch search-frame">
+                            <label class="col-md-2 control-label">Select Check:</label>
+                            <div class="col-md-3">
+                                @Html.DropDownList("CheckFamilyRowID",
+                            new SelectList(ViewBag.CheckFamilyList, "CheckFamilyRowID", "CheckFamilyName"),
+                            "-- Select Check Family -- ",
+                            new { @class = "form-control" })
+                            </div>
+                            <label class="col-md-2 control-label">Enter Antecedents Name :</label>
+                            <div class="col-md-3">
+                                @Html.TextBox("Search", null, new { @class = "form-control", placeholder = "Antecedents ..." })
+                            </div>
+                            <div class="col-md-1">
+                                <input class="btn bun-bg btn-default" type="submit" value="Search" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        @if (Model != null && Model.Antecedents != null)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    @{
+
+                        WebGrid grid = new WebGrid(rowsPerPage: Model.PageSize, ajaxUpdateContainerId: "grid");
+                        grid.Bind(Model.Antecedents, autoSortAndPage: false, rowCount: Model.TotalRecords);
+                    }
+                    @grid.GetHtml(
+                        htmlAttributes: new { id = "grid", @class = "table" },
+                        headerStyle: "thead-inverse",
+                        rowStyle: "ordertxt",
+                        footerStyle: "custpaging",
+                        mode: WebGridPagerModes.All,
+                        columns: new[]
+                        {
+                            grid.Column(header: "S.No.", style:"", format: item => item.WebGrid.Rows.IndexOf(item) + 1 + Math.Round(Convert.ToDouble(grid.TotalRowCount / grid.PageCount) / grid.RowsPerPage) * grid.RowsPerPage * grid.PageIndex),
+                            grid.Column(columnName: "CheckFamilyName", header: "Check Family", canSort: false, style:"col-md-3"),
+                            grid.Column(columnName: "DisplayName", header: "Antecedents", canSort: false, style:"col-md-4"),
+                            grid.Column(columnName: "AntecedentTypeName", header: "Type", canSort: false, style:"col-md-2"),
+                            grid.Column(columnName: "BGVPublish", header: "BGV Published", canSort: false, style:"col-md-1"),
+                            grid.Column(columnName: "ReportPublish", header: "Report Published", canSort: false, style:"col-md-1"),
+                            grid.Column(columnName: "EmailAdd", header: "Email Added", canSort: false, style:"col-md-1"),
+
+                            grid.Column(header: "Default", canSort: false, format: (item) => {
+                             string strActive=string.Empty;
+                             if (item.IsSetDefault == 1)
+                                {
+                                    strActive += "<input name="+ item.AntecedentRowId +" id="+ item.AntecedentRowId +" checked='true' type='checkbox' onchange='IsSetDefault(this)' />";
+                                }
+                             else
+                                {
+                                    strActive += "<input name="+ item.AntecedentRowId +" id="+ item.AntecedentRowId +" type='checkbox' onchange='IsSetDefault(this)' />";
+                                }
+                                return new HtmlString(strActive);
+                         },style:"delete"),
+
+                            grid.Column(header: "Active", canSort: false, format: (item) => {
+                             string strActive=string.Empty;
+                             if (item.Status == 1)
+                                {
+                                    strActive += "<input name="+ item.AntecedentRowId +" id="+ item.AntecedentRowId +" checked='true' type='checkbox' onchange='adchange(this)' />";
+                                }
+                             else
+                                {
+                                    strActive += "<input name="+ item.AntecedentRowId +" id="+ item.AntecedentRowId +" type='checkbox' onchange='adchange(this)' />";
+                                }
+                                return new HtmlString(strActive);
+                         },style:"delete"),
+                            grid.Column(header : "Edit", format : (item) => {
+                                var link = Html.ActionLink("Edit", "EditAntecedent", "Master", new { id = item.AntecedentRowId }, null);
+                                return link;
+                            }, style:"edit"),
+
+                         }
+                    )
+                    <div class="total-record">Total Records: @Model.TotalRecords</div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+@section Scripts{
+    <script type="text/javascript">        
+        $(document).ready(function () {
+
+            $('#CheckFamilyRowID').change(function () {
+                $('#hdnChkId').val($('#CheckFamilyRowID').val());
+            });
+            $("#Search").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        //async: false,
+                        //cache: false,
+                        url: '@Url.Action("GetAntecedentTestAutoComplete", "Master")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { Antecedent: request.term, hdnChkId: $('#hdnChkId').val() },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Antecedent, value: item.Antecedent };
+                            }))
+                        }
+                    })
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+        })
+
+        function adchange(ChkData) {
+            var id = ChkData.id;
+            var checkeds = ChkData.checked;
+            var flag = "";
+            if (ChkData.checked == true) {
+                flag = confirm('Are you sure to Enable this Record ?');
+            }
+            if (ChkData.checked == false) {
+                flag = confirm('Are you sure to Disable this Record ?');
+            }
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("AntecedentActive", "Master")',
+                    data: { "id": id, "checkeds": checkeds },
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data.result == true) {
+                            alert("Record Update Successfully!!");
+                            setTimeout(function () { window.location; }, 300);
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+            else {
+                if (ChkData.checked == false) {
+                    ChkData.checked = true;
+                }
+                else {
+                    ChkData.checked = false;
+                }
+            }
+        }
+
+        function IsSetDefault(ChkData) {
+           
+            var id = ChkData.id;
+            var checkeds = ChkData.checked;
+            var flag = "";
+            if (ChkData.checked == true) {
+                flag = confirm('Are you sure to set default this Record ?');
+            }
+            if (ChkData.checked == false) {
+                flag = confirm('Are you sure to unset default this Record ?');
+            }
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("AntecedentSetDefault", "Master")',
+                    data: { "id": id, "checkeds": checkeds },
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data.result == true) {
+                            alert("Record Update Successfully!!");
+                            setTimeout(function () { window.location; }, 300);
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+            else {
+                if (ChkData.checked == false) {
+                    ChkData.checked = true;
+                }
+                else {
+                    ChkData.checked = false;
+                }
+            }
+        }
+
+
+    </script>
+}

@@ -1,0 +1,72 @@
+﻿@model ViewModels.UpdateDispositionViewModel
+@{
+    ViewBag.Title = "Edit Disposition";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageDisposition", "Master", null, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CheckFamilyRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.CheckFamilyRowID,
+                            new SelectList(ViewBag.CheckFamilyList, "CheckFamilyRowID", "CheckFamilyName"),
+                            "-- Select Check Family -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CheckFamilyRowID, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.SeverityGridRowId, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.SeverityGridRowId,
+                            new SelectList(ViewBag.SeverityGrid, "SeverityGridRowId", "SeverityGridName"),
+                            "-- Select Severity Grid -- ",
+                            new { @class = "form-control" })
+                      
+                        @Html.ValidationMessageFor(model => model.SeverityGridRowId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.Disposition, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.Disposition, new { @class = "form-control", @rows = "8" })
+                        @Html.ValidationMessageFor(model => model.Disposition, "", new { @class = "text-danger" })
+                        <span id="error" style="color: Red; display: none">* Special Characters not allowed</span>
+                        @Html.HiddenFor(model => model.DispositionRowId)
+                        @Html.HiddenFor(model => model.Status)
+                    </div>
+                </div>
+
+                <div class="all-button-bg">
+                    @Html.ActionLink("Back", "ManageDisposition", "Master", null, new { @class = "btn bun-bg btn-default" })
+                    <input class="btn bun-bg btn-default" type="submit" value="Submit" onkeypress="return IsAlphaNumeric(event);" ondrop="return false;" onpaste="return false;" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div id="ManageSction" class="product-frame1"></div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+   
+}

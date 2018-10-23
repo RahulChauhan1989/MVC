@@ -1,0 +1,230 @@
+﻿
+@{
+    ViewBag.Title = "Manage Disposition";
+}
+
+@{
+
+    //@ViewBag.NavigationBtnAddNew
+    string faIconAddNew = string.Format("<i class='fa fa-plus-circle' aria-hidden='true'></i> Add Disposition");
+    string hyperLinkAddNew = Html.ActionLink("linkTitle", "AddDisposition", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnAddNew = new HtmlString(hyperLinkAddNew.ToString().Replace("linkTitle", faIconAddNew));
+
+
+    //@ViewBag.NavigationBtnExportExcel
+    string faIconExportExcel = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Excel");
+    string hyperLinkExportExcel = Html.ActionLink("linkTitle", "ExportDisposition", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnExportExcel = new HtmlString(hyperLinkExportExcel.ToString().Replace("linkTitle", faIconExportExcel));
+
+    ////@ViewBag.NavigationBtnBackExportPDF
+    //string faIconExportPDF = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export PDF");
+    //string hyperLinkExportPDF = Html.ActionLink("linkTitle", "ExportCountryInPDF", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnBackExportPDF = new HtmlString(hyperLinkExportPDF.ToString().Replace("linkTitle", faIconExportPDF));
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section NavigationButton{ @Html.Partial("_NavigationButton") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                @using (Html.BeginForm("ManageDisposition", "Master", FormMethod.Get))
+                {
+                    <div class="form-horizontal">
+                        <div class="form-group branch search-frame">
+                            <label class="col-md-2 control-label">Select Check:</label>
+                            <div class="col-md-3">
+                                @Html.DropDownList("CheckFamilyRowID",
+                            new SelectList(ViewBag.CheckFamilyList, "CheckFamilyRowID", "CheckFamilyName"),
+                            "-- Select Check Family -- ",
+                            new { @class = "form-control" })
+                            </div>
+                            @*<input type="hidden" id="hdnChkId" value="" />*@
+                            <label class="col-md-1 control-label">Disposition:</label>
+                            <div class="col-md-4">
+                                @Html.TextBox("Search", null, new { @class = "form-control", placeholder = "Disposition ..." })
+                            </div>
+                            <div class="col-md-1">
+                                <input class="btn bun-bg btn-default" type="submit" value="Search" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+        @if (Model != null && Model.Dispositions != null)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    @{
+
+                        WebGrid grid = new WebGrid(rowsPerPage: Model.PageSize, ajaxUpdateContainerId: "grid");
+                        grid.Bind(Model.Dispositions, autoSortAndPage: false, rowCount: Model.TotalRecords);
+                    }
+                    @grid.GetHtml(
+                                    htmlAttributes: new { id = "grid", @class = "table" },
+                                    headerStyle: "thead-inverse",
+                                    rowStyle: "ordertxt",
+                                    footerStyle: "custpaging",
+                                    mode: WebGridPagerModes.All,
+                                    columns: new[]
+                                    {
+                                    grid.Column(header: "S.No.", style:"col-md-", format: item => item.WebGrid.Rows.IndexOf(item) + 1 + Math.Round(Convert.ToDouble(grid.TotalRowCount / grid.PageCount) / grid.RowsPerPage) * grid.RowsPerPage * grid.PageIndex),
+                                    grid.Column(columnName: "CheckFamilyName", header: "Check Family ", canSort: true, style:"col-md-2"),
+                                    grid.Column(columnName: "Disposition", header: "Disposition ", canSort: true, style:"col-md-7"),
+                                    grid.Column(columnName: "SeverityGridName", header: "Severity Grid ", canSort: true, style:"col-md-2"),
+                                    grid.Column(header: "Set Default", canSort: false, format: (item) => {
+                                     string strActive=string.Empty;
+                                     if (item.IsSetDefalut == 1)
+                                        {
+                                            strActive += "<input name="+ item.DispositionRowId +" id="+ item.DispositionRowId +" checked='true' type='checkbox' onchange='IsSetDefault(this)' />";
+                                        }
+                                     else
+                                        {
+                                            strActive += "<input name="+ item.DispositionRowId +" id="+ item.DispositionRowId +" type='checkbox' onchange='IsSetDefault(this)' />";
+                                        }
+                                        return new HtmlString(strActive);
+                                 },style:"delete col-md-1"),
+                                    grid.Column(header: "Active", canSort: false, format: (item) => {
+                                         string strActive=string.Empty;
+                                         if (item.Status == 1)
+                                            {
+                                                strActive += "<input name="+ item.DispositionRowId +" id="+ item.DispositionRowId +" checked='true' type='checkbox' onchange='adchange(this)' />";
+                                            }
+                                         else
+                                            {
+                                                strActive += "<input name="+ item.DispositionRowId +" id="+ item.DispositionRowId +" type='checkbox' onchange='adchange(this)' />";
+                                            }
+                                            return new HtmlString(strActive);
+                                     },style:"delete col-md-1"),
+                                    grid.Column(header : "Edit", format : (item) => {
+                                        var link = Html.ActionLink("Edit", "EditDisposition", "Master", new { id = item.DispositionRowId }, null);
+                                        return link;
+                                    }, style:"edit col-md-1"),
+                                }
+                            )
+                    <div class="total-record">Total Records: @Model.TotalRecords</div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+@section Scripts{
+
+    <script type="text/javascript">
+
+        @*$(document).ready(function () {            
+            $('#CheckFamilyRowID').change(function () {
+                $('#hdnChkId').val($('#CheckFamilyRowID').val());
+            });
+
+            $("#Search").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        //async: false,
+                        //cache: false,
+                        url: '@Url.Action("GetDispositionTestAutoComplete", "Master")',
+                        type: "POST",
+                        dataType: "json",
+                        data: { Disposition: request.term, hdnChkId: $('#hdnChkId').val() },
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.Disposition, value: item.Disposition };
+                            }))
+                        }
+                    })
+                },
+                messages: {
+                    noResults: "", results: ""
+                }
+            });
+        })*@
+        function adchange(ChkData) {
+            var id = ChkData.id;
+            var checkeds = ChkData.checked;
+            var flag = "";
+            if (ChkData.checked == true) {
+                flag = confirm('Are you sure to Enable this Record ?');
+            }
+            if (ChkData.checked == false) {
+                flag = confirm('Are you sure to Disable this Record ?');
+            }
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("DispositionActive", "Master")',
+                    data: { "id": id, "checkeds": checkeds },
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data.result == true) {
+                            alert("Record Update Successfully!!");
+                            setTimeout(function () { window.location; }, 300);
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+            else {
+                if (ChkData.checked == false) {
+                    ChkData.checked = true;
+                }
+                else {
+                    ChkData.checked = false;
+                }
+            }
+        }
+        function IsSetDefault(ChkData) {
+            var id = ChkData.id;
+            var checkeds = ChkData.checked;
+            var flag = "";
+            if (ChkData.checked == true) {
+                flag = confirm('Are you sure to set default this Record ?');
+            }
+            if (ChkData.checked == false) {
+                flag = confirm('Are you sure to unset default this Record ?');
+            }
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("DispositionSetDefault", "Master")',
+                    data: { "id": id, "checkeds": checkeds },
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data.result == true) {
+                            alert("Record Update Successfully!!");
+                            setTimeout(function () { window.location; }, 300);
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+            else {
+                if (ChkData.checked == false) {
+                    ChkData.checked = true;
+                }
+                else {
+                    ChkData.checked = false;
+                }
+            }
+        }
+
+
+    </script>
+}
+
+

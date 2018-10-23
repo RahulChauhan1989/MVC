@@ -1,0 +1,94 @@
+﻿@model ViewModels.UpdateSubCheckFamilyViewModel
+
+@{
+    ViewBag.Title = "Edit Sub Check Family";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageSubCheckFamily", "Master", null, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CheckFamilyRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.CheckFamilyRowID,
+                            new SelectList(ViewBag.CheckFamilyList, "CheckFamilyRowID", "CheckFamilyName"),
+                            "-- Select CheckFamily -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CheckFamilyRowID, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.SubCheckName, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.SubCheckName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SubCheckName, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.SubCheckFamilyRowID)
+                        @Html.HiddenFor(model => model.Status)
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.InternalTAT, htmlAttributes: new { @class = "col-md-2 control-label " })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.InternalTAT, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.InternalTAT, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.TAT, htmlAttributes: new { @class = "col-md-2 control-label " })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.TAT, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TAT, "", new { @class = "text-danger" })
+                    </div>
+
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CostParCase, htmlAttributes: new { @class = "col-md-2 control-label " })
+                    <div class="col-md-3 ">
+                        @Html.EditorFor(model => model.CostParCase, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CostParCase, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="all-button-bg">
+                    @Html.ActionLink("Back", "ManageSubCheckFamily", "Master", null, new { @class = "btn bun-bg btn-default" })
+                    <input class="btn bun-bg btn-default" type="submit" value="Submit" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#InternalTAT').keyup(function () {
+                var value = $(this).val();
+                var valus = value * 20 / 100;
+                
+                $("#TAT").val(parseInt(value) + parseInt(valus));
+                //if (valus > value) {
+                //    alert("Tat values too much");
+                //}
+            });
+            //$('#TAT').keyup(function () {
+            //    TAT = $(this).val();
+            //    var valus = $("#InternalTAT").val();
+            //    if (valus < TAT) {
+            //        alert("TAT value is not Greater than InternalTAT");
+                   
+            //    }
+            //});
+        });
+
+    </script>
+}

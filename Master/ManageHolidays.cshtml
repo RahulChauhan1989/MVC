@@ -1,0 +1,201 @@
+﻿
+@{
+    ViewBag.Title = "Manage Holidays";
+}
+
+@{
+    
+    //@ViewBag.NavigationBtnAddNew
+    string faIconAddNew = string.Format("<i class='fa fa-plus-circle' aria-hidden='true'></i> Add Holiday");
+    string hyperLinkAddNew = Html.ActionLink("linkTitle", "AddHoliday", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnAddNew = new HtmlString(hyperLinkAddNew.ToString().Replace("linkTitle", faIconAddNew));
+
+
+    //@ViewBag.NavigationBtnExportExcel
+    string faIconExportExcel = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Excel");
+    string hyperLinkExportExcel = Html.ActionLink("linkTitle", "ExportHoliday", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnExportExcel = new HtmlString(hyperLinkExportExcel.ToString().Replace("linkTitle", faIconExportExcel));
+
+    
+    ////@ViewBag.NavigationBtnBackExportPDF
+    //string faIconExportPDF = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export PDF");
+    //string hyperLinkExportPDF = Html.ActionLink("linkTitle", "ExportHolidayInPDF", "Master", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnBackExportPDF = new HtmlString(hyperLinkExportPDF.ToString().Replace("linkTitle", faIconExportPDF));
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section NavigationButton{ @Html.Partial("_NavigationButton") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-8">
+                        @using (Html.BeginForm("ManageHolidays", "Master", FormMethod.Get))
+                        {
+                            <div class="form-horizontal">
+                                <div class="form-group branch search-frame">
+                                    <label class="col-md-3 control-label">Enter Holiday Title :</label>
+                                    <div class="col-md-5">
+                                        @Html.TextBox("Search", null, new { @class = "form-control", placeholder = "Ex. Holiday Title..." })
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input class="btn bun-bg btn-default" type="submit" value="Search" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                @if (Model != null && Model.Holidays != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            @{
+
+                                WebGrid grid = new WebGrid(rowsPerPage: Model.PageSize, ajaxUpdateContainerId: "grid");
+                                grid.Bind(Model.Holidays, autoSortAndPage: false, rowCount: Model.TotalRecords);
+                            }
+                            @grid.GetHtml(
+                                    htmlAttributes: new { id = "grid", @class = "table" },
+                                    headerStyle: "thead-inverse",
+                                    rowStyle: "ordertxt",
+                                    footerStyle: "custpaging",
+                                    mode: WebGridPagerModes.All,
+                                    columns: new[]
+                                    {
+                                    grid.Column(header: "No.", style:"col-md-1", format: item => item.WebGrid.Rows.IndexOf(item) + 1 + Math.Round(Convert.ToDouble(grid.TotalRowCount / grid.PageCount) / grid.RowsPerPage) * grid.RowsPerPage * grid.PageIndex),
+                                    grid.Column(columnName: "HoliTitle", header: "Title", canSort: false, style:"col-md-2"),
+                                    grid.Column(columnName: "HoliDate", header: "Date", format: (item) => item.HoliDate != DateTime.MinValue ? item.HoliDate.ToString("MM/dd/yyyy") : "", canSort: false,style:"col-md-2"),
+                                    //grid.Column(columnName: "HoliDate", header: "Date", canSort: false, style:"col-md-2"),
+                                    grid.Column(columnName: "HoliDay", header: "Day", canSort: false, style:"col-md-2"),
+                                    grid.Column(columnName: "HoliMonth", header: "Month", canSort: false, style:"col-md-2"),
+                                    grid.Column(columnName: "Remarks", header: "Remarks", canSort: false, style:"col-md-3"),
+
+                                    grid.Column(header: "IsDefault", canSort: false, format: (item) => {
+                                     string strDefault=string.Empty;
+                                     if (item.IsDefault == 1)
+                                        {
+                                            strDefault += "<input name="+ item.HoliRowID +" id="+ item.HoliRowID +" checked='true' type='checkbox' onchange='IsDefault(this)' />";
+                                        }
+                                     else
+                                        {
+                                            strDefault += "<input name="+ item.HoliRowID +" id="+ item.HoliRowID +" type='checkbox' onchange='IsDefault(this)' />";
+                                        }
+                                        return new HtmlString(strDefault);
+                                     },style:"delete col-md-1"),
+
+                                    grid.Column(header: "Active", canSort: false, format: (item) => {
+                                     string strActive=string.Empty;
+                                     if (item.Status == 1)
+                                        {
+                                            strActive += "<input name="+ item.HoliRowID +" id="+ item.HoliRowID +" checked='true' type='checkbox' onchange='adchange(this)' />";
+                                        }
+                                     else
+                                        {
+                                            strActive += "<input name="+ item.HoliRowID +" id="+ item.HoliRowID +" type='checkbox' onchange='adchange(this)' />";
+                                        }
+                                        return new HtmlString(strActive);
+                                     },style:"delete col-md-1"),
+
+                                    grid.Column(header : "Edit", format : (item) => {
+                                        var link = Html.ActionLink("Edit", "EditHoliday", "Master", new { id = item.HoliRowID }, null);
+                                        return link;
+                                    }, style:"edit col-md-1"),
+                                }
+                            )
+                            <div class="total-record">Total Records: @Model.TotalRecords</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+   <script type="text/javascript">
+        function adchange(ChkData) {
+         
+            var id = ChkData.id;
+            var checkeds = ChkData.checked;
+            var flag = "";
+            if (ChkData.checked == true) {
+                flag = confirm('Are you sure to Enable this Record ?');
+            }
+            if (ChkData.checked == false) {
+                flag = confirm('Are you sure to Disable this Record ?');
+            }
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("HolidayActiveInActive", "Master")',
+                    data: { "id": id, "checkeds": checkeds },
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data.result == true) {
+                            alert("Record Update Successfully!!");
+                            setTimeout(function () { window.location; }, 300);
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+            else {
+                if (ChkData.checked == false) {
+                    ChkData.checked = true;
+                }
+                else {
+                    ChkData.checked = false;
+                }
+            }
+        }
+
+       function IsDefault(ChkData) {
+          
+           var id = ChkData.id;
+           var checkeds = ChkData.checked;
+           var flag = "";
+           if (ChkData.checked == true) {
+               flag = confirm('Are you sure to Enable Default this Record ?');
+           }
+           if (ChkData.checked == false) {
+               flag = confirm('Are you sure to Disable Default this Record ?');
+           }
+           if (id != "" && flag) {
+               $.ajax({
+                   type: "GET",
+                   contentType: "application/json; charset=utf-8",
+                   url: '@Url.Action("HolidayIsDefault", "Master")',
+                   data: { "id": id, "checkeds": checkeds },
+                   dataType: "json",
+                   beforeSend: function () { },
+                   success: function (data) {
+                       if (data.result == true) {
+                           alert("Record Update Successfully!!");
+                           setTimeout(function () { window.location; }, 300);
+                       }
+                       else {
+                           alert('There is some error');
+                       }
+                   }
+               });
+           }
+           else {
+               if (ChkData.checked == false) {
+                   ChkData.checked = true;
+               }
+               else {
+                   ChkData.checked = false;
+               }
+           }
+       }
+</script>
+}

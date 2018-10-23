@@ -1,0 +1,124 @@
+﻿@model ViewModels.UpdateAntecedentViewModel
+@{
+    ViewBag.Title = "Edit Antecedent";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageAntecedent", "Master", null, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+
+}
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.DisplayName, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-5">
+                        @Html.EditorFor(model => model.DisplayName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DisplayName, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.AntecedentRowId)
+                        @Html.HiddenFor(model => model.Status)
+                        @Html.HiddenFor(model => model.FieldName)
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CheckFamilyRowID, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-3">
+                        @Html.HiddenFor(model => model.CheckFamilyRowID, new SelectList(ViewBag.CheckFamilyList, "CheckFamilyRowID", "CheckFamilyName"))
+                        @Html.DropDownListFor(model => model.CheckFamilyRowID,
+                            new SelectList(ViewBag.CheckFamilyList, "CheckFamilyRowID", "CheckFamilyName"),
+                            "-- Select CheckFamily -- ",
+                            new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.CheckFamilyRowID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                   
+                    @Html.LabelFor(model => model.AntecedentTypeRowId, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.AntecedentTypeRowId,
+                            new SelectList(ViewBag.AntecedentTypeList, "AntecedentTypeRowId", "AntecedentTypeName"),
+                            "-- Antecedent Type -- ",
+                            new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.CheckFamilyRowID, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.HiddenFor(model=>model.AntecedentTypeRowId)
+                </div>
+
+                <div class="form-group branch">                  
+                    @Html.LabelFor(model => model.BGVPublished, htmlAttributes: new { @class = "col-md-3 control-label" })
+                    <div class="col-md-3">
+                        @Html.RadioButtonFor(model => model.BGVPublished, 1, new { @class = "rdoBGVPublishedYes" })&nbsp;
+                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        @Html.RadioButtonFor(model => model.BGVPublished, 0, new { @class = "rdoBGVPublishedNo", @checked = "checked" })&nbsp;
+                        No
+                    </div>
+                    @Html.HiddenFor(model => model.BGVPublished, new { @id = "hdnBGVPublished" })
+                </div>
+
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.ReportPublished, htmlAttributes: new { @class = "col-md-3 control-label" })
+                    <div class="col-md-3">
+                        @Html.RadioButtonFor(model => model.ReportPublished, 1, new { @class = "rdoReportPublishedYes" })&nbsp;
+                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        @Html.RadioButtonFor(model => model.ReportPublished, 0, new { @class = "rdoReportPublishedNo", @checked = "checked" })&nbsp;
+                        No
+                    </div>
+                    @Html.HiddenFor(model => model.ReportPublished, new { @id = "hdnReportPublished" })
+                </div>
+
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.EmailAdded, htmlAttributes: new { @class = "col-md-3 control-label" })
+                    <div class="col-md-3">
+                        @Html.RadioButtonFor(model => model.EmailAdded, 1, new { @class = "rdoEmailAddedYes" })&nbsp;
+                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        @Html.RadioButtonFor(model => model.EmailAdded, 0, new { @class = "rdoEmailAddedNo", @checked = "checked" })&nbsp;
+                        No
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.DisplayOrder, htmlAttributes: new { @class = "col-md-3 control-label" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.DisplayOrder, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.DisplayOrder, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.HiddenFor(model => model.EmailAdded, new { @id = "hdnEmailAdded" })
+                </div>
+                <div class="all-button-bg">
+                    @Html.ActionLink("Back", "ManageAntecedent", "Master", null, new { @class = "btn bun-bg btn-default" })
+                    <input class="btn bun-bg btn-default" type="submit" value="Submit" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {           
+            var BGVPublished = $('#hdnBGVPublished').val();
+            if (BGVPublished == 1) {
+                $('.rdoBGVPublishedYes').prop("checked", "checked");
+            }
+            var ReportPublished = $('#hdnReportPublished').val();
+            if (ReportPublished == 1) {
+                $('.rdoReportPublishedYes').prop("checked", "checked");
+            }
+            var EmailAdded = $('#hdnEmailAdded').val();
+            if (EmailAdded == 1) {
+                $('.rdoEmailAddedYes').prop("checked", "checked");
+            }
+        });
+    </script>
+}
+
+
+

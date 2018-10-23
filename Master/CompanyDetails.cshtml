@@ -1,0 +1,183 @@
+﻿@model ViewModels.CompanyViewModel
+@{
+    ViewBag.Title = "CompanyDetails";
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageCompany", "Master", null, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="mandatory">
+            <div class="col-md-10 header_child_name">Name</div>
+            <div class="col-md-2 mand">&nbsp;</div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.CompanyName)
+                    </div>
+                    @Html.LabelFor(model => model.CompanyAddress, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.CompanyAddress)
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CountryRowID, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.CountryName)
+                    </div>
+                    @Html.LabelFor(model => model.StateRowID, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.StateName)
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.DistrictRowID, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.DistrictName)
+                    </div>
+                    @Html.LabelFor(model => model.LocationRowID, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.LocationName)
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.PhoneNo, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.PhoneNo)
+                    </div>
+                    @Html.LabelFor(model => model.MobileNo, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.MobileNo)
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.FaxNo, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.FaxNo)
+                    </div>
+                    @Html.LabelFor(model => model.GeneralEmail, htmlAttributes: new { @class = "col-md-3" })
+                    <div class="col-md-3">
+                        @Html.DisplayFor(model => model.GeneralEmail)
+                    </div>
+                </div>
+                <div class="form-horizontal">
+                    <div class="form-group branch">
+                        @Html.LabelFor(model => model.CompanyLogo, htmlAttributes: new { @class = "col-md-3" })
+                        <div class="col-md-3">
+                            <img src='@Url.Content("~/Documents/MasterDocuments/Company/" + @Html.DisplayFor(model => model.CmpLogo))' alt="Company logo" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <fieldset class="scheduler-border">
+                            <legend class="scheduler-border">Email Authentication</legend>
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.InitiationDName, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.InitiationDName)
+                                </div>
+
+
+                                @Html.LabelFor(model => model.InitiationEmail, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.InitiationEmail)
+                                </div>
+                            </div>
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.InsuffDName, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.InsuffDName)
+                                </div>
+
+
+                                @Html.LabelFor(model => model.InsuffEmail, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.InsuffEmail)
+                                </div>
+                            </div>
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.MISDName, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.MISDName)
+                                </div>
+
+
+                                @Html.LabelFor(model => model.MISDName, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.MISDName)
+                                </div>
+                            </div>
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.BillingDName, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.BillingDName)
+                                </div>
+
+
+                                @Html.LabelFor(model => model.BillingEmail, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.BillingEmail)
+                                </div>
+                            </div>
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.OtherDName, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.OtherDName)
+                                </div>
+
+
+                                @Html.LabelFor(model => model.OtherEmail, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.OtherEmail)
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="row">
+                        <fieldset class="scheduler-border">
+                            <legend class="scheduler-border">SMTP Details</legend>
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.SMTPServer, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.SMTPServer)
+                                </div>
+
+                                @Html.LabelFor(model => model.SMTPPort, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.SMTPPort)
+                                </div>
+                            </div>
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.SMTPUserName, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.SMTPUserName)
+                                </div>
+                                @Html.LabelFor(model => model.EnableSsl, htmlAttributes: new { @class = "col-md-3" })
+                                <div class="col-md-3">
+                                    @Html.DisplayFor(model => model.EnableSslYN)
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

@@ -1,0 +1,314 @@
+﻿@model ViewModels.UpdateCompanyViewModel
+@{
+    ViewBag.Title = "Edit Company";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageCompany", "Master", null, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12">
+
+        @using (Html.BeginForm("EditCompany", "Master", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.CompanyRowID)
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CompanyName, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.CompanyName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.CompanyName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CompanyAddress, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.CompanyAddress, new { @class = "form-control", @rows = "2" })
+                        @Html.ValidationMessageFor(model => model.CompanyAddress, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CountryRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.CountryRowID,
+                            new SelectList(ViewBag.Countries, "CountryRowID", "CountryName"),
+                            "-- Select Country -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CountryRowID, "", new { @class = "text-danger" })
+                    </div>
+
+                    @Html.LabelFor(model => model.StateRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.StateRowID,
+                     new SelectList(string.Empty, "Value", "Text"),
+                     "-- Select State --", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.StateRowID, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.StateRowID, new { @id = "hdnStateRowID" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.DistrictRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.DistrictRowID,
+                       new SelectList(string.Empty, "Value", "Text"),
+                       "-- Select District --",
+                       new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DistrictRowID, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.DistrictRowID, new { @id = "hdnDistrictRowID" })
+                    </div>
+                    @Html.LabelFor(model => model.LocationRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.LocationRowID,
+                       new SelectList(string.Empty, "Value", "Text"),
+                       "-- Select City --",
+                       new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.LocationRowID, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.LocationRowID, new { @id = "hdnLocationRowID" })
+                    </div>
+                </div> 
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.PhoneNo, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.PhoneNo, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.PhoneNo, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.MobileNo, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.MobileNo, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.MobileNo, "", new { @class = "text-danger" })
+                    </div>
+                </div>              
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.FaxNo, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.FaxNo, new { htmlAttributes = new { @class = "form-control " } })
+                        @Html.ValidationMessageFor(model => model.FaxNo, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.GeneralEmail, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.GeneralEmail, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.GeneralEmail, "", new { @class = "text-danger" })
+                    </div>                   
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CompanyLogo, htmlAttributes: new { @class = "col-md-2 control-label verticalalign" })
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(model => model.CompanyLogo, new { @accept = "image/gif, image/jpeg, image/png , image/jpg", type = "file" })
+                        @Html.ValidationMessageFor(model => model.CompanyLogo, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.CandidateTermsFile, htmlAttributes: new { @class = "col-md-2 control-label verticalalign" })
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(model => model.CandidateTermsFile, new { type = "file" })
+                        @Html.ValidationMessageFor(model => model.CandidateTermsFile, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">SMTP Details</legend>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.SMTPServer, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.SMTPServer, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.SMTPServer, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.SMTPPort, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.SMTPPort, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.SMTPPort, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    <div class="form-group branch">
+                        @Html.LabelFor(model => model.SMTPUserName, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.SMTPUserName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.SMTPUserName, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.LabelFor(model => model.SMTPPassword, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.SMTPPassword, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
+                            @Html.ValidationMessageFor(model => model.SMTPPassword, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group branch">
+                        @Html.LabelFor(model => model.EnableSsl, htmlAttributes: new { @class = "col-md-2 control-label verticalalign" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.EnableSsl, new { htmlAttributes = new { @class = "" } })
+                            @Html.ValidationMessageFor(model => model.EnableSsl, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">Email Authentication</legend>
+                    <div class="form-group branch">
+                        @Html.LabelFor(model => model.InitiationDisplay, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.InitiationDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.InitiationDisplay, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.LabelFor(model => model.InitiationEmail, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.InitiationEmail, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.InitiationEmail, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group branch">
+                        @Html.LabelFor(model => model.InsuffDName, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.InsuffDName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.InsuffDName, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.LabelFor(model => model.InsuffEmail, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.InsuffEmail, new { htmlAttributes = new { @class = "form-control"} })
+                            @Html.ValidationMessageFor(model => model.InsuffEmail, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group branch">
+                        @Html.LabelFor(model => model.ReportDName, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.ReportDName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ReportDName, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.LabelFor(model => model.ReportEmail, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.ReportEmail, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ReportEmail, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group branch">
+                        @Html.LabelFor(model => model.MISDName, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.MISDName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.MISDName, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.LabelFor(model => model.MISEmail, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.MISEmail, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.MISEmail, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group branch">
+                        @Html.LabelFor(model => model.BillingDName, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.BillingDName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.BillingDName, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.LabelFor(model => model.BillingEmail, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.BillingEmail, new { htmlAttributes = new { @class = "form-control"} })
+                            @Html.ValidationMessageFor(model => model.BillingEmail, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group branch">
+                        @Html.LabelFor(model => model.OtherDName, htmlAttributes: new { @class = "col-md-2 control-label " })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.OtherDName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.OtherDName, "", new { @class = "text-danger" })
+                        </div>
+                        @Html.LabelFor(model => model.OtherEmail, htmlAttributes: new { @class = "col-md-2 control-label" })
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.OtherEmail, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.OtherEmail, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="all-button-bg">
+                @Html.ActionLink("Back", "ManageCompany", "Master", null, new { @class = "btn bun-bg btn-default" })
+                <input class="btn bun-bg btn-default" type="submit" value="Submit" />
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div id="ManageSction" class="product-frame1"></div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $(document).ready(function () {
+                $.getJSON('/Master/BindState/' + $('#CountryRowID').val(), function (data) {
+                    var items = '<option>-- Select State --</option>';
+                    $.each(data, function (i, States) {
+                        items += "<option value='" + States.Value + "'>" + States.Text + "</option>";
+                    });
+                    $('#StateRowID').html(items);
+                    $('#StateRowID').val($('#hdnStateRowID').val());
+                });
+                $.getJSON('/Master/BindDistrict/' + $('#hdnStateRowID').val(), function (data) {
+                    var items = '<option>-- Select District --</option>';
+                    $.each(data, function (i, Districts) {
+                        items += "<option value='" + Districts.Value + "'>" + Districts.Text + "</option>";
+                    });
+                    $('#DistrictRowID').html(items);
+                    $('#DistrictRowID').val($('#hdnDistrictRowID').val());
+                });
+                $.getJSON('/Master/BindLocation/' + $('#hdnDistrictRowID').val(), function (data) {
+                    var items = '<option>-- Select Location --</option>';
+                    $.each(data, function (i, Locations) {
+                        items += "<option value='" + Locations.Value + "'>" + Locations.Text + "</option>";
+                    });
+                    $('#LocationRowID').html(items);
+                    $('#LocationRowID').val($('#hdnLocationRowID').val());
+                });
+            });
+            //Bind State base on CountryRowID
+            $('#CountryRowID').change(function () {
+                $.getJSON('/Master/BindState/' + $('#CountryRowID').val(), function (data) {
+                    var items = '<option value="">-- Select State --</option>';
+                    $.each(data, function (i, States) {
+                        items += "<option value='" + States.Value + "'>" + States.Text + "</option>";
+                    });
+                    $('#StateRowID').html(items);
+                    $('#DistrictRowID').val('');
+                    $('#StateRowID').val('');
+                });
+            });
+            //Bind District base on StateRowID
+            $('#StateRowID').change(function () {
+                $.getJSON('/Master/BindDistrict/' + $('#StateRowID').val(), function (data) {
+                    var items = '<option value="">-- Select District --</option>';
+                    $.each(data, function (i, Districts) {
+                        items += "<option value='" + Districts.Value + "'>" + Districts.Text + "</option>";
+                    });
+                    $('#DistrictRowID').html(items);
+                   
+                });
+            });
+            //Bind City base on DistrictRowID
+            $('#DistrictRowID').change(function () {
+                $.getJSON('/Master/BindLocation/' + $('#DistrictRowID').val(), function (data) {
+                    var items = '<option value="">-- Select Location --</option>';
+                    $.each(data, function (i, Locations) {
+                        items += "<option value='" + Locations.Value + "'>" + Locations.Text + "</option>";
+                    });
+                    $('#LocationRowID').html(items);
+                });
+            });
+
+        });
+    </script>
+}
+
+
+
+
