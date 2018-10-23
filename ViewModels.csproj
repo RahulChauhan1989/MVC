@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{642C2C78-AC09-4BAE-9890-8192E1BBE47F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ViewModels</RootNamespace>
+    <AssemblyName>ViewModels</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AntecedentViewModel.cs" />
+    <Compile Include="BranchOfficeViewModel.cs" />
+    <Compile Include="CandidateViewModel\CandidateLoginViewModel.cs" />
+    <Compile Include="CandidateViewModel\PQCandidateLoginViewModel.cs" />
+    <Compile Include="CategoryViewModel.cs" />
+    <Compile Include="CheckFamilyViewModel.cs" />
+    <Compile Include="CheckStatusViewModel.cs" />
+    <Compile Include="ClientViewModel\AbbreviationViewModel.cs" />
+    <Compile Include="ClientViewModel\CContractAgreementViewModel.cs" />
+    <Compile Include="ClientViewModel\ClientCheckViewModel.cs" />
+    <Compile Include="ClientViewModel\ClientCompletedContractViewModel.cs" />
+    <Compile Include="ClientViewModel\ClientDashboardViewModel.cs" />
+    <Compile Include="ClientViewModel\ClientDispositionViewModel.cs" />
+    <Compile Include="ClientViewModel\ClientLoginViewModel.cs" />
+    <Compile Include="ClientViewModel\ClientPackageViewModel.cs" />
+    <Compile Include="ClientViewModel\ClientSeverityViewModel.cs" />
+    <Compile Include="ClientViewModel\ClientSubGroupViewModel.cs" />
+    <Compile Include="ClientViewModel\PQClientHolidayViewModel.cs" />
+    <Compile Include="ClientViewModel\PQClientLoginViewModel.cs" />
+    <Compile Include="ClientViewModel\PQClientViewModel.cs" />
+    <Compile Include="ClientViewModel\PQClientTMemberViewModel.cs" />
+    <Compile Include="clsValidateImage.cs" />
+    <Compile Include="CollegeViewModel.cs" />
+    <Compile Include="CompanyViewModel.cs" />
+    <Compile Include="CountryViewModel.cs" />
+    <Compile Include="DegreeTypeViewModel.cs" />
+    <Compile Include="DepartmentViewModel.cs" />
+    <Compile Include="DesignationViewModel.cs" />
+    <Compile Include="DispositionViewModel.cs" />
+    <Compile Include="DistrictViewModel.cs" />
+    <Compile Include="BillingCycleViewModel.cs" />
+    <Compile Include="EmployerViewModel.cs" />
+    <Compile Include="HolidayViewModel.cs" />
+    <Compile Include="HRViewModels\TeamDepartmentViewModel.cs" />
+    <Compile Include="HRViewModels\UserLoginLogOutDetailViewModel.cs" />
+    <Compile Include="HRViewModels\LoginViewModel.cs" />
+    <Compile Include="HRViewModels\TeamMemberViewModel.cs" />
+    <Compile Include="HRViewModels\WebUserViewModel.cs" />
+    <Compile Include="LocationViewModel.cs" />
+    <Compile Include="PartnerViewModels\MasterVendorLoginViewModel.cs" />
+    <Compile Include="PartnerViewModels\PQAddressVarPartenerViewModel.cs" />
+    <Compile Include="PartnerViewModels\PQVerifiedUploadDocsViewModel.cs" />
+    <Compile Include="PartnerViewModels\PtrDashboardViewModel.cs" />
+    <Compile Include="PoliceStationViewModel.cs" />
+    <Compile Include="ClientViewModel\PQClientFieldViewModel.cs" />
+    <Compile Include="PQLogTrasactionViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\DashboardDataEntryViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQSpecialCheckViewModel.cs" />
+    <Compile Include="PVViewModels\PVEmploymentViewModel.cs" />
+    <Compile Include="ReportQCViewModel\DashboardRWQCViewModel.cs" />
+    <Compile Include="ReportQCViewModel\ReportGenerateViewModel.cs" />
+    <Compile Include="ReportQCViewModel\PQPersonalReportQCViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProvidedInfoViewModel\CaseActionHistoryViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\CheckActionHistoryViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\EmailVerificationViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQAddressViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQCandidateCheckViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQCriminalViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQEducationResearchViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQEducationViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQEmploymentResearchViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQEmploymentViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQInsuranceViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQNationalIdentityViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQPersonalViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQReferenceViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQVerifiedUploadCaseDocViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\PQVerifiedUploadDocViewModel.cs" />
+    <Compile Include="ProvidedInfoViewModel\UplodDocsForDEScanViewModel.cs" />
+    <Compile Include="SeverityGridViewModel.cs" />
+    <Compile Include="StateViewModel.cs" />
+    <Compile Include="SubCheckFamilyViewModel.cs" />
+    <Compile Include="TempViewModel\ClientUploadDocViewModel.cs" />
+    <Compile Include="TempViewModel\PQClientCandiBulkUploadViewModel.cs" />
+    <Compile Include="TempViewModel\TempPQCriminalViewModel.cs" />
+    <Compile Include="TempViewModel\TempPQEducationViewModel.cs" />
+    <Compile Include="TempViewModel\TempPQEmploymentViewModel.cs" />
+    <Compile Include="TempViewModel\TempPQInsuranceViewModel.cs" />
+    <Compile Include="TempViewModel\TempPQNationalIdentityViewModel.cs" />
+    <Compile Include="TempViewModel\TempPQReferenceViewModel.cs" />
+    <Compile Include="TempViewModel\ClientByBulkUploadViewModel.cs" />
+    <Compile Include="TempViewModel\TempPQAddressViewModel.cs" />
+    <Compile Include="TempViewModel\TempPQCandidateCheckViewModel.cs" />
+    <Compile Include="TempViewModel\TempPQPersonalViewModel.cs" />
+    <Compile Include="TempViewModel\TempSpecialCheckViewModel.cs" />
+    <Compile Include="UniversityViewModel.cs" />
+    <Compile Include="VCDistrictViewModel.cs" />
+    <Compile Include="VendorCoverageViewModel.cs" />
+    <Compile Include="VendorViewModel.cs" />
+    <Compile Include="PartnerViewModels\VendorLoginViewModel.cs" />
+    <Compile Include="VerificationViewModel\ClientVerifyFundPendingViewModel.cs" />
+    <Compile Include="VerificationViewModel\DashboardVerifierViewModel.cs" />
+    <Compile Include="VerificationViewModel\FundPendingApprovalViewModel.cs" />
+    <Compile Include="VerificationViewModel\PQAddressVerViewModel.cs" />
+    <Compile Include="VerificationViewModel\PQCriminalVerViewModel.cs" />
+    <Compile Include="VerificationViewModel\PQEducationVerViewModel.cs" />
+    <Compile Include="VerificationViewModel\PQEmploymentVerViewModel.cs" />
+    <Compile Include="VerificationViewModel\PQNationalIdentityVerViewModel.cs" />
+    <Compile Include="VerificationViewModel\PQReferenceVerViewModel.cs" />
+    <Compile Include="VerificationViewModel\PQSpecialCheckVerViewModel.cs" />
+    <Compile Include="VerificationViewModel\SpecialCheckVerViewModel.cs" />
+    <Compile Include="VerificationViewModel\VerificationViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{48666944-4098-4E4A-8E38-53519C7E7F57}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
