@@ -1,0 +1,34 @@
+﻿
+@{int count = 0; }
+@foreach (var item in ViewBag.Departments)
+{
+    count++;
+    <div class="panel panel-default">
+        <div class="panel-heading dvPnlHeading" role="tab" id="headingOne">
+            <div class="dvChkFmlySrNo">@count.</div>
+            <div class="panel-title dvpnlTitle" style="">
+                <input type="checkbox" name="department" class="@item.DepartmentRowID" value="@item.DepartmentRowID" />
+                <a data-toggle="collapse" class="" data-parent="#accordion" href="#@(item.DepartmentRowID)" aria-expanded="false" aria-controls="@item.DepartmentRowID">                   
+                    @item.DepartmentName
+                </a>
+            </div>
+        </div>
+        <div id="@item.DepartmentRowID" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <div class="col-md-11 col-md-offset-1 dvpnlChild">
+                    @foreach (var teamlist in ViewBag.TeamMemberList)
+                    {
+                        if (item.DepartmentRowID == teamlist.DepartmentRowID)
+                        {
+                            <div class="col-md-4">
+                                <input type="checkbox" class="designation @(item.DepartmentRowID)_@(teamlist.TeamDepartmentRowID)" name="@item.DepartmentRowID" value="@(item.DepartmentRowID)_@(teamlist.TeamDepartmentRowID)" />
+                                @teamlist.TeamMemeberName
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

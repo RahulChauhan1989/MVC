@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "Manage Client Team Members (" + Convert.ToString(Session["ClientNameForContract"]) + ")";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManagePQClient", "Client", null, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+@{
+    //@ViewBag.NavigationBtnBack
+    //string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    //string hyperLink = Html.ActionLink("linkTitle", "ManagePQClient", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnBack = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+
+    //@ViewBag.NavigationBtnAddNew
+    string faIconAddNew = string.Format("<i class='fa fa-plus-circle' aria-hidden='true'></i> Add Team Member");
+    string hyperLinkAddNew = Html.ActionLink("linkTitle", "AddClientTeamMember", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnAddNew = new HtmlString(hyperLinkAddNew.ToString().Replace("linkTitle", faIconAddNew));
+
+    //@ViewBag.NavigationBtnExportExcel
+    string faIconExportExcel = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Excel");
+    string hyperLinkExportExcel = Html.ActionLink("linkTitle", "ExportClientTeamMember", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnExportExcel = new HtmlString(hyperLinkExportExcel.ToString().Replace("linkTitle", faIconExportExcel));
+
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@{
+    //For ClientTabs Section
+    ViewBag.ClientID = Request.QueryString["CId"];
+    ViewBag.TeamCssClass = "current";
+}
+@section ClientTabs{ @Html.Partial("_ClientTabs") }
+@section NavigationButton{ @Html.Partial("_NavigationButton") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+                    <div class="col-md-10">
+                        @using (Html.BeginForm("ManageClientTeamMembers", "Client", FormMethod.Get))
+                        {
+                            <div class="form-horizontal">
+                                <div class="form-group branch search-frame">
+                                    <label class="col-md-3 control-label">Name And Designation :</label>
+                                    <div class="col-md-7">
+                                        @Html.TextBox("Search", null, new { @class = "form-control", placeholder = "Ex. Team Member name and Designation..." })
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.Hidden("CId", Request.QueryString["CId"], new { @id = "hdnCId" })
+                                        <input class="btn bun-bg btn-default" type="submit" value="Search" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @if (Model != null && Model.ClientTMembers != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            @{
+                                WebGrid grid = new WebGrid(rowsPerPage: Model.PageSize, ajaxUpdateContainerId: "grid");
+                                grid.Bind(Model.ClientTMembers, autoSortAndPage: false, rowCount: Model.TotalRecords);
+                            }
+                            @grid.GetHtml(
+                                    htmlAttributes: new { id = "grid", @class = "table" },
+                                    headerStyle: "thead-inverse",
+                                    rowStyle: "ordertxt",
+                                    footerStyle: "custpaging",
+                                    mode: WebGridPagerModes.All,
+                                    columns: new[]
+                                    {
+                                    grid.Column(header: "No.", style:"col-md-1", format: item => item.WebGrid.Rows.IndexOf(item) + 1 + Math.Round(Convert.ToDouble(grid.TotalRowCount / grid.PageCount) / grid.RowsPerPage) * grid.RowsPerPage * grid.PageIndex),
+                                    grid.Column(columnName: "TeamMemberName", header: "Name", canSort: false, style:"col-md-3"),
+                                    grid.Column(columnName: "Department", header: "Department", canSort: false, style:"col-md-2"),
+                                    grid.Column(columnName: "Designation", header: "Designation", canSort: false, style:"col-md-2"),
+
+                                    grid.Column("Delete", canSort: false, format: (item)=> {
+                                        string DeleteLink = string.Format("<a href=\"#\" id=\"Delete_{0}\" class=\"delete\" >{1}</a>", item.ClientTMemberRowID, "Delete");
+                                        return new HtmlString(DeleteLink);
+                                    }, style:"delete col-md-1")
+                                }
+                            )
+                            <div class="total-record">Total Records: @Model.TotalRecords</div>
+                        </div>
+                    </div>
+                                }
+            </div>
+        </div>
+        @*<input type="hidden" id="hdnCId" value="@Request.QueryString["CId"]" />*@
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        $(".delete").on("click", function () {
+            // alert($('#hdnTeamMemberRowID').val());
+            var str = $(this).attr("id").split("_");
+            id = str[1];
+
+            var flag = confirm('Do you want to Delete the Record ?');
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("DeleteClientTeamMember", "Client")',
+                    data: { "id": id },
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (result) {
+                        if (result == true) {
+                            alert("Record Deleted Successfully!!");
+                            setTimeout(function () { window.location.replace("ManageClientTeamMembers?CId=" + @Request.QueryString["CId"].ToString()); }, 500);
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}
+

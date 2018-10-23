@@ -1,0 +1,118 @@
+﻿
+@{   
+    ViewBag.Title = "Manage Client HoliDay (" + Convert.ToString(Session["ClientNameForContract"]) + ")";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManagePQClient", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+@{
+    if (Session["MapHoliDays"] != null && (Convert.ToByte(Session["MapHoliDays"]) == 1))
+    {
+        //@ViewBag.NavigationBtnAddNew
+        string faIconAddNew = string.Format("<i class='fa fa-plus-circle' aria-hidden='true'></i> Add Client HoliDay");
+        string hyperLinkAddNew = Html.ActionLink("linkTitle", "AddClientHoliDay", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "btn bun-bg btn-default" }).ToString();
+        ViewBag.NavigationBtnAddNew = new HtmlString(hyperLinkAddNew.ToString().Replace("linkTitle", faIconAddNew));
+    }
+}
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@{
+    //For ClientTabs Section
+    ViewBag.ClientID = Request.QueryString["CId"];
+    ViewBag.HolyCssClass = "current";
+}
+@section ClientTabs{ @Html.Partial("_ClientTabs") }
+@section NavigationButton{ @Html.Partial("_NavigationButton") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+                    <div class="col-md-9">
+                        @using (Html.BeginForm("ManageClientHoliDay", "Client", FormMethod.Get))
+                        {
+                            <div class="form-horizontal">
+                                <div class="form-group branch search-frame">
+                                    <label class="col-md-3 control-label">Holiday :</label>
+                                    <div class="col-md-7">
+                                        @Html.TextBox("Search", null, new { @class = "form-control", placeholder = "Ex. Holiday Name..." })
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.Hidden("CId", Request.QueryString["CId"], new { @id = "hdnCId" })
+                                        <input class="btn bun-bg btn-default" type="submit" value="Search" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                @Html.Hidden("CId", Request.QueryString["CId"], new { @id = "hdnCId" })
+                @if (Model != null && Model.PQClientHolidays != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            @{
+                                WebGrid grid = new WebGrid(rowsPerPage: Model.PageSize, ajaxUpdateContainerId: "grid");
+                                grid.Bind(Model.PQClientHolidays, autoSortAndPage: false, rowCount: Model.TotalRecords);
+                            }
+                            @grid.GetHtml(
+                                    htmlAttributes: new { id = "grid", @class = "table" },
+                                    headerStyle: "thead-inverse",
+                                    rowStyle: "ordertxt",
+                                    footerStyle: "custpaging",
+                                    mode: WebGridPagerModes.All,
+                                    columns: new[]
+                                    {
+                                    grid.Column(header: "No.", style:"col-md-1", format: item => item.WebGrid.Rows.IndexOf(item) + 1 + Math.Round(Convert.ToDouble(grid.TotalRowCount / grid.PageCount) / grid.RowsPerPage) * grid.RowsPerPage * grid.PageIndex),
+                                    grid.Column(columnName: "HoliName", header: "Holiday Name", canSort: false, style:"col-md-6"),
+
+                                    grid.Column(columnName: "HolidayDate", header: "Holiday Date", format: (item) => item.HolidayDate != null ? item.HolidayDate.ToString("dd-MMM-yyyy") : "", canSort: false,style:"col-md-4"),
+
+                                   grid.Column("Delete", canSort: false, format: (item)=> {
+                                        string DeleteLink = string.Format("<a href=\"#\" id=\"Delete_{0}\" class=\"delete\" >{1}</a>", item.ClientHoliRowID, "Delete");
+                                        return new HtmlString(DeleteLink);
+                                    }, style:"delete col-md-1")
+                                }
+                            )
+                            <div class="total-record">Total Records: @Model.TotalRecords</div>
+                        </div>
+                    </div>
+                                }
+                <input type="hidden" id="hdnCId" name="name" value="Request.QueryString["CId"]" />                
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        $(".delete").on("click", function () {
+            var str = $(this).attr("id").split("_");
+            id = str[1];
+
+            var flag = confirm('Do you want to Delete the Record ?');
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("DeleteHoliday", "Client")',
+                    data: { "id": id },
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data.result == true) {
+                            alert("Record Deleted Successfully!!");
+                            setTimeout(function () { window.location.replace("ManageClientHoliDay?CId=" + $('#hdnCId').val()); }, 500);
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

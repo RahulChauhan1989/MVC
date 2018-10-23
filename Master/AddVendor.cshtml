@@ -1,0 +1,531 @@
+﻿@model ViewModels.AddVendorViewModel
+
+@{
+    ViewBag.Title = "Add New Partner";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageVendors", "Master", null, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("AddVendor", "Master", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.VendorName, htmlAttributes: new { @class = "col-md-2 control-label colonsymbl required" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.VendorName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.VendorName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.Address, new { @class = "form-control", @rows = "2" })
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CountryRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.CountryRowID,
+                            new SelectList(ViewBag.Countries, "CountryRowID", "CountryName"),
+                            "-- Select Country -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CountryRowID, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.StateRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.StateRowID,
+                       new SelectList(string.Empty, "Value", "Text"),
+                       "-- Select State --",
+                       new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.StateRowID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.DistrictRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.DistrictRowID,
+                       new SelectList(string.Empty, "Value", "Text"),
+                       "-- Select District --",
+                       new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.DistrictRowID, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.LocationRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.LocationRowID,
+                       new SelectList(string.Empty, "Value", "Text"),
+                       "-- Select Location --",
+                       new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.LocationRowID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.PinCode, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.PinCode, new { htmlAttributes = new { @class = "form-control", @onkeypress = "return isNumberKey(event,false)", @disabled = "disabled" } })
+                        @Html.ValidationMessageFor(model => model.PinCode, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.PinCode, new { @id = "hdnPinCode" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.EmpanelmentDate, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.EmpanelmentDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "yyyy-mm-dd" } })
+                        @Html.ValidationMessageFor(model => model.EmpanelmentDate, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.RenewalDate, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.RenewalDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "yyyy-mm-dd" } })
+                        @Html.ValidationMessageFor(model => model.RenewalDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.AuditStatus, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.AuditStatus,
+                            new SelectList(ViewBag.AuditStatusList, "Value", "Text"),
+                            "-- Select -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AuditStatus, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.AuditStatusDate, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.AuditStatusDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "yyyy-mm-dd" } })
+                        @Html.ValidationMessageFor(model => model.AuditStatusDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.ModeOfInitiation, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.ModeOfInitiation,
+                            new SelectList(ViewBag.InitiationList, "Value", "Text"),
+                            "-- Select -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ModeOfInitiation, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.OtherInitiation, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-3">
+                        @Html.TextAreaFor(model => model.OtherInitiation, new { @class = "form-control", @rows = "2", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.OtherInitiation, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.SpecialInstruction, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.SpecialInstruction, new { @class = "form-control", @rows = "2" })
+                        @Html.ValidationMessageFor(model => model.SpecialInstruction, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.ModeOfPayment, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.ModeOfPayment,
+                            new SelectList(ViewBag.ModeOfPaymentList, "Value", "Text"),
+                            "-- Select -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ModeOfPayment, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.PayableAT, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.PayableAT, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                        @Html.ValidationMessageFor(model => model.PayableAT, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div id="dvFavourOf" class="form-group branch">
+                    @Html.LabelFor(model => model.FavourOf, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.FavourOf, new { @class = "form-control", @rows = "2" })
+                        @Html.ValidationMessageFor(model => model.FavourOf, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div id="dvAcIfceCode" class="form-group branch">
+                    @Html.LabelFor(model => model.AccountNumber, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.AccountNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.AccountNumber, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.IFSCCode, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.IFSCCode, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.IFSCCode, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">&nbsp;</div>
+                <div class="col-md-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Vendor Contact Details</legend>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.VendorContactPerson, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.VendorContactPerson, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.VendorContactPerson, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.VendorMobileNo, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.VendorMobileNo, new { htmlAttributes = new { @class = "form-control"} })
+
+                                @Html.ValidationMessageFor(model => model.VendorMobileNo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.VendorContactNo, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.VendorContactNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.VendorContactNo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.VendorEmaiID, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-8">
+                                    @Html.EditorFor(model => model.VendorEmaiID, new { htmlAttributes = new { @class = "form-control" } })
+                                    <span class="short text-info">(Enter Multiple Email Separated By Comma)</span>
+                                    @Html.ValidationMessageFor(model => model.VendorEmaiID, "", new { @class = "text-danger" })
+                                </div>
+                                </div>
+                           
+                    </fieldset>
+                </div>
+                <div class="form-group branch">&nbsp;</div>
+                <div class="col-md-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">SPOC Contact Details</legend>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.SPOCToName, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.SPOCToName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.SPOCToName, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.SPOCToEmailId, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.SPOCToEmailId, new { htmlAttributes = new { @class = "form-control" } })
+                               
+                                @Html.ValidationMessageFor(model => model.SPOCToEmailId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.SPOCToContactNo, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.SPOCToContactNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.SPOCToContactNo, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.SPOCToMobileNo, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.SPOCToMobileNo, new { htmlAttributes = new { @class = "form-control", @onkeypress = "return isNumberKey(event,false)" } })
+                                @Html.ValidationMessageFor(model => model.SPOCToMobileNo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="form-group branch">&nbsp;</div>
+                <div class="col-md-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Mandatory Document</legend>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PanNo, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.PanNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.PanNo, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.TextBoxFor(model => model.PanDocImage, new { @accept = "image/gif, image/jpeg, image/png , image/jpg", type = "file" })
+                                @Html.ValidationMessageFor(model => model.PanDocImage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.IDProofNo, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.IDProofNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.IDProofNo, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.TextBoxFor(model => model.IDProofDocImage, new { @accept = "image/gif, image/jpeg, image/png , image/jpg", type = "file" })
+                                @Html.ValidationMessageFor(model => model.IDProofDocImage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.RegistrationCertificateNo, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.RegistrationCertificateNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.RegistrationCertificateNo, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.TextBoxFor(model => model.RegistrationCertificateDocImage, new { @accept = "image/gif, image/jpeg, image/png , image/jpg", type = "file" })
+                                @Html.ValidationMessageFor(model => model.RegistrationCertificateDocImage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ServiceTaxCertificateNo, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.ServiceTaxCertificateNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ServiceTaxCertificateNo, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.TextBoxFor(model => model.ServiceTaxCertificateDocImage, new { @accept = "image/gif, image/jpeg, image/png , image/jpg", type = "file" })
+                                @Html.ValidationMessageFor(model => model.ServiceTaxCertificateDocImage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.AgreementDocImage, htmlAttributes: new { @class = "col-md-2 control-label verticalalign required" })
+                            <div class="col-md-2">
+                                @Html.TextBoxFor(model => model.AgreementDocImage, new { @accept = "image/gif, image/jpeg, image/png , image/jpg", type = "file" })
+                                @Html.ValidationMessageFor(model => model.AgreementDocImage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.OtherDocImage, htmlAttributes: new { @class = "col-md-2 control-label verticalalign" })
+                            <div class="col-md-4">
+                                @Html.TextBoxFor(model => model.OtherDocImage, new { @accept = "image/gif, image/jpeg, image/png , image/jpg", type = "file" })
+                                @Html.ValidationMessageFor(model => model.OtherDocImage, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="form-group branch">&nbsp;</div>
+                <div class="all-button-bg">
+                    @Html.ActionLink("Back", "ManageVendors", "Master", null, new { @class = "btn bun-bg btn-default" })
+                    <input class="btn bun-bg btn-default" type="submit" onclick="return validateForm()" value="Submit" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/EventValidations.js")'></script>
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+
+    <script type="text/jscript">
+        $(function () {
+            //Bind State base on CountryRowID
+            $('#CountryRowID').change(function () {
+                $.getJSON('/Master/BindState/' + $('#CountryRowID').val(), function (data) {
+                    var items = '<option value="">-- Select State --</option>';
+                    $.each(data, function (i, States) {
+                        items += "<option value='" + States.Value + "'>" + States.Text + "</option>";
+                    });
+                    $('#StateRowID').html(items);
+                    $('#DistrictRowID').val('');
+                    $('#LocationRowID').val('');
+                    $('#PinCode').val('');
+                });
+            });
+            //Bind District base on StateRowID
+            $('#StateRowID').change(function () {
+                $.getJSON('/Master/BindDistrict/' + $('#StateRowID').val(), function (data) {
+                    var items = '<option value="">-- Select District --</option>';
+                    $.each(data, function (i, Districts) {
+                        items += "<option value='" + Districts.Value + "'>" + Districts.Text + "</option>";
+                    });
+                    $('#DistrictRowID').html(items);
+                    $('#LocationRowID').val('');
+                    $('#PinCode').val('');
+                });
+            });
+            //Bind Location base on DistrictRowID
+            $('#DistrictRowID').change(function () {
+                $.getJSON('/Master/BindLocation/' + $('#DistrictRowID').val(), function (data) {
+                    var items = '<option value="">-- Select Location --</option>';
+                    $.each(data, function (i, Locations) {
+                        items += "<option value='" + Locations.Value + "'>" + Locations.Text + "</option>";
+                    });
+                    $('#LocationRowID').html(items);
+                    $('#PinCode').val('');
+                });
+            });
+            //PinCode Bind
+            $('#LocationRowID').change(function () {
+                var url = "/Master/GetPinCodeByLocationId/" + $("#LocationRowID").val();
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    async: false,
+                    dataType: 'json',
+                    success: function (pinCode) {
+                        $('#PinCode').val(pinCode);
+                        $('#hdnPinCode').val(pinCode);
+                    }
+                });
+            });
+
+            //FavourOf enable disable
+            $('#ModeOfPayment').change(function () {
+                var PaymentMode = $('#ModeOfPayment').val();
+                if (PaymentMode == 'DD' || PaymentMode == 'Cheque') {
+                    $('#dvFavourOf').show();
+                    $('#PayableAT').prop("disabled", false);
+                    $('#PayableAT').focus();
+                    $('#dvAcIfceCode').hide();
+                }
+                if (PaymentMode == 'Online') {
+                    $('#dvAcIfceCode').show();
+                    $('#PayableAT').prop("disabled", false);
+                    $('#PayableAT').focus();
+                    $('#dvFavourOf').hide();
+                }
+                if (PaymentMode == 'Others' || PaymentMode == 'Prepaid') {
+                    $('#dvFavourOf').show();
+                    $('#PayableAT').prop("disabled", true);
+                    $('#FavourOf').focus();
+                }
+            });
+           
+            // ModeOfInitiation
+            $('#ModeOfInitiation').change(function () {
+                var ModeOfInitiation = $('#ModeOfInitiation').val();
+                if (ModeOfInitiation == 'Others') {
+                    $('#OtherInitiation').prop("disabled", false);
+                    $('#OtherInitiation').focus();
+                }
+                else { $('#OtherInitiation').prop("disabled", true); }
+            });
+
+
+
+            $('#select_all').change(function () {
+                $("#dvPartialview input:checkbox").prop('checked', $(this).prop('checked'));
+                var DistrictId = '';
+                $('input[class="checkbox_class"]').each(function (index, value) {
+                    if (this.checked) { DistrictId += this.value + ','; }
+                });
+                if (DistrictId.length > 0) {
+                    DistrictId = DistrictId.substring(0, DistrictId.length - 1);
+                } else { DistrictId = ''; }
+                $('#CoverageDistrictIds').val(DistrictId.trim());
+            });
+
+
+        });
+        function validateForm() {
+            var PaymentMode = $('#ModeOfPayment').val();
+            var DDFavourOf = $('#DDFavourOf').val();
+             if (PaymentMode == 'DD' || PaymentMode == 'Cheque') {
+                if (DDFavourOf == '' || $('#PayableAT').val() == '') {
+                    alert("Please enter " + PaymentMode + " Payment Details.");
+                    return false;
+                }
+            }
+            if (PaymentMode == 'Others' || PaymentMode == 'Prepaid') {
+                if (DDFavourOf == '') {
+                    alert("Please enter " + PaymentMode + " Payment Details.");
+                    return false;
+                }
+            }
+            if (PaymentMode == 'Online') {
+                if ($('#PayableAT').val() == '' || $('#IFSCCode').val() == '' || $('#AccountNumber').val() == '') {
+                    alert("Please enter '" + PaymentMode + "' Payment.");
+                    $('#PayableAT').focus();
+                    return false;
+                }
+            }
+            var ModeOfInitiation = $('#ModeOfInitiation').val();
+            if (ModeOfInitiation == 'Others') {
+                if ($('#OtherInitiation').val() == '') {
+                    alert("Please enter Other Initiation");
+                    $('#OtherInitiation').focus();
+                    return false;
+                }
+            }
+            var EmpanelmentDate = $('#EmpanelmentDate').val();
+            var RenewalDate = $('#RenewalDate').val();
+            if (EmpanelmentDate != '') {
+                var str = EmpanelmentDate.split('-');
+                var firstdate = new Date(str[0], str[1], str[2]);
+                var dojday1 = str[2];
+                var dojmonth1 = str[1];
+                var dojyear1 = str[0];
+                var EmpanelmentDate = new Date(dojyear1, dojmonth1 - 1, dojday1);
+                var str1 = RenewalDate.split('-');
+                var firstdate1 = new Date(str1[0], str1[1], str1[2]);
+                var day = str1[2];
+                var month = str1[1];
+                var year = str1[0];
+                var RenewalDate = new Date(year, month - 1, day)
+                if (EmpanelmentDate > RenewalDate) {
+                    alert("Empanelment Date should be less than Renewal Date.");
+                }
+            }
+            return true;
+        }
+        $(document).ready(function () {
+            if ($('#CoverageStateIds').val() != "") {
+                //alert($('#CoverageStateIds').val());
+                var CoverageStateIds = $("#CoverageStateIds").val();
+                var url = "/Master/GetDistrictForCheckbox?" + $.param({ CoverageStateIds: $("#CoverageStateIds").val() });
+                var notifications = $("#dvPartialview"); // cache it to avoid repeatedly searching the DOM
+                notifications.load(url);
+            }
+
+            $('#dvAcIfceCode').hide();
+            $('#dvFavourOf').hide();
+        });
+        $(document).on('change', 'input[class="statechk"]', function (e) {
+            var StateId = '';
+            $('input[class="statechk"]').each(function (index, value) {
+                if (this.checked) { StateId += this.value + ','; }
+            });
+            if (StateId.length > 0) {
+                StateId = StateId.substring(0, StateId.length - 1);
+            } else { StateId = ''; }
+            $("#select_all").prop('checked', false);
+            $('#CoverageStateIds').val(StateId.trim());
+            var CoverageStateIds = $("#CoverageStateIds").val();
+            var url = "/Master/GetDistrictForCheckbox?" + $.param({ CoverageStateIds: $("#CoverageStateIds").val(), CoverageDistrictIds: $('#CoverageDistrictIds').val() });
+            var notifications = $("#dvPartialview"); // cache it to avoid repeatedly searching the DOM
+            notifications.load(url);
+        });
+        $(document).on('change', 'input[class="checkbox_class"]', function (e) {// on change of state
+            var DistrictId = '';
+            $('input[class="checkbox_class"]').each(function (index, value) {
+                if (this.checked) { DistrictId += this.value + ','; }
+            });
+
+            if (false == $(this).prop("checked")) { //if this item is unchecked
+                $("#select_all").prop('checked', false); //change "select all" checked status to false
+            }
+            //check "select all" if all checkbox items are checked
+            if ($('.checkbox_class:checked').length == $('.checkbox_class').length) {
+                $("#select_all").prop('checked', true);
+            }
+
+            if (DistrictId.length > 0) {
+                DistrictId = DistrictId.substring(0, DistrictId.length - 1);
+            } else { DistrictId = ''; }
+            $('#CoverageDistrictIds').val(DistrictId.trim());
+        })
+
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('input[type=datetime]').datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                yearRange: "-66:+10",
+                //onClose: function (dateText, inst) {
+                //    $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay));
+                //}
+            });
+        });
+    </script>
+    <style>
+        .ui-datepicker-buttonpane {
+            display: none;
+        }
+    </style>
+}

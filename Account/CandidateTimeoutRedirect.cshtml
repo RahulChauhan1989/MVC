@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Timeout Redirect";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<meta http-equiv="refresh" content="5;url=/Account/CandidateLogin" />
+<div class="row">
+    <div class="col-sm-12">
+        <div class="LoginBox">
+            <div class="container">
+                <section id="content">
+                    <h1>@ViewBag.Title</h1>
+                    <div class="errormsglogin">Sorry, but your session has timed out. You'll be redirected to the Log On page in 5 seconds...</div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+

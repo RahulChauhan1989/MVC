@@ -1,0 +1,160 @@
+﻿@model ViewModels.ClientViewModel.AddClientDispositionViewModel
+
+@{
+    ViewBag.Title = "Manage Client Disposition (" + Convert.ToString(Session["ClientNameForContract"]) + ")";
+}
+@{
+    //@ViewBag.NavigationBtnBack
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageClientDispositions", "Client", new { CId = Request.QueryString["CId"], ChkId = Request.QueryString["ChkId"] }, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@{
+    //For ClientTabs Section
+    ViewBag.ClientID = Request.QueryString["CId"];
+    ViewBag.DispostionCssClass = "current";
+}
+@section ClientTabs{ @Html.Partial("_ClientTabs") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="col-md-3 col-md-offset-8">
+    @*<div class="col-md-8 set_name_head" style="text-align:left;"> <b style="font-size:18px;">@ViewBag.CheckFamilyName</b></div>*@
+    <div class=" all">
+        <input type="checkbox" id="checkAll" /> Select All
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                <fieldset class="scheduler-border">
+                    <legend class="scheduler-border">@ViewBag.CheckFamilyName Dispositions : </legend>
+                    <div class="form-group branch">
+                        @if (ViewBag.DispositionList != null)
+                        {
+                            foreach (var item in ViewBag.DispositionList)
+                            {
+                                <div class="col-md-6" style="margin-bottom:7px;">
+                                    @if (item.IsSetDefalut == 1)
+                                    {
+                                        <input type="checkbox" name="chkDsp" class="chkDsp" checked="checked" value="@(item.DispositionRowId)_@(item.SeverityGridRowId)" />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="chkDsp" class="chkDsp" value="@(item.DispositionRowId)_@(item.SeverityGridRowId)" />
+                                    }
+                                    @item.Disposition
+                                </div>
+                            }
+                        }
+
+                        @Html.HiddenFor(model => model.DispositionIds)
+                        <input type="hidden" id="hdnDispositionRowIds" value='@Model.DispositionIds' />
+                        @Html.HiddenFor(model => model.ClientRowID)
+                        @Html.HiddenFor(model => model.CheckFamilyRowID)
+                        @Html.HiddenFor(model => model.SeverityGridRowId)
+                        @*@Html.Hidden("CPId", new { CPId = Request.QueryString["CPId"] })*@
+                    </div>
+                </fieldset>
+            </div>
+            <div class="all-button-bg">
+                @Html.ActionLink("Back", "ManageClientDispositions", "Client", new { CId = Request.QueryString["CId"], ChkId = Request.QueryString["ChkId"] }, new { @class = "btn bun-bg btn-default" })
+                <input class="btn bun-bg btn-default" type="submit" value="Submit" />
+            </div>
+        }
+    </div>
+</div>
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var DispositionIds = '';
+            $('input.chkDsp:checkbox').each(function (index, value) {
+                if (this.checked) {
+                    DispositionIds += this.value + ',';
+                }
+            });
+            if (DispositionIds.length > 0) {
+                DispositionIds = DispositionIds.substring(0, DispositionIds.length - 1);
+            } else { DispositionIds = ''; }
+
+            if (false == $(this).prop("checked")) { //if this item is unchecked
+                $("#checkAll").prop('checked', false); //change "select all" checked status to false
+            }
+            //check "select all" if all checkbox items are checked
+            if ($('.chkDsp:checked').length == $('.chkDsp').length) {
+                $("#checkAll").prop('checked', true);
+            }
+            $('#DispositionIds').val(DispositionIds.trim());
+
+            AllChkApply();
+        });
+
+        function AllChkApply() {
+            var str = $('#hdnDispositionRowIds').val();
+            var list = $('input[class="chkDsp"]');
+            list.each(function (index) {
+                item = $(this);
+                var temp = new Array();
+                temp = str.split(",");
+                var values = str.split(',');
+                for (i = 0; i < values.length; i++) {
+                    if (values[i] == item.val()) {
+                        item.attr("checked", true);
+                        item.attr("disabled", true);
+                    }
+                }
+            });
+        }
+
+        $('#checkAll').change(function () {
+            $('.chkDsp').prop('checked', $(this).prop('checked'));
+
+            if ($(this).prop('checked') == false) {
+                AllChkApply();
+            }
+            var DispositionIds = '';
+            $('input.chkDsp:checkbox').each(function (index, value) {
+                if (this.checked) {
+                    DispositionIds += this.value + ',';
+                }
+            });
+            if (DispositionIds.length > 0) {
+                DispositionIds = DispositionIds.substring(0, DispositionIds.length - 1);
+            } else { DispositionIds = ''; }
+
+            $('#DispositionIds').val(DispositionIds.trim());
+        });
+
+        $('input.chkDsp:checkbox').click(function () {
+            var DispositionIds = '';
+            $('input.chkDsp:checkbox').each(function (index, value) {
+                if (this.checked) {
+                    DispositionIds += this.value + ',';
+                }
+            });
+            if (DispositionIds.length > 0) {
+                DispositionIds = DispositionIds.substring(0, DispositionIds.length - 1);
+            } else { DispositionIds = ''; }
+
+            if (false == $(this).prop("checked")) { //if this item is unchecked
+                $("#checkAll").prop('checked', false); //change "select all" checked status to false
+            }
+            //check "select all" if all checkbox items are checked
+            if ($('.chkDsp:checked').length == $('.chkDsp').length) {
+                $("#checkAll").prop('checked', true);
+            }
+
+            $('#DispositionIds').val(DispositionIds.trim());
+        });
+    </script>
+}
+
+
+

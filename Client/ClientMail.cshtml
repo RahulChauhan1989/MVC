@@ -1,0 +1,91 @@
+﻿@model ViewModels.ClientViewModel.PQClientMailConfig
+@{
+    ViewBag.Title = "ClientMail ( " + Convert.ToString(Session["ClientNameForContract"]) + " ) "; 
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManagePQClient", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@{
+    //For ClientTabs Section
+    ViewBag.ClientID = Request.QueryString["CId"];
+    ViewBag.MailCssClass = "current";
+}
+@section ClientTabs{@Html.Partial("_ClientTabs") }
+@*@section NavigationButton{ @Html.Partial("_NavigationButton") }*@
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="row">
+            <div class="col-md-12">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                        @Html.Hidden("CId", new { CId = Request.QueryString["CId"] })
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.SMTPServer, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.SMTPServer, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.SMTPServer, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.SMTPPort, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.SMTPPort, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.SMTPPort, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.SMTPUserName, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.SMTPUserName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.SMTPUserName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.SMTPPassword, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.SMTPPassword, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
+                                @Html.ValidationMessageFor(model => model.SMTPPassword, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.EnableSsl, htmlAttributes: new { @class = "col-md-3 control-label verticalalign" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.EnableSslBool, new { htmlAttributes = new { @class = "" } })
+                                @Html.ValidationMessageFor(model => model.EnableSsl, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="all-button-bg">
+                            @*@Html.ActionLink("Back", "ManagePQClient", "Client", null, new { @class = "btn bun-bg btn-default" })*@
+                            <input class="btn bun-bg btn-default" type="submit" value="Submit" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="ManageSction" class="product-frame1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+}
+
+
+
+

@@ -1,0 +1,82 @@
+﻿@model ViewModels.ClientViewModel.UpdateClientSeverityViewModel
+@{
+    ViewBag.Title = "Change Severity Color Code (" + Convert.ToString(Session["ClientNameForContract"]) + ")";
+}
+@{
+    //@ViewBag.NavigationBtnBack
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageClientSeverity", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@{
+    //For ClientTabs Section
+    ViewBag.ClientID = Request.QueryString["CId"];
+    ViewBag.SeverityCssClass = "current";
+}
+@section ClientTabs{ @Html.Partial("_ClientTabs") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="row">
+            <div class="col-md-12">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.ClientColorCode, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.ClientColorCode, new { htmlAttributes = new { @class = "add_severity_grid color" } })
+                                @Html.ValidationMessageFor(model => model.ClientColorCode, "", new { @class = "text-danger " })
+                                @Html.HiddenFor(model => model.ClientSeverityRowId)
+                                @Html.HiddenFor(model => model.Status)
+                              
+                                @Html.Hidden("CId", new { CId = Request.QueryString["CId"] })
+                            </div>
+                            @Html.LabelFor(model => model.ClientColorName, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.ClientColorName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ClientColorName, "", new { @class = "text-danger " })
+                            </div>
+                        </div>
+                        <div class="all-button-bg">
+                            @Html.ActionLink("Back", "ManageClientSeverity", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "btn bun-bg btn-default" })
+                            @*@Html.ActionLink("Back", "ManageClientSeverity", "Client", null, new { @class = "btn bun-bg btn-default" })*@
+                            <input class="btn bun-bg btn-default" type="submit" value="Submit" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="ManageSction" class="product-frame1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+<link href="~/Content/mcColorPicker.css" rel="stylesheet" />
+<script src="~/Scripts/mcColorPicker.js"></script>
+
+    <script type="text/javascript">
+        function createForm() {
+            document.getElementById("formContainer").innerHTML =
+    '<input type="text" id="cinput2" class="color" value="#00aa00" />';
+            MC.ColorPicker.reload();
+        }
+    </script>
+
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+}

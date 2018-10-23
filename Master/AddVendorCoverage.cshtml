@@ -1,0 +1,200 @@
+﻿@model ViewModels.AddVendorCoverageViewModel
+
+@{
+    ViewBag.Title = "Add New Partner Coverage (" + ViewBag.VendorName + ")";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageVendorCoverages", "Master", new { vid = Model.VendorRowID }, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("AddVendorCoverage", "Master", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.VendorRowID)
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CheckFamilyRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.CheckFamilyRowID,
+                            new SelectList(ViewBag.CoverageCheckList, "CheckFamilyRowID", "CheckFamilyName"),
+                            "-- Select -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CheckFamilyRowID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.AdditionalCosting, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.AdditionalCosting,
+                            new SelectList(ViewBag.AdditionalCostingList, "Value", "Text"),
+                            "-- Select -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AdditionalCosting, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.AdditionalCost, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.AdditionalCost, new { htmlAttributes = new { @class = "form-control", @onkeypress = "return isNumberKey(event,true)", @disabled = "disabled" } })
+                        @Html.ValidationMessageFor(model => model.AdditionalCost, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.Level1TAT, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.Level1TAT,
+                            new SelectList(ViewBag.VarificationTATLevel1, "Text", "Value"),
+                            "-- Select --",
+                             new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Level1TAT, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.Level2TAT, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.Level2TAT,
+                            new SelectList(ViewBag.VarificationTATLevel2, "Text", "Value"),
+                            "-- Select --",
+                             new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Level2TAT, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control", @rows = "2" })
+                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CountryRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.CountryRowID,
+                            new SelectList(ViewBag.Countries, "CountryRowID", "CountryName"),
+                            "-- Select Country -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CountryRowID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-12">&nbsp;</div>
+                <div class="col-md-10 col-md-offset-1">
+                    <fieldset class="scheduler-border">
+                        <div class="col-md-12" style="border-bottom:1px solid;height:30px">
+                            <div class="col-md-6">
+                                <div class="col-md-1"><b>State</b></div>
+                                <div style="float:right;margin-right:10%">
+                                    <b>Price</b>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-1"><b>State</b></div>
+                                <div style="float:right;margin-right:10%"><b>Price</b></div>
+                            </div>
+                        </div>
+                        <legend class="scheduler-border  required">Coverage States</legend>
+                        <div id="dvStatePartialview" class="col-md-12">
+                            <div class="scroll down">
+                                @{Html.RenderAction("GetStateCheckBoxList", "Master");}
+                            </div>
+                        </div>
+                    </fieldset>
+                    @Html.HiddenFor(model => model.CoverageStateIds)
+                </div>
+                <div class="form-group branch">&nbsp;</div>
+                <div class="all-button-bg">
+                    @Html.ActionLink("Back", "ManageVendorCoverages", "Master", new { vid = Model.VendorRowID }, new { @class = "btn bun-bg btn-default" })
+                    <input class="btn bun-bg btn-default" type="submit" onclick="return validateForm()" value="Submit" />
+                </div>
+            </div>
+         }
+    </div>
+</div>
+
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/EventValidations.js")'></script>
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script type="text/jscript">
+
+        $(function () {
+            //Bind State base on CountryRowID
+            $('#CountryRowID').change(function () {
+                var CoverageStateIds = $("#CoverageStateIds").val();
+                var url = "/Master/GetStateCheckBoxList?" + $.param({ id: $("#CountryRowID").val() });
+                var notifications = $("#dvStatePartialview"); // cache it to avoid repeatedly searching the DOM
+                notifications.load(url);
+            });
+
+            //AdditionalCost enable disable
+            $('#AdditionalCosting').change(function () {
+                var AdditionalCosting = $('#AdditionalCosting').val();
+                if (AdditionalCosting == '1') {
+                    $('#AdditionalCost').prop("disabled", false);
+                    $('#AdditionalCost').focus();
+                } else {
+                    $('#AdditionalCost').prop("disabled", true);
+                }
+            });
+        });
+        function validateForm() {
+            var AdditionalCosting = $('#AdditionalCosting').val();
+            var AdditionalCost = $('#AdditionalCost').val();
+            if (AdditionalCosting == 'Yes') {
+                if (AdditionalCost == '') {
+                    alert("Please enter Additional Cost.");
+                    return false;
+                }
+            }
+
+            var StateId = '';
+            var sVal = '';
+            $('input[class="statechk"]').each(function (index, value) {
+                if (this.checked) {
+                    StateId = "#VCost_" + this.value;
+                    sVal = $('' + StateId + '').val();
+                    if (sVal == '') {
+                        sVal = StateId;
+                    }
+                }
+            });
+            //if (sVal != '') {
+            //    $('' + sVal + '').focus();
+            //    return false;
+            //}
+
+            return true;
+        }
+        $(document).ready(function () {
+            if ($('#CoverageStateIds').val() != "") {
+                //alert($('#CoverageStateIds').val());
+                var CoverageStateIds = $("#CoverageStateIds").val();
+                var url = "/Master/GetDistrictForCheckbox?" + $.param({ CoverageStateIds: $("#CoverageStateIds").val() });
+                var notifications = $("#dvPartialview"); // cache it to avoid repeatedly searching the DOM
+                notifications.load(url);
+            }
+        });
+        $(document).on('change', 'input[class="statechk"]', function (e) {
+            var StateId = '';
+            $('input[class="statechk"]').each(function (index, value) {
+                if (this.checked) { StateId += this.value + ','; }
+            });
+            if (StateId.length > 0) {
+                StateId = StateId.substring(0, StateId.length - 1);
+            } else { StateId = ''; }
+            $("#select_all").prop('checked', false);
+            $('#CoverageStateIds').val(StateId.trim());
+            var CoverageStateIds = $("#CoverageStateIds").val();
+            var url = "/Master/GetDistrictForCheckbox?" + $.param({ countryRowID: $("#CountryRowID").val(), CoverageStateIds: StateId.trim(), CoverageDistrictIds: $('#CoverageDistrictIds').val() });
+            var notifications = $("#dvPartialview"); // cache it to avoid repeatedly searching the DOM
+            notifications.load(url);
+            var sId = "#VCost_" + this.value;
+            $('' + sId + '').focus();
+        });
+
+    </script>
+}

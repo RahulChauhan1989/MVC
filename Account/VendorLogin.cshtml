@@ -1,0 +1,60 @@
+﻿@model ViewModels.PartnerViewModels.VendorLoginViewModel
+@{
+    ViewBag.Title = "Partner Login";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="LoginBox">
+            <div class="container">
+                <section id="contentptr">
+                    <h1>Partner Login</h1>
+                    <div class="col-md-12" style="height:229px;">
+                        @{
+                            if (ViewBag.ErrorMsg != null)
+                            {
+                                <div class="errormsglogin">@ViewBag.ErrorMsg.ToString()</div>
+                            }
+                            if (ViewBag.SuccessMsg != null)
+                            {
+                                <div class="successmsg">@ViewBag.SuccessMsg.ToString()</div>
+                            }
+                        }
+
+                        @using (Html.BeginForm())
+                        {
+                            @Html.AntiForgeryToken()
+
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            @Html.EditorFor(model => model.CRPUserName, new { htmlAttributes = new { @placeholder = "User Name", @onmousedown = "return noCopyMouse(event);", @onkeydown = "return DisableEscape(event);", @onkeypress = "return BlockBlacklist(event);" } })
+                            <div class="loginerror">@Html.ValidationMessageFor(model => model.CRPUserName, "", new { @class = "text-danger" })</div>
+
+                            @Html.EditorFor(model => model.CRPPassWord, new { htmlAttributes = new { @placeholder = "Password", @onmousedown = "return noCopyMouse(event);", @onkeydown = "return DisableEscape(event);", @onkeypress = "return BlockBlacklist(event);" } })
+                            <div class="loginerror">@Html.ValidationMessageFor(model => model.CRPPassWord, "", new { @class = "text-danger" })</div>
+
+                            <input type="submit" value="Submit" />
+                        }
+                    </div>
+                    <div class="col-md-12 forgot">
+                        <a href="#">Forgot Password ?</a>
+                    </div>
+                    <div class="col-md-12 forgot">
+                        <a href="#">Change Password ?</a>
+                    </div>
+                    <div class="col-md-12 button">
+                        <a href="#">Can't Access the Software</a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/EventValidations.js")'></script>
+}
+

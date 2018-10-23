@@ -1,0 +1,125 @@
+﻿@model ViewModels.ClientViewModel.AddPQClientTMemberViewModel
+
+@{
+    ViewBag.Title = "Add Team Member ( " + Convert.ToString(Session["ClientNameForContract"]) + ")";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageClientTeamMembers", "Client", new { CId = Model.ClientRowID }, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@{
+    //For ClientTabs Section
+    ViewBag.ClientID = Request.QueryString["CId"];
+    ViewBag.TeamCssClass = "current";
+}
+@section ClientTabs{ @Html.Partial("_ClientTabs") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm(Model))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.ClientRowID)
+            <div class="form-horizontal">
+                <div class="table-frame-top">&nbsp;</div>
+                @Html.HiddenFor(model => model.TeamDepartmentRowID)
+                @Html.HiddenFor(model => model.TeamMemberRowIds)
+                <div class="navbar-collapse collapse thead-inverse">
+                    <ul class="nav navbar-nav" style="width:100%">
+                        <li class="top-head" style="width:4%;">No.</li>
+                        <li class="top-head" style="width:19%;">Department</li>
+                        <li class="top-head" style="width:15%;">Team Member</li>
+                    </ul>
+                </div>
+                <!-- NAVBAR CODE END -->
+                <div class="fancy-collapse-panel">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div id="dvPartialView">
+                            @{Html.RenderPartial("_ClientDepartmentAndDesignation");}
+                        </div>
+                    </div>
+                </div>
+                     <div class="all-button-bg">
+                    @Html.ActionLink("Back", "ManageClientTeamMembers", "Client", new { CId = Model.ClientRowID }, new { @class = "btn bun-bg btn-default" })
+                    <input class="btn bun-bg btn-default" type="submit" onclick="return validateForm()" value="Submit" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/EventValidations.js")'></script>
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+
+    <script type="text/jscript">
+        $(document).ready(function () {
+            $('input[type=datetime]').datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                yearRange: "-66:+10",
+                //onClose: function (dateText, inst) {
+                //    $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay));
+                //}
+            });
+        });
+        $(function () {
+            $('input[name=department]').click(function () {
+                $('input[name=' + $(this).prop('class') + ']').prop('checked', $(this).prop('checked'));
+                var department = '';
+                var designation = '';
+                $('input[name=department]').each(function (index, value) {
+                    if (this.checked) {
+                        department += this.value + ',';
+                    }
+                });
+                $('input.designation:checkbox').each(function (index, value) {
+                    if (this.checked) {
+                        designation += this.value + ',';
+                    }
+                });
+                if (department.length > 0 || designation.length > 0) {
+                    department = department.substring(0, department.length - 1);
+                    designation = designation.substring(0, designation.length - 1);
+                } else { department = ''; designation = ''; }
+                $('#DepartmentRowIds').val(department.trim());
+                $('#TeamMemberRowIds').val(designation.trim());
+            });
+
+            // Selected Subcheck Family
+            $('input.designation:checkbox').click(function () {
+                var designation = '';
+                var chkdata = this.value.split('_');
+                if (false == $(this).prop("checked")) {
+                    $('input[class="' + chkdata[0] + '"]').prop('checked', false);
+                }
+                $('input.designation:checkbox').each(function (index, value) {
+                    var data = this.value.split('_');
+                    if (this.checked) {
+                        designation += this.value + ',';
+                        $('input[class="' + data[0] + '"]').prop('checked', true);
+                    }
+                });
+                if (designation.length > 0) {
+                    designation = designation.substring(0, designation.length - 1);
+                } else { designation = ''; }
+                $('#TeamMemberRowIds').val(designation.trim());
+            });
+
+        });
+    </script>
+    <style>
+        .ui-datepicker-buttonpane {
+            display: none;
+        }
+    </style>
+
+}

@@ -1,0 +1,65 @@
+﻿@model ViewModels.ClientViewModel.AddCContractAgreementViewModel
+@{
+    ViewBag.Title = "Upload Verification Contract Agreement (" + Convert.ToString(Session["ClientNameForContract"]) + ")";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageClientContract", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@{
+    //For ClientTabs Section
+    ViewBag.ClientID = Request.QueryString["CId"];
+    ViewBag.ContractCssClass = "current";
+}
+@section ClientTabs{ @Html.Partial("_ClientTabs") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12 maximum">
+        Maximum Size of a file should not Exceed more than 30 mb........
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("AddClientContract", "Client", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                @Html.Label("Document Type :", htmlAttributes: new { @class = "col-md-2 control-label" })
+                <div class="form-group branch">
+                    <div class="col-md-7">
+                        @Html.TextBoxFor(model => model.DocumentType, new { @Value= "Verification Contract Agreement", @class = "form-control" })                       
+                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                        @Html.Hidden("CId", new { CId = Request.QueryString["CId"] })
+                    </div>                
+                    
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.FileName, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-7">
+                        @Html.TextBoxFor(model => model.UplodFileName, new { @accept = "application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document", type = "file" })
+                        @Html.ValidationMessageFor(model => model.UplodFileName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "col-md-2 control-label" })
+                <div class="form-group branch">
+                    <div class="col-md-7">
+                        @Html.TextAreaFor(model => model.Remarks, new { @class = "form-control ", @rows = "2" } )
+                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                     
+                    </div>
+                </div>
+                <div class="all-button-bg">
+                    @Html.ActionLink("Back", "ManageClientContract", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "btn bun-bg btn-default" })
+                    
+                    <input class="btn bun-bg btn-default" type="submit" onclick="return validateForm()" value="Submit" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

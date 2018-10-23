@@ -1,0 +1,222 @@
+﻿@model ViewModels.ClientViewModel.AddClientFieldViewModel
+
+@{
+    ViewBag.Title = "Manage Client Antecedent (" + Convert.ToString(Session["ClientNameForContract"]) + ")";
+}
+@{
+    //@ViewBag.NavigationBtnBack
+    if (Model.PackageRowID > 0)
+    {
+        string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+        string hyperLink = Html.ActionLink("linkTitle", "ManagePackages", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "headerbacklink" }).ToString();
+        ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+    }
+    else
+    {
+        string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+        string hyperLink = Html.ActionLink("linkTitle", "ManageClientChecks", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "headerbacklink" }).ToString();
+        ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+    }
+}
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@{
+    //For ClientTabs Section
+    ViewBag.ClientID = Request.QueryString["CId"];
+    if (Request.QueryString["CPId"] != null)
+    {
+        ViewBag.PackageCssClass = "current";
+    }
+    else
+    {
+        ViewBag.CheckCssClass = "current";
+    }
+}
+@section ClientTabs{ @Html.Partial("_ClientTabs") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row select_all">
+    <div class="col-md-12">
+        <div class="col-md-2 set_name_head">* Change antecedent label</div>
+        <div class="col-md-10 all">
+            <input type="checkbox" id="checkAll" /> Select All
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("SetClientAntecedents", "Client", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+            @Html.AntiForgeryToken()
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @if (ViewBag.ListOfAntecedent != null)
+                    {
+                        foreach (var item in ViewBag.ListOfAntecedent)
+                        {
+                            <div class="col-md-6">
+                                <div class="form-group branch">
+                                    <div class="col-md-1">
+                                        @if (item.IsSetDefault == 1)
+                                        {
+                                            <input type="checkbox" name="chkAnt" class="chkAnt" checked="checked" value="@item.AntecedentRowId" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="chkAnt" class="chkAnt" value="@item.AntecedentRowId" />
+                                        }
+                                    </div>
+                                    <div class="col-md-11">
+                                        <input type="text" id="txtAnt_@(item.AntecedentRowId)" name="txtAnt_@(item.AntecedentRowId)" class="form-control" value="@item.DisplayName" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    @Html.HiddenFor(model => model.AntecedentRowIds)
+                    <input type="hidden" id="hdnAntecedentRowIds" value='@Model.AntecedentRowIds' />
+                    @Html.HiddenFor(model => model.Id)
+                    @Html.HiddenFor(model => model.ClientRowID)
+                    @Html.HiddenFor(model => model.CheckFamilyRowID)
+                    @Html.HiddenFor(model => model.SubCheckRowID)
+                    @Html.HiddenFor(model => model.PackageRowID)
+                    @*@Html.Hidden("CPId", new { CPId = Request.QueryString["CPId"] })*@
+                </div>
+            </div>
+            <div class="all-button-bg">
+                @if (Model.PackageRowID > 0)
+                {
+                    @Html.ActionLink("Back", "ManagePackages", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "btn bun-bg btn-default" })
+                }
+                else
+                {
+                    @Html.ActionLink("Back", "ManageClientChecks", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "btn bun-bg btn-default" })
+                }
+
+                @if (Session["MapAntecedent"] != null && (Convert.ToByte(Session["MapAntecedent"]) == 1))
+                {
+                    <input class="btn bun-bg btn-default" type="submit" onclick="return validateForm()" value="Submit" />
+                }                
+            </div>
+        }
+    </div>
+</div>
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            AllChkApply();
+            var AntecedentRowIds = '';
+            $('input.chkAnt:checkbox').each(function (index, value) {
+                if (this.checked) {
+                    AntecedentRowIds += this.value + ',';
+                }
+            });
+            if (AntecedentRowIds.length > 0) {
+                AntecedentRowIds = AntecedentRowIds.substring(0, AntecedentRowIds.length - 1);
+            } else { AntecedentRowIds = ''; }
+
+            if (false == $(this).prop("checked")) { //if this item is unchecked
+                $("#checkAll").prop('checked', false); //change "select all" checked status to false
+            }
+            //check "select all" if all checkbox items are checked
+            if ($('.chkAnt:checked').length == $('.chkAnt').length) {
+                $("#checkAll").prop('checked', true);
+            }
+
+            $('#AntecedentRowIds').val(AntecedentRowIds.trim());
+        });
+
+        function AllChkApply() {
+            var str = $('#hdnAntecedentRowIds').val();
+            var list = $('input[class="chkAnt"]');
+            list.each(function (index) {
+                item = $(this);
+                var temp = new Array();
+                temp = str.split(",");
+                var values = str.split(',');
+                for (i = 0; i < values.length; i++) {
+                    if (values[i] == item.val()) {
+                        item.attr("checked", true);
+                        item.attr("disabled", true);
+                    }
+                }
+            });
+        }
+
+        function AllChkApplyant() {
+            var str = $('#hdnAntecedentRowIds').val();
+            var list = $('input[class="chkAnt"]');
+            list.each(function (index) {
+                item = $(this);
+                var abc = item.is(':disabled');
+                if (abc == true) {
+                   item.prop("checked", true);
+                }
+                else {
+                    item.prop("checked", false);
+                }
+            });
+        }
+
+        $('#checkAll').change(function () {
+            $('.chkAnt').prop('checked', $(this).prop('checked'));
+
+            if ($(this).prop('checked') == false) {
+                AllChkApply();
+            }
+            var AntecedentRowIds = '';
+            $('input.chkAnt:checkbox').each(function (index, value) {
+                if (this.checked) {
+                    AntecedentRowIds += this.value + ',';
+                }
+            });
+            if (AntecedentRowIds.length > 0) {
+                AntecedentRowIds = AntecedentRowIds.substring(0, AntecedentRowIds.length - 1);
+            } else { AntecedentRowIds = ''; }
+
+            $('#AntecedentRowIds').val(AntecedentRowIds.trim());
+        });
+
+        $('input.chkAnt:checkbox').click(function () {
+            var AntecedentRowIds = '';
+            $('input.chkAnt:checkbox').each(function (index, value) {
+                if (this.checked) {
+                    AntecedentRowIds += this.value + ',';
+                }
+            });
+            if (AntecedentRowIds.length > 0) {
+                AntecedentRowIds = AntecedentRowIds.substring(0, AntecedentRowIds.length - 1);
+            } else { AntecedentRowIds = ''; }
+
+            if (false == $(this).prop("checked")) { //if this item is unchecked
+                $("#checkAll").prop('checked', false); //change "select all" checked status to false
+            }
+            //check "select all" if all checkbox items are checked
+            if ($('.chkAnt:checked').length == $('.chkAnt').length) {
+                $("#checkAll").prop('checked', true);
+            }
+
+            $('#AntecedentRowIds').val(AntecedentRowIds.trim());
+        });
+
+        function validateForm() {
+            var AntecedentRowIds = 0;
+            $('input.chkAnt:checkbox').each(function (index, value) {
+                if (this.checked) {
+                    AntecedentRowIds += 1;
+                }
+            });
+            if (AntecedentRowIds == 0) {
+                alert("Please Select Atleast One Antecedent");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+}
+
+
+

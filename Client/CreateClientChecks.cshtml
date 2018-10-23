@@ -1,0 +1,160 @@
+﻿@model  ViewModels.ClientViewModel.AddClientCheckViewModel
+
+@{
+    ViewBag.Title = "Create Client Check (" + Convert.ToString(Session["ClientNameForContract"]) + ")";
+}
+@{
+    //@ViewBag.NavigationBtnBack
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageClientChecks", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@{
+    //For ClientTabs Section
+    ViewBag.ClientID = Request.QueryString["CId"];
+    ViewBag.CheckCssClass = "current";
+}
+@section ClientTabs{ @Html.Partial("_ClientTabs") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("CreateClientChecks", "Client", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <div class="table-frame-top">&nbsp;</div>
+                @Html.HiddenFor(model => model.ClientRowID)
+                @Html.HiddenFor(model => model.CheckFamilyID)
+                @Html.HiddenFor(model => model.SubCheckID)
+                @Html.HiddenFor(model => model.AntecedentSelected)
+                @Html.HiddenFor(model => model.DispositionSelected)
+                <div class="navbar-collapse collapse thead-inverse">
+                    <ul class="nav navbar-nav" style="width:100%">
+                        <li class="top-head" style="width:4%;">No.</li>
+                        <li class="top-head" style="width:19%;">Service Type*</li>
+                        <li class="top-head" style="width:15%;">Report Sequence*</li>
+                        <li class="top-head" style="width:16%;">TAT(Clientwise)</li>
+                        <li class="top-head" style="width:15%;">TAT(Internal)</li>
+                        <li class="top-head" style="width:15%;">Billing Per Check</li>
+                        <li class="top-head" style="width:11%;">Cost Per Check</li>
+                    </ul>
+                </div>
+                <!-- NAVBAR CODE END -->
+                <div class="fancy-collapse-panel">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div id="dvPartialView">
+                            @{Html.RenderAction("RefreshPackageDetails", "Client");}
+                        </div>
+                    </div>
+                </div>
+                <div class="all-button-bg">
+                    @Html.ActionLink("Back", "ManageClientChecks", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "btn bun-bg btn-default" })
+                    <input class="btn bun-bg btn-default" type="submit" onclick="return validateForm()" value="Submit" />
+                </div>
+            </div>
+                                }
+    </div>
+</div>
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/EventValidations.js")'></script>
+    <script type="text/javascript">
+        function myFunction(allData) {
+            var Entrid = allData.id.split('_');
+
+            var id = "_" + Entrid[1] + "_" + Entrid[2];
+            var IntTatID = '';
+            var tat = 0;
+            var intTat = 0;
+            if (Entrid[0] == "txtClTat") {
+                IntTatID = "txtIntTat" + id;
+                tat = allData.value;
+                intTat = parseInt(tat - (tat * 20 / 100));
+                $("#" + IntTatID + "").val(intTat);
+            }
+        }
+        $(function () {
+            // Selected Spocs
+            $('input.chkFmly:checkbox').click(function () {
+                var CheckFamily = '';
+                $('input.chkFmly:checkbox').each(function (index, value) {
+                    if (this.checked) {
+                        CheckFamily += this.value + ',';
+                    }
+                });
+                if (CheckFamily.length > 0) {
+                    CheckFamily = CheckFamily.substring(0, CheckFamily.length - 1);
+                } else { CheckFamily = ''; }
+                $('#CheckFamilyID').val(CheckFamily.trim());
+            });
+
+            // Selected Subcheck Family
+            $('input.SubchkFmly:checkbox').click(function () {
+                var CheckFamily = '';
+                var chkdata = this.value.split('_');
+                if (false == $(this).prop("checked")) {
+                    $('input[name="' + chkdata[0] + '"]').prop('checked', false);
+                }
+                $('input.SubchkFmly:checkbox').each(function (index, value) {
+                    var data = this.value.split('_');
+                    if (this.checked) {
+                        CheckFamily += this.value + ',';
+                        $('input[name="' + data[0] + '"]').prop('checked', true);
+                    }
+                });
+                if (CheckFamily.length > 0) {
+                    CheckFamily = CheckFamily.substring(0, CheckFamily.length - 1);
+                } else { CheckFamily = ''; }
+                $('#SubCheckID').val(CheckFamily.trim());
+            });
+        });
+
+        function validateForm() {
+            //Bind CheckFamily
+            var CheckFamily = '';
+            $('input.chkFmly:checkbox').each(function (index, value) {
+                if (this.checked) {
+                    CheckFamily += this.value + ',';
+                }
+            });
+            if (CheckFamily.length > 0) {
+                CheckFamily = CheckFamily.substring(0, CheckFamily.length - 1);
+            } else { CheckFamily = ''; }
+            $('#CheckFamilyID').val(CheckFamily.trim());
+            //End CheckFamily
+            //ddlSelSeq_
+            //var allChecks = CheckFamily.split(',');
+            //allChecks.each(function () {
+            //    var id = "ddlSelSeq_" + this.value;
+            //    if ($("#" + id).val() == null && $("#" + id).val() == 0) {
+            //        return false;
+            //    }
+            //});
+
+            //Bind SubCheckFamily
+            var SubChk = '';
+            $('input.SubchkFmly:checkbox').each(function (index, value) {
+                if (this.checked) {
+                    SubChk += this.value + ',';
+                }
+            });
+            if (SubChk.length > 0) {
+                SubChk = SubChk.substring(0, SubChk.length - 1);
+            } else { SubChk = ''; }
+            $('#SubCheckID').val(SubChk.trim());
+            //End SubCheckFamily
+            return true;
+        }
+
+    </script>
+    <style>
+        /*.fancy-collapse-panel .panel-heading a:after {font-family: "FontAwesome";content: "\f147";position: absolute;right: 20px;font-size: 15px;font-weight: 400;top: 50%;line-height: 1;margin-top: -10px;}
+        .fancy-collapse-panel .panel-heading a.collapsed:after {content: "\f196";}*/
+    </style>
+}

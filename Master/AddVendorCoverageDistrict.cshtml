@@ -1,0 +1,94 @@
+﻿@model ViewModels.AddVCDistrictViewModel
+
+@{
+    ViewBag.Title = "Add New Partner Coverage District (" + ViewBag.VendorName + ")";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManageVendorCoverageDistricts", "Master", new { vid = Model.VendorRowID, vcoverageid = Model.VendorCoverageRowID }, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftMaster") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.VendorCoverageRowID)
+            @Html.HiddenFor(model => model.CountryRowID)
+            @Html.HiddenFor(model => model.StateRowID)
+            @Html.HiddenFor(model => model.VendorRowID)
+            <div class="form-horizontal">
+                <div class="form-group branch">&nbsp;</div>
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="col-md-8">
+                        <div class="col-md-1"><b>Districts</b></div>
+                        <div style="float:right;margin-right:12%">
+                            <b>Districts</b>
+                        </div>
+                    </div>
+                    <div class="col-md-2"><b style="float:right">Select All</b></div>
+                    <input type="checkbox" class="" id="select_all" name="Select All">
+                </div>
+                @Html.HiddenFor(model => model.CoverageDistrictIds)
+                <div id="dvPartialview" class="col-md-10 col-md-offset-1">
+                    <div>
+                        @{Html.RenderAction("GetDistrictForCheckbox", "Master", new { countryRowID = Model.CountryRowID, CoverageStateIds = Model.StateRowID , CoverageDistrictIds =Model.CoverageDistrictIds});}
+                    </div>
+                </div>
+                <div class="form-group branch">&nbsp;</div>
+            </div>
+            <div class="all-button-bg">
+                @Html.ActionLink("Back", "ManageVendorCoverageDistricts", "Master", new { vid = Model.VendorRowID, vcoverageid = Model.VendorCoverageRowID }, new { @class = "btn bun-bg btn-default" })
+                <input class="btn bun-bg btn-default" type="submit" onclick="return validateForm()" value="Submit" />
+            </div>
+
+                            }
+    </div>
+</div>
+
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/EventValidations.js")'></script>
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script type="text/jscript">
+        $(document).ready(function () {
+            $('#select_all').change(function () {
+                $("#dvPartialview input:checkbox").prop('checked', $(this).prop('checked'));
+                var DistrictId = '';
+                $('input[class="Districtchk"]').each(function (index, value) {
+                    if (this.checked) { DistrictId += this.value + ','; }
+                });
+                if (DistrictId.length > 0) {
+                    DistrictId = DistrictId.substring(0, DistrictId.length - 1);
+                } else { DistrictId = ''; }
+                $('#CoverageDistrictIds').val(DistrictId.trim());
+            });
+        });
+        $(document).on('change', 'input[class="Districtchk"]', function (e) {// on change of state
+            var DistrictId = '';
+            $('input[class="Districtchk"]').each(function (index, value) {
+                if (this.checked) { DistrictId += this.value + ','; }
+            });
+
+            if (false == $(this).prop("checked")) { //if this item is unchecked
+                $("#select_all").prop('checked', false); //change "select all" checked status to false
+            }
+            //check "select all" if all checkbox items are checked
+            if ($('.Districtchk:checked').length == $('.Districtchk').length) {
+                $("#select_all").prop('checked', true);
+            }
+
+            if (DistrictId.length > 0) {
+                DistrictId = DistrictId.substring(0, DistrictId.length - 1);
+            } else { DistrictId = ''; }
+            $('#CoverageDistrictIds').val(DistrictId.trim());
+        })
+
+    </script>
+}

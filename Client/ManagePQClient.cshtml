@@ -1,0 +1,169 @@
+﻿
+@{
+    ViewBag.Title = "Manage Client";
+}
+@{
+    ////@ViewBag.NavigationBtnBack
+    //string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    //string hyperLink = Html.ActionLink("linkTitle", "ManagePQClient", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnBack = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+
+
+    //@ViewBag.NavigationBtnAddNew
+    string faIconAddNew = string.Format("<i class='fa fa-plus-circle' aria-hidden='true'></i> Add New Client");
+    string hyperLinkAddNew = Html.ActionLink("linkTitle", "AddPQClient", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnAddNew = new HtmlString(hyperLinkAddNew.ToString().Replace("linkTitle", faIconAddNew));
+
+
+    //@ViewBag.NavigationBtnExportExcel
+    string faIconExportExcel = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Excel");
+    string hyperLinkExportExcel = Html.ActionLink("linkTitle", "ExportClient", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnExportExcel = new HtmlString(hyperLinkExportExcel.ToString().Replace("linkTitle", faIconExportExcel));
+
+    ////@ViewBag.NavigationBtnExportWord
+    //string faIconExportWord = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Word");
+    //string hyperLinkExportWord = Html.ActionLink("linkTitle", "ExportCountryInWord", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnExportWord = new HtmlString(hyperLinkExportWord.ToString().Replace("linkTitle", faIconExportWord));
+
+    ////@ViewBag.NavigationBtnBackExportPDF
+    //string faIconExportPDF = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export PDF");
+    //string hyperLinkExportPDF = Html.ActionLink("linkTitle", "ExportCountryInPDF", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnBackExportPDF = new HtmlString(hyperLinkExportPDF.ToString().Replace("linkTitle", faIconExportPDF));
+}
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section NavigationButton{ @Html.Partial("_NavigationButton") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-9">
+                        @using (Html.BeginForm("ManagePQClient", "Client", FormMethod.Get))
+                        {
+                            <div class="form-horizontal">
+                                <div class="form-group branch search-frame">
+                                    <label class="col-md-3 control-label">Client Name :</label>
+                                    <div class="col-md-7">
+                                        @Html.TextBox("Search", null, new { @class = "form-control", placeholder = "Ex. Client name..." })
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input class="btn bun-bg btn-default" type="submit" value="Search" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                @if (Model != null && Model.PQClients != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            @{
+
+                                WebGrid grid = new WebGrid(rowsPerPage: Model.PageSize, ajaxUpdateContainerId: "grid");
+                                grid.Bind(Model.PQClients, autoSortAndPage: false, rowCount: Model.TotalRecords);
+                            }
+                            @grid.GetHtml(
+                                    htmlAttributes: new { id = "grid", @class = "table" },
+                                    headerStyle: "thead-inverse",
+                                    rowStyle: "ordertxt",
+                                    footerStyle: "custpaging",
+                                    mode: WebGridPagerModes.All,
+                                    columns: new[]
+                                    {
+                                    grid.Column(header: "No.", style:"", format: item => item.WebGrid.Rows.IndexOf(item) + 1 + Math.Round(Convert.ToDouble(grid.TotalRowCount / grid.PageCount) / grid.RowsPerPage) * grid.RowsPerPage * grid.PageIndex),
+                                    grid.Column(columnName: "ClientName", header: "Client", canSort: true, style:"col-md-3"),
+                                    grid.Column(columnName: "ClientCode", header: "Client Code", canSort: false, style:"col-md-2"),
+                                    grid.Column(columnName: "ClientSubGroup", header: "Sub Group", canSort: false, style:"col-md-1"),
+                                    grid.Column(columnName: "LocationName", header: "Location", canSort: false, style:"col-md-2"),
+
+                                    grid.Column("ContractDate", "Valid From", format: (item) => item.ContractDate != null ? item.ContractDate.ToString("dd-MM-yyyy") : "", canSort: true,style:"col-md-1"),
+
+                                    grid.Column("ContractComplitionDate", "Valid To", format: (item) => item.ContractComplitionDate != null ? item.ContractComplitionDate.ToString("dd-MM-yyyy") : "", canSort: true,style:"col-md-1"),
+
+                                    grid.Column(header: "SLA Uploaded", format: (item) => item.SLAUploaded == 1 ? "Yes" : "No", canSort: false, style:"col-md-1"),
+
+                                    grid.Column(header : "Manage", format : (item) => {
+                                        var link = Html.ActionLink("Contract", "ManageClientContract", "Client", new { CId = item.ClientRowID }, null);
+                                        return link;
+                                    }, style:"edit col-md-1"),
+
+                                      grid.Column(header : "Edit", format : (item) => {
+                                        var link = Html.ActionLink("Edit", "EditPQClient", "Client", new { id = item.ClientRowID }, null);
+                                        return link;
+                                    }, style:"edit"),
+                                }
+                            )
+                            <div class="total-record">Total Records: @Model.TotalRecords</div>
+                        </div>
+                    </div>
+                 }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#grid > tbody > tr').each(function (index) {
+                var end = new Date();
+                var dd = end.getDate();
+                var mm = end.getMonth() + 1; //January is 0!
+                var yyyy = end.getFullYear();
+                var today = mm + '/' + dd + '/' + yyyy;
+               // var start = $(this).children('td:nth-child(7)').text();
+                var startt = $(this).children('td:nth-child(7)').text();
+                var datearray = startt.split("-");
+                if (datearray.length>0) {
+                    var start = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+                }
+                else {
+                    var start = startt;
+                }                
+                var date1 = new Date(today);
+                var date2 = new Date(start);
+                var diffDays = parseInt((date2 - date1) / (1000 * 60 * 60 * 24));
+              
+                if (diffDays <= 60 && diffDays > 30) {
+                    $(this).children('td').css("background-color", "#FFFF00");
+                }
+                else if (diffDays <= 30) {
+                    $(this).children('td').css("background-color", "#FA8072");
+                }
+
+            });
+        });
+
+
+        $(".delete").on("click", function () {
+            var str = $(this).attr("id").split("_");
+            id = str[1];
+
+            var flag = confirm('Do you want to Delete the Record ?');
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("DeletePQClient", "Client")',
+                    data: { "id": id },
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data.result == true) {
+                            alert("Record Deleted Successfully!!");
+                            setTimeout(function () { window.location.replace("ManagePQClient"); }, 500);
+                        }
+                        else {
+                            //alert('There is some error');
+                            setTimeout(function () { window.location.replace("ManagePQClient"); }, 500);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

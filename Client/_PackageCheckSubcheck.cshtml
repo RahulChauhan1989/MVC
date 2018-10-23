@@ -1,0 +1,54 @@
+﻿
+@{int count = 0; }
+@foreach (var item in ViewBag.CheckFamilyList)
+{
+    count++;
+    <div class="panel panel-default">
+        <div class="panel-heading dvPnlHeading" role="tab" id="headingOne">
+            <div class="dvChkFmlySrNo">@count.</div>
+            <div class="panel-title dvpnlTitle" style="">
+                <a data-toggle="collapse" class="" data-parent="#accordion" href="#@(item.CheckFamilyRowID)" aria-expanded="false" aria-controls="@item.CheckFamilyRowID">
+                    <input type="checkbox" name="@item.CheckFamilyRowID" class="chkFmly @item.CheckFamilyRowID" value="@item.CheckFamilyRowID" checked='@item.PkgChk' />
+                    @item.CheckFamilyName
+                </a>
+            </div>
+            <div class="" style="width:110px; margin-left:265px;">
+                <input type="text" inputmode="numeric" id="ddlSelSeq_@(item.CheckFamilyRowID)" name="ddlSelSeq_@(item.CheckFamilyRowID)"
+                       value="@item.PkgChkRepoSequence" maxlength="2" onkeypress="return isNumberKey(event,false)" class="ddlSelSeq client_select_sequence form-control" />
+            </div>
+        </div>
+        <div id="@item.CheckFamilyRowID" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                @foreach (var subchk in ViewBag.SubCheckFamilyList)
+                {
+                    if (item.CheckFamilyRowID == subchk.CheckFamilyRowID)
+                    {
+                        <div class="col-md-12">
+                            <div class="col-md-1 dvNoSubCheck"></div>
+                            <div class="col-md-3">
+                                <input type="checkbox" class="SubchkFmly @(item.CheckFamilyRowID)_@(subchk.SubCheckFamilyRowID)" name="SubchkFmly" checked='@subchk.SubChkPkg' value="@(item.CheckFamilyRowID)_@(subchk.SubCheckFamilyRowID)" />
+                                @subchk.SubCheckName
+                            </div>
+                            <div class="col-md-1 dvSubCheck">
+                                <input type="text" id="txtClTat_@(item.CheckFamilyRowID)_@(subchk.SubCheckFamilyRowID)" name="txtClTat_@(item.CheckFamilyRowID)_@(subchk.SubCheckFamilyRowID)"
+                                       value="@subchk.TAT" onblur="myFunction(this)" onkeypress="return isNumberKey(event,false)" class="txtClTat create_package_size" />
+                            </div>
+                            <div class="col-md-1 dvSubCheck">
+                                <input type="text" id="txtIntTat_@(item.CheckFamilyRowID)_@(subchk.SubCheckFamilyRowID)" name="txtIntTat_@(item.CheckFamilyRowID)_@(subchk.SubCheckFamilyRowID)"
+                                       value="@subchk.InternalTAT" onblur="myFunction(this)" onkeypress="return isNumberKey(event,false)" class="txtIntTat create_package_size" />
+                            </div>
+                            <div class="col-md-1 dvSubCheck">
+                                <input type="text" id="txtBprChk_@(item.CheckFamilyRowID)_@(subchk.SubCheckFamilyRowID)" name="txtBprChk_@(item.CheckFamilyRowID)_@(subchk.SubCheckFamilyRowID)"
+                                       value="@subchk.BillingPerCase" onkeypress="return isNumberKey(event,true)" class="txtBprChk create_package_size" />
+                            </div>
+                            <div class="col-md-1 dvSubCheck">
+                                <input type="text" id="txtCprChk_@(item.CheckFamilyRowID)_@(subchk.SubCheckFamilyRowID)" name="txtCprChk_@(item.CheckFamilyRowID)_@(subchk.SubCheckFamilyRowID)"
+                                       value="@subchk.CostParCase" class="txtCprChk create_package_size" readOnly="readOnly" />
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}

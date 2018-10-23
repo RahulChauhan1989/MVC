@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewBag.Title = "Manage Client Sub Group";
+}
+@{
+    //@ViewBag.NavigationBtnBack
+
+    //@ViewBag.NavigationBtnAddNew
+    string faIconAddNew = string.Format("<i class='fa fa-plus-circle' aria-hidden='true'></i> Add Sub-Group");
+    string hyperLinkAddNew = Html.ActionLink("linkTitle", "AddSubGroup", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnAddNew = new HtmlString(hyperLinkAddNew.ToString().Replace("linkTitle", faIconAddNew));
+
+    //@ViewBag.NavigationBtnExportExcel
+    string faIconExportExcel = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Excel");
+    string hyperLinkExportExcel = Html.ActionLink("linkTitle", "ExportSubGroup", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnExportExcel = new HtmlString(hyperLinkExportExcel.ToString().Replace("linkTitle", faIconExportExcel));
+
+    ////@ViewBag.NavigationBtnExportWord
+    //string faIconExportWord = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Word");
+    //string hyperLinkExportWord = Html.ActionLink("linkTitle", "ExportCountryInWord", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnExportWord = new HtmlString(hyperLinkExportWord.ToString().Replace("linkTitle", faIconExportWord));
+
+    ////@ViewBag.NavigationBtnBackExportPDF
+    //string faIconExportPDF = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export PDF");
+    //string hyperLinkExportPDF = Html.ActionLink("linkTitle", "ExportCountryInPDF", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnBackExportPDF = new HtmlString(hyperLinkExportPDF.ToString().Replace("linkTitle", faIconExportPDF));
+}
+@section NavigationButton{ @Html.Partial("_NavigationButton") }
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-10">
+                        @using (Html.BeginForm("ManageSubGroup", "Client", FormMethod.Get))
+                        {
+                            <div class="form-horizontal">
+                                <div class="form-group branch search-frame">
+                                    <label class="col-md-3 control-label">Enter Client :</label>
+                                    <div class="col-md-5">
+                                        @Html.TextBox("Search", null, new { @class = "form-control", placeholder = "Ex. Client name..." })
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input class="btn bun-bg btn-default" type="submit" value="Search" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    @*<div class="col-md-2 branch search-frame">
+                        <a href='@Url.Action("AddSubGroup", "Client")' class="btn bun-bg btn-default"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add Sub-Group</a>
+                    </div>*@
+                </div>
+                @if (Model != null && Model.ClientSubGroups != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            @{
+
+                                WebGrid grid = new WebGrid(rowsPerPage: Model.PageSize, ajaxUpdateContainerId: "grid");
+                                grid.Bind(Model.ClientSubGroups, autoSortAndPage: false, rowCount: Model.TotalRecords);
+                            }
+                            @grid.GetHtml(
+                                    htmlAttributes: new { id = "grid", @class = "table" },
+                                    headerStyle: "thead-inverse",
+                                    rowStyle: "ordertxt",
+                                    footerStyle: "custpaging",
+                                    mode: WebGridPagerModes.All,
+                                    columns: new[]
+                                    {
+                                    grid.Column(header: "No.", style:"col-md-1", format: item => item.WebGrid.Rows.IndexOf(item) + 1 + Math.Round(Convert.ToDouble(grid.TotalRowCount / grid.PageCount) / grid.RowsPerPage) * grid.RowsPerPage * grid.PageIndex),
+                                    grid.Column(columnName: "ClientName", header: "Client", canSort: true, style:"col-md-5"),
+                                    grid.Column(columnName: "SubGroupName", header: "Sub Group", canSort: true, style:"col-md-4"),
+
+
+                                    grid.Column(header : "Edit", format : (item) => {
+                                        var link = Html.ActionLink("Edit", "EditSubGroup", "Client", new { id = item.ClientSubGroupID }, null);
+                                        return link;
+                                    }, style:"edit col-md-1"),
+
+                                    grid.Column("Delete", canSort: false, format: (item)=> {
+                                        string DeleteLink = string.Format("<a href=\"#\" id=\"Delete_{0}\" class=\"delete\" >{1}</a>", item.ClientSubGroupID, "Delete");
+                                        return new HtmlString(DeleteLink);
+                                    }, style:"delete col-md-1")
+                                }
+                            )
+                            <div class="total-record">Total Records: @Model.TotalRecords</div>
+                        </div>
+                    </div>
+                                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(".delete").on("click", function () {
+            var str = $(this).attr("id").split("_");
+            id = str[1];
+
+            var flag = confirm('Do you want to Delete the Record ?');
+            if (id != "" && flag) {
+                $.ajax({
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("DeleteSubGroup", "Client")',
+                    data: { "id": id },
+                    dataType: "json",
+                    beforeSend: function () { },
+                    success: function (data) {
+                        if (data.result == true) {
+                            alert("Record Deleted Successfully!!");
+                            setTimeout(function () { window.location.replace("ManageSubGroup"); }, 500);
+                        }
+                        else {
+                            alert('There is some error');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

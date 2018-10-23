@@ -1,0 +1,104 @@
+﻿
+@{
+    ViewBag.Title = "Manage Client Packages (" + Convert.ToString(Session["ClientNameForContract"]) + ")";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManagePQClient", "Client", null, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+@{
+    //@ViewBag.NavigationBtnBack
+    //@ViewBag.NavigationBtnAddNew
+    string faIconAddNew = string.Format("<i class='fa fa-plus-circle' aria-hidden='true'></i> Add New Package");
+    string hyperLinkAddNew = Html.ActionLink("linkTitle", "CreateClientPackage", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnAddNew = new HtmlString(hyperLinkAddNew.ToString().Replace("linkTitle", faIconAddNew));
+
+    //@ViewBag.NavigationBtnExportExcel
+    string faIconExportExcel = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Excel");
+    string hyperLinkExportExcel = Html.ActionLink("linkTitle", "ExportClientPackage", "Client", new { CId = Request.QueryString["CId"] }, new { @class = "btn bun-bg btn-default" }).ToString();
+    ViewBag.NavigationBtnExportExcel = new HtmlString(hyperLinkExportExcel.ToString().Replace("linkTitle", faIconExportExcel));
+
+    ////@ViewBag.NavigationBtnExportWord
+    //string faIconExportWord = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export Word");
+    //string hyperLinkExportWord = Html.ActionLink("linkTitle", "ExportCountryInWord", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnExportWord = new HtmlString(hyperLinkExportWord.ToString().Replace("linkTitle", faIconExportWord));
+
+    ////@ViewBag.NavigationBtnBackExportPDF
+    //string faIconExportPDF = string.Format("<i class='fa fa-file-excel-o' aria-hidden='true'></i> Export PDF");
+    //string hyperLinkExportPDF = Html.ActionLink("linkTitle", "ExportCountryInPDF", "Client", null, new { @class = "btn bun-bg btn-default" }).ToString();
+    //ViewBag.NavigationBtnBackExportPDF = new HtmlString(hyperLinkExportPDF.ToString().Replace("linkTitle", faIconExportPDF));
+}
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@{
+    //For ClientTabs Section
+    ViewBag.ClientID = Request.QueryString["CId"];
+    ViewBag.PackageCssClass = "current";
+}
+@section ClientTabs{ @Html.Partial("_ClientTabs") }
+@section NavigationButton{ @Html.Partial("_NavigationButton") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+                    <div class="col-md-9">
+                        @using (Html.BeginForm("ManagePackages", "Client", FormMethod.Get))
+                        {
+                            <div class="form-horizontal">
+                                <div class="form-group branch search-frame">
+                                    <label class="col-md-3 control-label">Package Name :</label>
+                                    <div class="col-md-7">
+                                        @Html.TextBox("Search", null, new { @class = "form-control", placeholder = "Ex. Package name..." })
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input class="btn bun-bg btn-default" type="submit" value="Search" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                @if (Model != null && Model.ClientPackages != null)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            @{
+
+                                WebGrid grid = new WebGrid(rowsPerPage: Model.PageSize, ajaxUpdateContainerId: "grid");
+                                grid.Bind(Model.ClientPackages, autoSortAndPage: false, rowCount: Model.TotalRecords);
+                            }
+                            @grid.GetHtml(
+                                    htmlAttributes: new { id = "grid", @class = "table" },
+                                    headerStyle: "thead-inverse",
+                                    rowStyle: "ordertxt",
+                                    footerStyle: "custpaging",
+                                    mode: WebGridPagerModes.All,
+                                    columns: new[]
+                                    {
+                                    grid.Column(header: "No.", style:"", format: item => item.WebGrid.Rows.IndexOf(item) + 1 + Math.Round(Convert.ToDouble(grid.TotalRowCount / grid.PageCount) / grid.RowsPerPage) * grid.RowsPerPage * grid.PageIndex),
+                                    grid.Column(columnName: "ClientPackageName", header: "Package Name", canSort: true, style:"col-md-2"),
+                                    grid.Column(columnName: "CheckFamilyName", header: "Check Family", canSort: false, style:"col-md-3"),
+                                    grid.Column(columnName: "SubCheckFamillyName", header: "Sub Check", canSort: false, style:"col-md-3"),
+                                    grid.Column(columnName: "ReportSequence", header: "Report Sequence", canSort: false, style:"col-md-1"),
+
+                                    grid.Column(header: "Antecedent Map", format: (item) => item.AntecedentSelected == 1 ? "Yes" : "No", canSort: false
+                                    ,style:"col-md-1"),
+
+                                    grid.Column(header : "", format : (item) => {
+                                        var link = Html.ActionLink("Set Antecedent", "SetClientAntecedents", "Client", new { id=item.ClientPackageRowID, CId = item.ClientRowID,ChkId=item.CheckFamilyRowID,SChKId=item.SubCheckRowID,CPId= item.ClientPackageRowID}, null);
+                                        return link;
+                                    }, style:"edit col-md-2"),
+                                }
+                            )
+                            <div class="total-record">Total Records: @Model.TotalRecords</div>
+                        </div>
+                    </div>
+                                }
+            </div>
+        </div>
+    </div>
+</div>

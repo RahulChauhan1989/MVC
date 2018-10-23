@@ -1,0 +1,1364 @@
+﻿@model  ViewModels.ClientViewModel.UpdatePQClientViewModel
+
+@{
+    ViewBag.Title = "Edit Client";
+
+    string faIcon = string.Format("<i class='fa fa-reply' aria-hidden='true'></i> Back");
+    string hyperLink = Html.ActionLink("linkTitle", "ManagePQClient", "Client", null, new { @class = "headerbacklink" }).ToString();
+    ViewBag.TitleBackBtn = new HtmlString(hyperLink.ToString().Replace("linkTitle", faIcon));
+}
+
+@section LeftNavigation{ @Html.Partial("_NavLeftClient") }
+@section DisplayTitle{ @Html.Partial("_DisplayTitle") }
+@section DisplayMandatory{ @Html.Partial("_DisplayMandatory") }
+@section DisplayErrorMessage{ @Html.Partial("_DisplayErrorMessage") }
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.ClientAbbRowID, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.ClientAbbRowID,
+                            new SelectList(ViewBag.ClientAbbList, "ClientAbbRowID", "ClientName"),
+                            "-- Select Client -- ",
+                            new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.ClientAbbRowID, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.ClientAbbRowID, new { @id = "hdnClientAbbRowID" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.ClientSubgroupID, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.ClientSubgroupID,
+                            new SelectList(string.Empty, "ClientSubGroupID", "SubGroupName"),
+                            "-- Select SubGroup -- ", new { @class = "form-control", @disabled = "disabled" })
+
+                        @Html.ValidationMessageFor(model => model.ClientSubgroupID, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.ClientSubgroupID, new { @id = "hdnClientSubgroupID" })
+                    </div>
+                    @Html.LabelFor(model => model.CodeGeneration, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.CodeGeneration,
+                            new SelectList(ViewBag.YesNoList, "Value", "Text"),
+                            "-- Select -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CodeGeneration, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.Address, new { @class = "form-control", @rows = "2" })
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.RegisteredAddress, htmlAttributes: new { @class = "col-md-3 control-label " })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.RegisteredAddress, new { @class = "form-control", @rows = "2" })
+                        @Html.ValidationMessageFor(model => model.RegisteredAddress, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CorporateOfficeAddress, htmlAttributes: new { @class = "col-md-3 control-label " })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.CorporateOfficeAddress, new { @class = "form-control", @rows = "2" })
+                        @Html.ValidationMessageFor(model => model.CorporateOfficeAddress, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.CountryRowID, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.CountryRowID,
+                            new SelectList(ViewBag.Countries, "CountryRowID", "CountryName"),
+                            "-- Select Country -- ",
+                            new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.CountryRowID, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.CountryRowID, new { @id = "hdnCountryRowID" })
+                    </div>
+                    @Html.LabelFor(model => model.StateRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.StateRowID,
+                       new SelectList(string.Empty, "Value", "Text"),
+                       "-- Select State --",
+                       new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.StateRowID, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.StateRowID, new { @id = "hdnStateRowID" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.DistrictRowID, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.DistrictRowID,
+                       new SelectList(string.Empty, "Value", "Text"),
+                       "-- Select District --",
+                       new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.DistrictRowID, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.DistrictRowID, new { @id = "hdnDistrictRowID" })
+                    </div>
+                    @Html.LabelFor(model => model.LocationRowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.LocationRowID,
+                       new SelectList(string.Empty, "Value", "Text"),
+                       "-- Select Location --",
+                       new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.LocationRowID, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.LocationRowID, new { @id = "hdnLocationRowID" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.PinCode, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.PinCode, new { htmlAttributes = new { @class = "form-control", @onkeypress = "return isNumberKey(event,false)", @disabled = "disabled" } })
+                        @Html.ValidationMessageFor(model => model.PinCode, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.PinCode)
+                    </div>
+                    @Html.LabelFor(model => model.BORowID, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.BORowID,
+                           new SelectList(ViewBag.BranchOfficeList, "BORowID", "BOName"),
+                           "-- Select Branch Office --",
+                           new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.BORowID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.BillingRowID, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.BillingRowID,
+                           new SelectList(ViewBag.BillingCycleList, "BillingRowID", "BillingCycle"),
+                           "-- Select Billing Cycle --",
+                           new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.BillingRowID, "", new { @class = "text-danger" })
+                    </div>
+
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.ReportSentBy, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.ReportSentBy,
+                            new SelectList(ViewBag.ReportSentByList, "Value", "Text"),
+                            "-- Select -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ReportSentBy, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.InterimReport, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.InterimReport,
+                            new SelectList(ViewBag.YesNoList, "Value", "Text"),
+                            "-- Select -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.InterimReport, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.ContractDate, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.ContractDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "yyyy-mm-dd" } })
+                        @Html.ValidationMessageFor(model => model.ContractDate, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.ContractComplitionDate, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.ContractComplitionDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "yyyy-mm-dd" } })
+                        @Html.ValidationMessageFor(model => model.ContractComplitionDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.PricingType, htmlAttributes: new { @class = "col-md-3 control-label required" })
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(model => model.PricingType,
+                            new SelectList(ViewBag.PricingTypeList, "Value", "Text"),
+                            "-- Select -- ",
+                            new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PricingType, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.LabelFor(model => model.PaymentTermIndays, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-3">
+                        @Html.EditorFor(model => model.PaymentTermIndays, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.PaymentTermIndays, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group branch">
+                    @Html.LabelFor(model => model.SpecialInstructions, htmlAttributes: new { @class = "col-md-3 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.SpecialInstructions, new { @class = "form-control", @rows = "2" })
+
+                        @Html.ValidationMessageFor(model => model.SpecialInstructions, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border"> Ramco </legend>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.RamcoId, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.EditorFor(model => model.RamcoId, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.RamcoId, "", new { @class = "text-danger" })
+                                </div>
+                                @Html.LabelFor(model => model.SpocId, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.EditorFor(model => model.SpocId, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.SpocId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Conditions with Remarks</legend>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.ExtraExpenses, htmlAttributes: new { @class = "col-md-3 control-label" })
+                            <div class="col-md-3">
+                                @Html.RadioButtonFor(model => model.ExtraExpenses, 1, new { @class = "rdoExtrExp", @id = "testYes" }) Yes
+                                <span class="client_radiobtncr">
+                                    @Html.RadioButtonFor(model => model.ExtraExpenses, 0, new { @class = "rdoExtrExp", @id = "testNo", @checked = "checked" }) No
+                                </span>
+                                @*&nbsp;
+                                    Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    @Html.RadioButtonFor(model => model.ExtraExpenses, 0, new { @class = "rdoExtrExp", @id = "testNo", @checked = "checked" })&nbsp;
+                                    No*@
+                            </div>
+                            @Html.HiddenFor(model => model.ExtraExpenses, new { @id = "hdnExtraExpenses" })
+                            @Html.LabelFor(model => model.EEAllowedAmount, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.EEAllowedAmount, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.EEAllowedAmount, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.HiddenFor(model => model.EEAllowedAmount, new { @id = "hdnEEAllowedAmount" })
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.BusinessCommitment, htmlAttributes: new { @class = "col-md-3 control-label" })
+                            <div class="col-md-3">
+                                @Html.RadioButtonFor(model => model.BusinessCommitment, 1, new { @class = "BsnsCmtmnt", @id = "BsnsCmtmntYes1" }) Yes
+                                <span class="client_radiobtncr">
+                                    @Html.RadioButtonFor(model => model.BusinessCommitment, 0, new { @class = "BsnsCmtmnt", @id = "BsnsCmtmntNo1", @checked = "checked" }) No
+                                </span>
+
+                                @*&nbsp;
+                                    Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    @Html.RadioButtonFor(model => model.BusinessCommitment, 0, new { @class = "BsnsCmtmnt", @id = "BsnsCmtmntNo1", @checked = "checked" })&nbsp;
+                                    No*@
+                            </div>
+                            @Html.HiddenFor(model => model.BusinessCommitment, new { @id = "hdnBusinessCommitment" })
+                            @Html.LabelFor(model => model.BusinsComtntNoOfCase, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.BusinsComtntNoOfCase, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.BusinsComtntNoOfCase, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.HiddenFor(model => model.BusinsComtntNoOfCase, new { @id = "hdnBusinsComtntNoOfCase" })
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.InsuffClientReport, htmlAttributes: new { @class = "col-md-3 control-label " })
+                            <div class="col-md-3">
+                                @Html.RadioButtonFor(model => model.InsuffClientReport, 1, new { @class = "InsffClntRprt", @id = "InsffClntRprtYes" }) Accepted
+                                <span class="insffclntrprtmargin">
+                                    @Html.RadioButtonFor(model => model.InsuffClientReport, 0, new { @class = "InsffClntRprt", @id = "InsffClntRprtNo", @checked = "checked" }) Not Accepted
+                                </span>
+
+                                @*&nbsp;
+                                    Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    @Html.RadioButtonFor(model => model.InsuffClientReport, 0, new { @class = "InsffClntRprt", @id = "InsffClntRprtNo", @checked = "checked" })&nbsp;
+                                    No*@
+                            </div>
+                            @Html.HiddenFor(model => model.InsuffClientReport, new { @id = "hdnInsuffClientReport" })
+                            @Html.LabelFor(model => model.InsuffHoldDays, htmlAttributes: new { @class = "col-md-2 control-label required required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.InsuffHoldDays, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.InsuffHoldDays, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.HiddenFor(model => model.InsuffHoldDays, new { @id = "hdnInsuffHoldDays" })
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.Incentive, htmlAttributes: new { @class = "col-md-3 control-label" })
+                            <div class="col-md-3">
+                                @Html.RadioButtonFor(model => model.Incentive, 1, new { @class = "rdoIncentive", @id = "rdoIncentiveYes" }) Yes
+                                <span class="client_radiobtncr">
+                                    @Html.RadioButtonFor(model => model.Incentive, 0, new { @class = "rdoIncentive", @id = "rdoIncentiveNo", @checked = "checked" }) No
+                                </span>
+
+                                @*&nbsp;
+                                    Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    @Html.RadioButtonFor(model => model.Incentive, 0, new { @class = "rdoIncentive", @id = "rdoIncentiveNo", @checked = "checked" })&nbsp;
+                                    No*@
+                            </div>
+                            @Html.HiddenFor(model => model.Incentive, new { @id = "hdnIncentive" })
+                            @Html.LabelFor(model => model.IncentiveInstruction, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.IncentiveInstruction, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.IncentiveInstruction, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.HiddenFor(model => model.IncentiveInstruction, new { @id = "hdnIncentiveInstruction" })
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.Penalty, htmlAttributes: new { @class = "col-md-3 control-label" })
+                            <div class="col-md-3">
+                                @Html.RadioButtonFor(model => model.Penalty, 1, new { @class = "rdoPenalty", @id = "rdoPenaltyYes" }) Yes
+                                <span class="client_radiobtncr">
+                                    @Html.RadioButtonFor(model => model.Penalty, 0, new { @class = "rdoPenalty", @id = "rdoPenaltyNo", @checked = "checked" }) No
+                                </span>
+
+                                @*&nbsp;
+                                    Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    @Html.RadioButtonFor(model => model.Penalty, 0, new { @class = "rdoPenalty",@id= "rdoPenaltyNo", @checked = "checked" })&nbsp;
+                                    No*@
+                            </div>
+                            @Html.HiddenFor(model => model.Penalty, new { @id = "hdnPenalty" })
+                            @Html.LabelFor(model => model.PenaltyDetails, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.PenaltyDetails, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.PenaltyDetails, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.HiddenFor(model => model.PenaltyDetails, new { @id = "hdnPenaltyDetails" })
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.Liability, htmlAttributes: new { @class = "col-md-3 control-label" })
+                            <div class="col-md-3">
+                                @Html.RadioButtonFor(model => model.Liability, 1, new { @class = "rdoLiability", id = "rdoLiabilityYes" }) Yes
+                                <span class="client_radiobtncr">
+                                    @Html.RadioButtonFor(model => model.Liability, 0, new { @class = "rdoLiability", @id = "rdoLiabilityNo", @checked = "checked" }) No
+                                </span>
+
+                                @*&nbsp;
+                                    Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    @Html.RadioButtonFor(model => model.Liability, 0, new { @class = "rdoLiability",@id= "rdoLiabilityNo", @checked = "checked" })&nbsp;
+                                    No*@
+                            </div>
+                            @Html.HiddenFor(model => model.Liability, new { @id = "hdnLiability" })
+                            @Html.LabelFor(model => model.LiabilityDetails, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.LiabilityDetails, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.LiabilityDetails, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.HiddenFor(model => model.LiabilityDetails, new { @id = "hdnLiabilityDetails" })
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.BillingAprvl, htmlAttributes: new { @class = "col-md-3 control-label" })
+                            <div class="col-md-3">
+                                @Html.RadioButtonFor(model => model.BillingAprvl, 1, new { @class = "rdoBillingAprvl", @id = "rdoBillingAprvlYes" }) Yes
+                                <span class="client_radiobtncr">
+                                    @Html.RadioButtonFor(model => model.BillingAprvl, 0, new { @class = "rdoBillingAprvl", @id = "rdoBillingAprvlNo", @checked = "checked" }) No
+                                </span>
+
+                                @*&nbsp;
+                                    Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    @Html.RadioButtonFor(model => model.BillingAprvl, 0, new { @class = "rdoBillingAprvl",@id= "rdoBillingAprvlNo", @checked = "checked" })&nbsp;
+                                    No*@
+                            </div>
+                            @Html.HiddenFor(model => model.BillingAprvl, new { @id = "hdnBillingAprvl" })
+                            @Html.LabelFor(model => model.BillingAprvlDetails, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-3">
+                                @Html.EditorFor(model => model.BillingAprvlDetails, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.BillingAprvlDetails, "", new { @class = "text-danger" })
+                                @Html.HiddenFor(model => model.BillingAprvlDetails, new { @id = "hdnBillingAprvlDetails" })
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Conditions</legend>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.MapAntecedent, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.MapAntecedent, 1, new { @class = "MapYesAntecedent", @checked = "checked" }) Client
+                                    @Html.RadioButtonFor(model => model.MapAntecedent, 0, new { @class = "client_radiobtnl MapNoAntecedent" }) Default
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.MapAntecedent, 0, new { @class = "MapNoAntecedent", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.MapAntecedent, new { @id = "hdnMapAntecedent" })
+                                @Html.LabelFor(model => model.MapDisposition, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.MapDisposition, 1, new { @class = "MapYesDisposition", @checked = "checked" }) Client
+                                    @Html.RadioButtonFor(model => model.MapDisposition, 0, new { @class = "client_radiobtnrdef MapNoDisposition" }) Default
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.MapDisposition, 0, new { @class = "MapNoDisposition" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.MapDisposition, new { @id = "hdnMapDisposition" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.MapSeverity, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.MapSeverity, 1, new { @class = "MapYesSeverity", @checked = "checked" }) Client
+                                    @Html.RadioButtonFor(model => model.MapSeverity, 0, new { @class = "client_radiobtnl MapNoSeverity" }) Default
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.MapSeverity, 0, new { @class = "MapNoSeverity", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.MapSeverity, new { @id = "hdnMapSeverity" })
+                                @Html.LabelFor(model => model.MapHolidays, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.MapHolidays, 1, new { @class = "MapYesHolidays", @checked = "checked" }) Client
+                                    @Html.RadioButtonFor(model => model.MapHolidays, 0, new { @class = "client_radiobtnrdef MapNoHolidays" }) Default
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.MapHolidays, 0, new { @class = "MapNoHolidays", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.MapHolidays, new { @id = "hdnMapHolidays" })
+                            </div>
+
+                        </div>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.MailSendBy, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.MailSendBy, 1, new { @class = "MailYesSendBy" }) Client
+                                    @Html.RadioButtonFor(model => model.MailSendBy, 0, new { @class = "client_radiobtnl MailNoSendBy", @checked = "checked" }) Default
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.MailSendBy, 0, new { @class = "MailNoSendBy", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.MailSendBy, new { @id = "hdnMailSendBy" })
+                                @Html.LabelFor(model => model.HRApprovalRequired, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.HRApprovalRequired, 1, new { @class = "HRYesApprovalRequired" }) Yes
+                                    @Html.RadioButtonFor(model => model.HRApprovalRequired, 0, new { @class = "client_radiobtnr HRNoApprovalRequired", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.HRApprovalRequired, 0, new { @class = "HRNoApprovalRequired", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.HRApprovalRequired, new { @id = "hdnHRApprovalRequired" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.DaysCalculation, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.DaysCalculation, 1, new { @class = "DaysYesCalculation", @checked = "checked" }) Working Days
+                                    @Html.RadioButtonFor(model => model.DaysCalculation, 0, new { @class = "DaysNoCalculation" }) Calendar Days
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.DaysCalculation, 0, new { @class = "DaysNoCalculation", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.DaysCalculation, new { @id = "hdnDaysCalculation" })
+                                @Html.LabelFor(model => model.ReOpenCases, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.ReOpenCases, 1, new { @class = "ReYesOpenCases" }) Billable
+                                    @Html.RadioButtonFor(model => model.ReOpenCases, 0, new { @class = "ReNoOpenCases", @checked = "checked" }) Not Billable
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.ReOpenCases, 0, new { @class = "ReNoOpenCases", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.ReOpenCases, new { @id = "hdnReOpenCases" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.ReOpenBilling, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.ReOpenBilling, 1, new { @class = "ReYesOpenBilling" }) Yes
+                                    @Html.RadioButtonFor(model => model.ReOpenBilling, 0, new { @class = "client_radiobtnlNo ReNoOpenBilling", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.ReOpenBilling, 0, new { @class = "ReNoOpenBilling", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.ReOpenBilling, new { @id = "hdnReOpenBilling" })
+                                @Html.LabelFor(model => model.InsuffBilling, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.InsuffBilling, 1, new { @class = "InsuffYesBilling" }) Yes
+                                    @Html.RadioButtonFor(model => model.InsuffBilling, 0, new { @class = "client_radiobtnr InsuffNoBilling", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.InsuffBilling, 0, new { @class = "InsuffNoBilling", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.InsuffBilling, new { @id = "hdnInsuffBilling" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.OtherThanGreenBilling, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.OtherThanGreenBilling, 1, new { @class = "OTYesGreenBilling" }) Yes
+                                    @Html.RadioButtonFor(model => model.OtherThanGreenBilling, 0, new { @class = "client_radiobtnlNo OTNoGreenBilling", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.OtherThanGreenBilling, 0, new { @class = "OTNoGreenBilling", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.OtherThanGreenBilling, new { @id = "hdnOtherThanGreenBilling" })
+                                @Html.LabelFor(model => model.StopCaseBilling, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.StopCaseBilling, 1, new { @class = "StopYesCaseBilling" }) Yes
+                                    @Html.RadioButtonFor(model => model.StopCaseBilling, 0, new { @class = "client_radiobtnr StopNoCaseBilling", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.StopCaseBilling, 0, new { @class = "StopNoCaseBilling", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.StopCaseBilling, new { @id = "hdnStopCaseBilling" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.WIPOrClosedBilling, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.WIPOrClosedBilling, 1, new { @class = "WIPYesOrClosedBilling" }) Yes
+                                    @Html.RadioButtonFor(model => model.WIPOrClosedBilling, 0, new { @class = "client_radiobtnlNo WIPNoOrClosedBilling", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.WIPOrClosedBilling, 0, new { @class = "WIPNoOrClosedBilling", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.WIPOrClosedBilling, new { @id = "hdnWIPOrClosedBilling" })
+                                @Html.LabelFor(model => model.POApplicable, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.POApplicable, 1, new { @class = "POYesApplicable" }) Yes
+                                    @Html.RadioButtonFor(model => model.POApplicable, 0, new { @class = "client_radiobtnr PONoApplicable", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.POApplicable, 0, new { @class = "PONoApplicable", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.POApplicable, new { @id = "hdnPOApplicable" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.EmploymentPV, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.EmploymentPV, 1, new { @class = "EmploymentYesPV" }) Yes
+                                    @Html.RadioButtonFor(model => model.EmploymentPV, 0, new { @class = "client_radiobtnlNo EmploymentNoPV", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.EmploymentPV, 0, new { @class = "EmploymentNoPV", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.EmploymentPV, new { @id = "hdnEmploymentPV" })
+                                @Html.LabelFor(model => model.YTRStatus, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.YTRStatus, 1, new { @class = "YTRYesStatus" }) Yes
+                                    @Html.RadioButtonFor(model => model.YTRStatus, 0, new { @class = "client_radiobtnr YTRNoStatus", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.YTRStatus, 0, new { @class = "YTRNoStatus", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.YTRStatus, new { @id = "hdnYTRStatus" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.VerbalReportStatus, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.VerbalReportStatus, 1, new { @class = "VerbalYesReportStatus" }) Yes
+                                    @Html.RadioButtonFor(model => model.VerbalReportStatus, 0, new { @class = "client_radiobtnlNo VerbalNoReportStatus", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.VerbalReportStatus, 0, new { @class = "VerbalNoReportStatus", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.VerbalReportStatus, new { @id = "hdnVerbalReportStatus" })
+
+                                @Html.LabelFor(model => model.CandidateContact, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.CandidateContact, 1, new { @class = "CandidateYesContact" }) Yes
+                                    @Html.RadioButtonFor(model => model.CandidateContact, 0, new { @class = "client_radiobtnr CandidateNoContact", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.CandidateContact, 0, new { @class = "CandidateNoContact", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.CandidateContact, new { @id = "hdnCandidateContact" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.ClientNameDisclosure, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.ClientNameDisclosure, 1, new { @class = "ClientYesNameDisclosure" }) Yes
+                                    @Html.RadioButtonFor(model => model.ClientNameDisclosure, 0, new { @class = "client_radiobtnlNo ClientNoNameDisclosure", @checked = "checked" }) No
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.ClientNameDisclosure, 0, new { @class = "ClientNoNameDisclosure", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.ClientNameDisclosure, new { @id = "hdnClientNameDisclosure" })
+                                @Html.LabelFor(model => model.ClientStatus, htmlAttributes: new { @class = "col-md-2 control-label" })
+                                <div class="col-md-3">
+                                    @Html.RadioButtonFor(model => model.ClientStatus, 1, new { @class = "ClientYesStatus", @checked = "checked" }) Active
+                                    @Html.RadioButtonFor(model => model.ClientStatus, 0, new { @class = "ClientNoStatus" }) InActive
+
+                                    @*&nbsp;
+                                        Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        @Html.RadioButtonFor(model => model.ClientStatus, 0, new { @class = "ClientNoStatus", @checked = "checked" })&nbsp;
+                                        No*@
+                                </div>
+                                @Html.HiddenFor(model => model.ClientStatus, new { @id = "hdnClientStatus" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            <div class="form-group branch">
+                                @Html.LabelFor(model => model.CoverPage, htmlAttributes: new { @class = "col-md-3 control-label" })
+                                <div class="col-md-8">
+                                    @Html.RadioButtonFor(model => model.CoverPage, 1, new { @class = "CoverPage", @checked = "checked" }) Template1(<a href="@Url.Content("~/Documents/ReportTemplate/reporttemplate1.jpg")" target="_blank">View</a>)
+                                    @Html.RadioButtonFor(model => model.CoverPage, 2, new { @class = "CoverPage client_radiobtnlNo" }) Template2(<a href="@Url.Content("~/Documents/ReportTemplate/reporttemplate2.jpg")" target="_blank">View</a>)
+                                    @Html.RadioButtonFor(model => model.CoverPage, 3, new { @class = "CoverPage client_radiobtnlNo" }) Template3(<a href="@Url.Content("~/Documents/ReportTemplate/reporttemplate3.jpg")" target="_blank">View</a>)
+                                    @Html.RadioButtonFor(model => model.CoverPage, 4, new { @class = "CoverPage client_radiobtnlNo" }) Template4(<a href="@Url.Content("~/Documents/ReportTemplate/reporttemplate4.jpg")" target="_blank">View</a>)
+                                </div>
+                            </div>
+                            @Html.HiddenFor(model => model.CoverPage, new { @id = "hdnCoverPage" })
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12">&nbsp;</div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Spoc Name</legend>
+                        <div class="form-group branch">
+                            <div class="col-md-10 col-md-offset-2">
+                                <div class="scroll down">
+                                    @foreach (var item in ViewBag.ClientSpocList)
+                                    {
+                                        <div class="col-md-5">
+                                            <input type="checkbox" class="chkSpoc" name="@item.SpocEmail" value="@item.SpocNameWDesig" />
+                                            @item.SpocNameWDesig
+                                        </div>
+                                    }
+                                    @Html.HiddenFor(model => model.SpocName)
+                                    @Html.HiddenFor(model => model.SpocEmailID)
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-12"></div>
+                <div class="col-md-12 ">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Client SPOC Details</legend>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CSpocName, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CSpocName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CSpocName, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.CSpocDesignation, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CSpocDesignation, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CSpocDesignation, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CSpocMobileNo, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CSpocMobileNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CSpocMobileNo, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.CSpocContactNo, htmlAttributes: new { @class = "col-md-2 control-label required" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CSpocContactNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CSpocContactNo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @*@Html.LabelFor(model => model.CSpocEmailID, htmlAttributes: new { @class = "col-md-2 control-label required" })*@
+
+                            <label class="col-md-2 control-label required">Email :<br /><span class="short">(Enter Multiple Email Separated By Comma)</span> </label>
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.CSpocEmailID, new { @class = "form-control", @rows = "2" })
+                                @Html.ValidationMessageFor(model => model.CSpocEmailID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-12">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Billing SPOC Details</legend>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CBillingSpocName, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CBillingSpocName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CBillingSpocName, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.CBillingSpocDesignation, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CBillingSpocDesignation, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CBillingSpocDesignation, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CBillingSpocMobileNo, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-4">
+
+                                @Html.EditorFor(model => model.CBillingSpocMobileNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CBillingSpocMobileNo, "", new { @class = "text-danger" })
+                            </div>
+
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CBillingSpocEmailID, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.CBillingSpocEmailID, new { @class = "form-control", @rows = "2" })
+
+                                @Html.ValidationMessageFor(model => model.CBillingSpocEmailID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CBillingInstructions, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.CBillingInstructions, new { @class = "form-control", @rows = "2" })
+                                @Html.ValidationMessageFor(model => model.CBillingInstructions, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CBillingAddress, htmlAttributes: new { @class = "col-md-2 control-label" })
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(model => model.CBillingAddress, new { @class = "form-control", @rows = "2" })
+                                @Html.ValidationMessageFor(model => model.CBillingAddress, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+                <div class="col-md-12 ">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Esclation SPOC Details</legend>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CEsclationSpocName, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CEsclationSpocName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CEsclationSpocName, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.CEsclationSpocDesignation, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CEsclationSpocDesignation, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CEsclationSpocDesignation, "", new { @class = "text-danger" })
+                            </div>
+
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CEsclationSpocEmailID, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CEsclationSpocEmailID, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CEsclationSpocEmailID, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.CEsclationSpocMobileNo, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CEsclationSpocMobileNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CEsclationSpocMobileNo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-12 ">
+                    <fieldset class="scheduler-border">
+                        <legend class="scheduler-border">Send Mail Ids</legend>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CSendInsuffDisplay, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CSendInsuffDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CSendInsuffDisplay, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.CSendInsuffEmail, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CSendInsuffEmail, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CSendInsuffEmail, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CSendReportDisplay, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CSendReportDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CSendReportDisplay, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.CSendReportEmail, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.TextAreaFor(model => model.CSendReportEmail, new { @class = "form-control", @rows = "2" })
+                                @Html.ValidationMessageFor(model => model.CSendReportEmail, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CSendRedReportDisplay, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CSendRedReportDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CSendRedReportDisplay, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.CSendRedReportEmail, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.TextAreaFor(model => model.CSendRedReportEmail, new { @class = "form-control", @rows = "2" })
+                                @Html.ValidationMessageFor(model => model.CSendRedReportEmail, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group branch">
+                            @Html.LabelFor(model => model.CSendBillingAprvlDisplay, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.CSendBillingAprvlDisplay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CSendBillingAprvlDisplay, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.LabelFor(model => model.CSendBillingAprvlEmail, htmlAttributes: new { @class = "col-md-2 control-label " })
+                            <div class="col-md-4">
+                                @Html.TextAreaFor(model => model.CSendBillingAprvlEmail, new { @class = "form-control", @rows = "2" })
+                                @Html.ValidationMessageFor(model => model.CSendBillingAprvlEmail, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+                <div class="form-group branch"></div>
+                <div class="all-button-bg">
+                    @Html.HiddenFor(model => model.ClientRowID)
+                    @*@Html.HiddenFor(model => model.ClientCode)
+                        @Html.HiddenFor(model => model.ClientCode1)*@
+                    @Html.ActionLink("Back", "ManagePQClient", "Client", null, new { @class = "btn bun-bg btn-default" })
+                    <input class="btn bun-bg btn-default" type="submit" onclick="return validateForm()" value="Submit" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts{
+    <script src='@Url.Content("~/Scripts/jquery.validate.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")'></script>
+    <script src='@Url.Content("~/Scripts/EventValidations.js")'></script>
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $.getJSON('/Client/ClientAbbSubGroupList/' + $('#ClientAbbRowID').val(), function (data) {
+                var items = '<option value="">-- Select Sub Group --</option>';
+                $.each(data, function (i, ClientSubgroup) {
+                    items += "<option value='" + ClientSubgroup.Value + "'>" + ClientSubgroup.Text + "</option>";
+                });
+                $('#ClientSubgroupID').html(items);
+                $('#ClientSubgroupID').val($('#hdnClientSubgroupID').val());
+            });
+
+            $.getJSON('/Client/BindState/' + $('#CountryRowID').val(), function (data) {
+                var items = '<option value="">-- Select State --</option>';
+                $.each(data, function (i, States) {
+                    items += "<option value='" + States.Value + "'>" + States.Text + "</option>";
+                });
+                $('#StateRowID').html(items);
+                $('#StateRowID').val($('#hdnStateRowID').val());
+            });
+            $.getJSON('/Client/BindDistrict/' + $('#hdnStateRowID').val(), function (data) {
+                var items = '<option>-- Select District --</option>';
+                $.each(data, function (i, Districts) {
+                    items += "<option value='" + Districts.Value + "'>" + Districts.Text + "</option>";
+                });
+                $('#DistrictRowID').html(items);
+                $('#DistrictRowID').val($('#hdnDistrictRowID').val());
+            });
+            $.getJSON('/Client/BindLocation/' + $('#hdnDistrictRowID').val(), function (data) {
+                var items = '<option value="">-- Select Location --</option>';
+                $.each(data, function (i, Locations) {
+                    items += "<option value='" + Locations.Value + "'>" + Locations.Text + "</option>";
+                });
+                $('#LocationRowID').html(items);
+                $('#LocationRowID').val($('#hdnLocationRowID').val());
+            });
+            var url = "/Client/GetPinCodeByLocationId/" + $("#hdnLocationRowID").val();
+            $.ajax({
+                url: url,
+                type: 'GET',
+                async: false,
+                dataType: 'json',
+                success: function (pinCode) {
+                    $('#PinCode').val(pinCode);
+                }
+            });
+
+            var MapAntecedent = $('#hdnMapAntecedent').val();
+            if (MapAntecedent == 1) {
+                $('.MapYesAntecedent').prop("checked", "checked");
+            }
+
+            var MapDisposition = $('#hdnMapDisposition').val();
+            if (MapDisposition == 1) {
+                $('.MapYesDisposition').prop("checked", "checked");
+            }
+
+            var MapSeverity = $('#hdnMapSeverity').val();
+            if (MapSeverity == 1) {
+                $('.MapYesSeverity').prop("checked", "checked");
+            }
+
+            var MapHolidays = $('#hdnMapHolidays').val();
+            if (MapHolidays == 1) {
+                $('.MapYesHolidays').prop("checked", "checked");
+            }
+
+            var MailSendBy = $('#hdnMailSendBy').val();
+            if (MailSendBy == 1) {
+                $('.MailYesSendBy').prop("checked", "checked");
+            }
+
+            var HRApprovalRequired = $('#hdnHRApprovalRequired').val();
+            if (HRApprovalRequired == 1) {
+                $('.HRYesApprovalRequired').prop("checked", "checked");
+            }
+
+            var DaysCalculation = $('#hdnDaysCalculation').val();
+            if (DaysCalculation == 1) {
+                $('.DaysYesCalculation').prop("checked", "checked");
+            }
+
+            var ReOpenCases = $('#hdnReOpenCases').val();
+            if (ReOpenCases == 1) {
+                $('.ReYesOpenCases').prop("checked", "checked");
+            }
+
+            var ReOpenBilling = $('#hdnReOpenBilling').val();
+            if (ReOpenBilling == 1) {
+                $('.ReYesOpenBilling').prop("checked", "checked");
+            }
+
+            var InsuffBilling = $('#hdnInsuffBilling').val();
+            if (InsuffBilling == 1) {
+                $('.InsuffYesBilling').prop("checked", "checked");
+            }
+
+            var OtherThanGreenBilling = $('#hdnOtherThanGreenBilling').val();
+            if (OtherThanGreenBilling == 1) {
+                $('.OTYesGreenBilling').prop("checked", "checked");
+            }
+
+            var StopCaseBilling = $('#hdnStopCaseBilling').val();
+            if (StopCaseBilling == 1) {
+                $('.StopYesCaseBilling').prop("checked", "checked");
+            }
+
+            var WIPOrClosedBilling = $('#hdnWIPOrClosedBilling').val();
+            if (WIPOrClosedBilling == 1) {
+                $('.WIPYesOrClosedBilling').prop("checked", "checked");
+            }
+
+            var POApplicable = $('#hdnPOApplicable').val();
+            if (POApplicable == 1) {
+                $('.POYesApplicable').prop("checked", "checked");
+            }
+
+            var EmploymentPV = $('#hdnEmploymentPV').val();
+            if (EmploymentPV == 1) {
+                $('.EmploymentYesPV').prop("checked", "checked");
+            }
+
+            var YTRStatus = $('#hdnYTRStatus').val();
+            if (YTRStatus == 1) {
+                $('.YTRYesStatus').prop("checked", "checked");
+            }
+
+            var VerbalReportStatus = $('#hdnVerbalReportStatus').val();
+            if (VerbalReportStatus == 1) {
+                $('.VerbalYesReportStatus').prop("checked", "checked");
+            }
+
+            var CandidateContact = $('#hdnCandidateContact').val();
+            if (CandidateContact == 1) {
+                $('.CandidateYesContact').prop("checked", "checked");
+            }
+
+            var ClientNameDisclosure = $('#hdnClientNameDisclosure').val();
+            if (ClientNameDisclosure == 1) {
+                $('.ClientYesNameDisclosure').prop("checked", "checked");
+            }
+
+            var ClientStatus = $('#hdnClientStatus').val();
+            if (ClientStatus == 1) {
+                $('.ClientYesStatus').prop("checked", "checked");
+            }
+
+            var AllowedAmount = $('#hdnExtraExpenses').val();
+            if (AllowedAmount > 0) {
+                $('#testYes').prop("checked", "checked");
+                $('#EEAllowedAmount').prop("disabled", false);
+            }
+
+            var BusinessCommitment = $('#hdnBusinessCommitment').val();
+            if (BusinessCommitment > 0) {
+                $('#BsnsCmtmntYes1').prop("checked", "checked");
+                $('#BusinsComtntNoOfCase').prop("disabled", false);
+            }
+
+            var InsuffClientReport = $('#hdnInsuffClientReport').val();
+            if (InsuffClientReport > 0) {
+                $('#InsffClntRprtYes').prop("checked", "checked");
+                $('#InsuffHoldDays').prop("disabled", false);
+            }
+
+            var Incentive = $('#hdnIncentive').val();
+            if (Incentive > 0) {
+                $('#rdoIncentiveYes').prop("checked", "checked");
+                $('#IncentiveInstruction').prop("disabled", false);
+            }
+
+            var InsuffClientReport = $('#hdnPenalty').val();
+            if (InsuffClientReport > 0) {
+                $('#rdoPenaltyYes').prop("checked", "checked");
+                $('#PenaltyDetails').prop("disabled", false);
+            }
+
+            var InsuffClientReport = $('#hdnLiability').val();
+            if (InsuffClientReport > 0) {
+                $('#rdoLiabilityYes').prop("checked", "checked");
+                $('#LiabilityDetails').prop("disabled", false);
+            }
+
+            var InsuffClientReport = $('#hdnBillingAprvl').val();
+            if (InsuffClientReport > 0) {
+                $('#rdoBillingAprvlYes').prop("checked", "checked");
+                $('#BillingAprvlDetails').prop("disabled", false);
+            }
+
+
+            var str = $('#SpocName').val();
+            var list = $('input[class="chkSpoc"]');
+            list.each(function (index) {
+                item = $(this);
+                var temp = new Array();
+                temp = str.split(",");
+                var values = str.split(',');
+                for (i = 0; i < values.length; i++) {
+                    if (values[i] == item.val()) {
+                        item.attr('checked', true);
+                    }
+                }
+            });
+
+        });
+        $(function () {
+            //Bind State base on CountryRowID
+            $('#CountryRowID').change(function () {
+                $.getJSON('/Client/BindState/' + $('#CountryRowID').val(), function (data) {
+                    var items = '<option value="">-- Select State --</option>';
+                    $.each(data, function (i, States) {
+                        items += "<option value='" + States.Value + "'>" + States.Text + "</option>";
+                    });
+                    $('#StateRowID').html(items);
+                    $('#DistrictRowID').val('');
+                    $('#LocationRowID').val('');
+                    $('#PinCode').val('');
+                });
+            });
+            //Bind District base on StateRowID
+            $('#StateRowID').change(function () {
+                $.getJSON('/Client/BindDistrict/' + $('#StateRowID').val(), function (data) {
+                    var items = '<option value="">-- Select District --</option>';
+                    $.each(data, function (i, Districts) {
+                        items += "<option value='" + Districts.Value + "'>" + Districts.Text + "</option>";
+                    });
+                    $('#DistrictRowID').html(items);
+                    $('#LocationRowID').val('');
+                    $('#PinCode').val('');
+                });
+            });
+
+            //Bind City base on DistrictRowID
+            $('#DistrictRowID').change(function () {
+                $.getJSON('/Client/BindLocation/' + $('#DistrictRowID').val(), function (data) {
+                    var items = '<option value="">-- Select Location --</option>';
+                    $.each(data, function (i, Locations) {
+                        items += "<option value='" + Locations.Value + "'>" + Locations.Text + "</option>";
+                    });
+                    $('#LocationRowID').html(items);
+                });
+            });
+
+            //PinCode Bind
+            $('#LocationRowID').change(function () {
+                var url = "/Client/GetPinCodeByLocationId/" + $("#LocationRowID").val();
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    async: false,
+                    dataType: 'json',
+                    success: function (pinCode) {
+                        $('#PinCode').val(pinCode);
+                    }
+                });
+            });
+
+            //Bind Client Abbrivation SubGroup ClientAbbID
+            $('#ClientAbbRowID').change(function () {
+                $.getJSON('/Client/ClientAbbSubGroupList/' + $('#ClientAbbRowID').val(), function (data) {
+                    var items = '<option>-- Select SubGroup --</option>';
+                    $.each(data, function (i, ClientAbbSubGroup) {
+                        items += "<option value='" + ClientAbbSubGroup.Value + "'>" + ClientAbbSubGroup.Text + "</option>";
+                    });
+                    $('#ClientSubgroupID').html(items);
+                });
+            });
+            // Selected Spocs
+            $('input.chkSpoc:checkbox').click(function () {
+                var SpocName = '';
+                var SpocEmail = '';
+                $('input.chkSpoc:checkbox').each(function (index, value) {
+                    if (this.checked) {
+                        SpocName += this.value + ',';
+                        SpocEmail += this.name + ',';
+                    }
+                });
+                if (SpocName.length > 0 && SpocEmail.length > 0) {
+                    SpocName = SpocName.substring(0, SpocName.length - 1);
+                    SpocEmail = SpocEmail.substring(0, SpocEmail.length - 1);
+                } else { SpocName = ''; SpocEmail = ''; }
+
+                $('#SpocName').val(SpocName.trim());
+                $('#SpocEmailID').val(SpocEmail.trim());
+            });
+            //ExtraExpenses
+            $('input[class="rdoExtrExp"]').on('change', function () {
+                var BsnsCmtmnt = $('input[name=ExtraExpenses]:checked').val()
+                if (BsnsCmtmnt == 1) {
+                    $('#EEAllowedAmount').prop("disabled", false);
+                    $('#EEAllowedAmount').val($('#hdnEEAllowedAmount').val());
+                    $('#EEAllowedAmount').focus();
+                }
+                else {
+                    $('#EEAllowedAmount').prop("disabled", true);
+                    $('#EEAllowedAmount').val('');
+                }
+
+            });
+            //BusinessCommitment
+            $('input[class="BsnsCmtmnt"]').on('change', function () {
+                var BsnsCmtmnt = $('input[name=BusinessCommitment]:checked').val()
+                if (BsnsCmtmnt == 1) {
+                    $('#BusinsComtntNoOfCase').prop("disabled", false);
+                    $('#BusinsComtntNoOfCase').val($('#hdnBusinsComtntNoOfCase').val());
+                    $('#BusinsComtntNoOfCase').focus();
+                }
+                else {
+                    $('#BusinsComtntNoOfCase').prop("disabled", true);
+                    $('#BusinsComtntNoOfCase').val('');
+                }
+
+            });
+            //InsuffClientReport
+            $('input[class="InsffClntRprt"]').on('change', function () {
+                var InsffClntRprt = $('input[name=InsuffClientReport]:checked').val()
+                if (InsffClntRprt == 1) {
+                    $('#InsuffHoldDays').prop("disabled", false);
+                    $('#InsuffHoldDays').val($('#hdnInsuffHoldDays').val());
+                    $('#InsuffHoldDays').focus();
+                }
+                else {
+                    $('#InsuffHoldDays').prop("disabled", true);
+                    $('#InsuffHoldDays').val('');
+                }
+
+            });
+            //Incentive
+            $('input[class="rdoIncentive"]').on('change', function () {
+                var rdoIncentive = $('input[name=Incentive]:checked').val()
+                if (rdoIncentive == 1) {
+                    $('#IncentiveInstruction').prop("disabled", false);
+                    $('#IncentiveInstruction').val($('#hdnIncentiveInstruction').val());
+                    $('#IncentiveInstruction').focus();
+                }
+                else {
+                    $('#IncentiveInstruction').prop("disabled", true);
+                    $('#IncentiveInstruction').val('');
+                }
+            });
+            //rdoPenalty
+            $('input[class="rdoPenalty"]').on('change', function () {
+                var rdoPenalty = $('input[name=Penalty]:checked').val()
+                if (rdoPenalty == 1) {
+                    $('#PenaltyDetails').prop("disabled", false);
+                    $('#PenaltyDetails').val($('#hdnPenaltyDetails').val());
+                    $('#PenaltyDetails').focus();
+                }
+                else {
+                    $('#PenaltyDetails').prop("disabled", true);
+                    $('#PenaltyDetails').val('');
+                }
+
+            });
+            //rdoLiability
+            $('input[class="rdoLiability"]').on('change', function () {
+                var InsffClntRprt = $('input[name=Liability]:checked').val()
+                if (InsffClntRprt == 1) {
+                    $('#LiabilityDetails').prop("disabled", false);
+                    $('#LiabilityDetails').val($('#hdnLiabilityDetails').val());
+                    $('#LiabilityDetails').focus();
+                }
+                else {
+                    $('#LiabilityDetails').prop("disabled", true);
+                    $('#LiabilityDetails').val('');
+                }
+
+            });
+            //rdoBillingAprvl
+            $('input[class="rdoBillingAprvl"]').on('change', function () {
+                var InsffClntRprt = $('input[name=BillingAprvl]:checked').val()
+                if (InsffClntRprt == 1) {
+                    $('#BillingAprvlDetails').prop("disabled", false);
+                    $('#BillingAprvlDetails').val($('#hdnBillingAprvlDetails').val());
+                    $('#BillingAprvlDetails').focus();
+                }
+                else {
+                    $('#BillingAprvlDetails').prop("disabled", true);
+                    $('#BillingAprvlDetails').val('');
+                }
+            });
+        });
+
+        function validateForm() {
+            //ExtraExpenses
+            var ExtraExpenses = $('input[name=ExtraExpenses]:checked').val()
+            if (ExtraExpenses == 1) {
+                if ($('#EEAllowedAmount').val() == '') {
+                    alert("Please Enter Extra Expenses Allowed Amount.");
+                    $('#EEAllowedAmount').focus();
+                    return false;
+                }
+            }
+            //BusinessCommitment
+            var BsnsCmtmnt = $('input[name=BusinessCommitment]:checked').val()
+            if (BsnsCmtmnt == 1) {
+                if ($('#BusinComtntNoOfCase').val() == '') {
+                    alert("Please Enter Number Of Cases.");
+                    $('#BusinComtntNoOfCase').focus();
+                    return false;
+                }
+            }
+            //InsuffClientReport
+            var InsffClntRprt = $('input[id=InsffClntRprtYes]:checked').val()
+            if (InsffClntRprt == 1) {
+                if ($('#InsuffHoldDays').val() == '') {
+                    alert("Please Enter Insuff Report Time.");
+                    $('#InsuffHoldDays').focus();
+                    return false;
+                }
+                var valInsuff = $('#InsuffHoldDays').val();
+                if (valInsuff > 200) {
+                    alert("Please Enter Valid Insuff Report Time.");
+                    $('#InsuffHoldDays').focus();
+                    return false;
+                }
+            }
+
+            // Spoc Checked
+            var SpocEmail = false;
+            $('input.chkSpoc:checkbox').each(function (index, value) {
+                if (this.checked) {
+                    SpocEmail = true;
+                }
+            });
+            if (SpocEmail == false) {
+                alert("Please Select Atleast one Spoc.");
+                return false;
+            }
+
+            //IncentiveInstruction
+            var rdoIncentive = $('input[name=Incentive]:checked').val()
+            if (rdoIncentive == 1) {
+                if ($('#IncentiveInstruction').val() == '') {
+                    alert("Please Enter Incentive Instruction.");
+                    $('#IncentiveInstruction').focus();
+                    return false;
+                }
+            }
+
+            //PenaltyDetails
+            var rdoPenalty = $('input[name=Penalty]:checked').val()
+            if (rdoPenalty == 1) {
+                if ($('#PenaltyDetails').val() == '') {
+                    alert("Please Enter Penalty Details.");
+                    $('#PenaltyDetails').focus();
+                    return false;
+                }
+            }
+
+            //InsuffClientReport
+            var rdoLiability = $('input[name=Liability]:checked').val()
+            if (rdoLiability == 1) {
+                if ($('#LiabilityDetails').val() == '') {
+                    alert("Please Enter Liability Details.");
+                    $('#LiabilityDetails').focus();
+                    return false;
+                }
+            }
+
+            //InsuffClientReport
+            var rdoBillingAprvl = $('input[name=BillingAprvl]:checked').val()
+            if (rdoBillingAprvl == 1) {
+                if ($('#BillingAprvlDetails').val() == '') {
+                    alert("Please Enter Billing Aprvl Details.");
+                    $('#BillingAprvlDetails').focus();
+                    return false;
+                }
+            }
+
+            //ContractComplitionDate Validation
+            var ContractDate = $('#ContractDate').val();
+            var ContractComplitionDate = $('#ContractComplitionDate').val();
+            if (ContractDate > ContractComplitionDate) {
+                alert("Contract complition date should be grater then contract date.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('input[type=datetime]').datepicker({
+                dateFormat: "yy-mm-dd",
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                yearRange: "-66:+10",
+                //onClose: function (dateText, inst) {
+                //    $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, inst.selectedDay));
+                //}
+            });
+        });
+    </script>
+    <style>
+        .ui-datepicker-buttonpane {
+            display: none;
+        }
+
+        .down {
+            height: 120px;
+            padding-left: 0px !important;
+            width: 100%;
+        }
+    </style>
+}
