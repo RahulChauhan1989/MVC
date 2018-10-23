@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{33BD5E45-2C11-4021-B936-8152E1D7FA8C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BAL</RootNamespace>
+    <AssemblyName>BAL</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AntecedentRepository.cs" />
+    <Compile Include="BillingCycleRepository.cs" />
+    <Compile Include="BranchOfficeRepository.cs" />
+    <Compile Include="CandidateRepository\CheckTempCandidateCaseStatusRepository.cs" />
+    <Compile Include="CandidateRepository\ICheckTempCandidateCaseStatusRepository.cs" />
+    <Compile Include="CandidateRepository\IImportCandidateCases.cs" />
+    <Compile Include="CandidateRepository\ImportCandidateCases.cs" />
+    <Compile Include="CandidateRepository\IPQCandidateLoginRepository.cs" />
+    <Compile Include="CandidateRepository\PQCandidateLoginRepository.cs" />
+    <Compile Include="CategoryRepository.cs" />
+    <Compile Include="CheckFamilyRepository.cs" />
+    <Compile Include="ClientRepository\AbbreviationRepository.cs" />
+    <Compile Include="ClientRepository\ClientCheckRepository.cs" />
+    <Compile Include="ClientRepository\ClientCompletedContractRepository.cs" />
+    <Compile Include="ClientRepository\ClientDashboardRepository.cs" />
+    <Compile Include="ClientRepository\ClientDispositionRepository.cs" />
+    <Compile Include="ClientRepository\ClientLoginRepository.cs" />
+    <Compile Include="ClientRepository\ClientPackageRepository.cs" />
+    <Compile Include="ClientRepository\ClientServicingRepository.cs" />
+    <Compile Include="ClientRepository\ClientSeverityRepository.cs" />
+    <Compile Include="ClientRepository\ClientSubGroupRepository.cs" />
+    <Compile Include="ClientRepository\ClientContractUploadRepository.cs" />
+    <Compile Include="ClientRepository\IAbbreviationRepository.cs" />
+    <Compile Include="ClientRepository\IClientCheckRepository.cs" />
+    <Compile Include="ClientRepository\IClientCompletedContractRepository.cs" />
+    <Compile Include="ClientRepository\IClientDashboardRepository.cs" />
+    <Compile Include="ClientRepository\IClientDispositionRepository.cs" />
+    <Compile Include="ClientRepository\IClientLoginRepository.cs" />
+    <Compile Include="ClientRepository\IClientPackageRepository.cs" />
+    <Compile Include="ClientRepository\IClientServicingRepository.cs" />
+    <Compile Include="ClientRepository\IClientSeverityRepository.cs" />
+    <Compile Include="ClientRepository\IClientSubGroupRepository.cs" />
+    <Compile Include="ClientRepository\IClientContractUploadRepository.cs" />
+    <Compile Include="ClientRepository\IClientAntecedentFieldRepository.cs" />
+    <Compile Include="ClientRepository\IPQClientHolidayRepository.cs" />
+    <Compile Include="ClientRepository\IPQClientRepository.cs" />
+    <Compile Include="ClientRepository\ClientAntecedentFieldRepository.cs" />
+    <Compile Include="ClientRepository\IPQClientTMemberRepository.cs" />
+    <Compile Include="ClientRepository\IUploadDocClientRepository.cs" />
+    <Compile Include="ClientRepository\PQClientHolidayRepository.cs" />
+    <Compile Include="ClientRepository\PQClientRepository.cs" />
+    <Compile Include="ClientRepository\PQClientTMemberRepository.cs" />
+    <Compile Include="ClientRepository\UploadDocClientRepository.cs" />
+    <Compile Include="CollegeRepository.cs" />
+    <Compile Include="CompanyRepository.cs" />
+    <Compile Include="CountryRepository.cs" />
+    <Compile Include="DegreeTypeRepository.cs" />
+    <Compile Include="DepartmentRepository.cs" />
+    <Compile Include="DesignationRepository.cs" />
+    <Compile Include="DispositionRepository.cs" />
+    <Compile Include="DistrictRepository.cs" />
+    <Compile Include="DropDownMasterRepository.cs" />
+    <Compile Include="EmployerRepository.cs" />
+    <Compile Include="HolidayRepository.cs" />
+    <Compile Include="HRRepository\AccountRepository.cs" />
+    <Compile Include="HRRepository\IAccountRepository.cs" />
+    <Compile Include="HRRepository\ITeamDepartmentRepository.cs" />
+    <Compile Include="HRRepository\ITeamMemberRepository.cs" />
+    <Compile Include="HRRepository\IWebUserRepository.cs" />
+    <Compile Include="HRRepository\TeamDepartmentRepository.cs" />
+    <Compile Include="HRRepository\TeamMemberRepository.cs" />
+    <Compile Include="HRRepository\WebUserRepository.cs" />
+    <Compile Include="IAntecedentRepository.cs" />
+    <Compile Include="IBillingCycleRepository.cs" />
+    <Compile Include="IBranchOfficeRepository.cs" />
+    <Compile Include="ICategoryRepository.cs" />
+    <Compile Include="ICheckFamilyRepository.cs" />
+    <Compile Include="ICollegeRepository.cs" />
+    <Compile Include="ICompanyRepository.cs" />
+    <Compile Include="ICountryRepository.cs" />
+    <Compile Include="IDegreeTypeRepository.cs" />
+    <Compile Include="IDepartmentRepository.cs" />
+    <Compile Include="IDesignationRepository.cs" />
+    <Compile Include="IDispositionRepository.cs" />
+    <Compile Include="IDistrictRepository.cs" />
+    <Compile Include="IDropDownMasterRepository.cs" />
+    <Compile Include="IEmployerRepository.cs" />
+    <Compile Include="IHolidayRepository.cs" />
+    <Compile Include="ILocationRepository.cs" />
+    <Compile Include="IPoliceStationRepository.cs" />
+    <Compile Include="IPQLogTrasactionRepository.cs" />
+    <Compile Include="ISeverityGridRepository.cs" />
+    <Compile Include="IStateRepository.cs" />
+    <Compile Include="ISubCheckFamilyRepository.cs" />
+    <Compile Include="IUniversityRepository.cs" />
+    <Compile Include="IVCoverageDistrictRepository.cs" />
+    <Compile Include="IVendorCoverageRepository.cs" />
+    <Compile Include="IVendorRepository.cs" />
+    <Compile Include="LocationRepository.cs" />
+    <Compile Include="PartnerRepository\IMasterVendorLoginRepository.cs" />
+    <Compile Include="PartnerRepository\IPartnerAddressVerRepository.cs" />
+    <Compile Include="PartnerRepository\IPartnerDashboardRepository.cs" />
+    <Compile Include="PartnerRepository\IPartnerVerificationRepository.cs" />
+    <Compile Include="PartnerRepository\MasterVendorLoginRepository.cs" />
+    <Compile Include="PartnerRepository\PartnerAddressVerRepository.cs" />
+    <Compile Include="PartnerRepository\PartnerDashboardRepository.cs" />
+    <Compile Include="PartnerRepository\PartnerVerificationRepository.cs" />
+    <Compile Include="PoliceStationRepository.cs" />
+    <Compile Include="PQLogTrasactionRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProvidedInfoRepository\AddressInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\CaseActionHistoryRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\CheckActionHistoryRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\CriminalInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\DashboardDataEntryRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\EducationInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\EducationResearchRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\EmailVerificationRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\EmploymentInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\EmploymentResearchRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IAddressInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\ICaseActionHistoryRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\ICheckActionHistoryRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\ICriminalInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IDashboardDataEntryRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IEducationInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IEducationResearchRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IEmailVerificationRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IEmploymentInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IEmploymentResearchRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IInsuranceInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\INationalIdentityInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\InsuranceInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IPQCandidateCheckRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IPQClientCandiBulkUploadRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IPQClientCompnayUploadDocRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IPQVerifiedUploadCaseDocRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IPQVerifiedUploadDocRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IReferenceInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\ISpecialCheckInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\NationalIdentityInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\PQCandidateCheckRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\PQClientCandiBulkUploadRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\PQClientCompnayUploadDocRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\PQPersonalRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\IPQPersonalRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\PQVerifiedUploadCaseDocRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\PQVerifiedUploadDocRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\ReferenceInfoRepository.cs" />
+    <Compile Include="ProvidedInfoRepository\SpecialCheckInfoRepository.cs" />
+    <Compile Include="PVRepository\IPVInfoRepository.cs" />
+    <Compile Include="PVRepository\PVInfoRepository.cs" />
+    <Compile Include="ReportQCRepository\DashboardRWQCRepository.cs" />
+    <Compile Include="ReportQCRepository\IDashboardRWQCRepository.cs" />
+    <Compile Include="ReportQCRepository\IReportQCRepository.cs" />
+    <Compile Include="ReportQCRepository\ReportQCRepository.cs" />
+    <Compile Include="SeverityGridRepository.cs" />
+    <Compile Include="StateRepository.cs" />
+    <Compile Include="SubCheckFamilyRepository.cs" />
+    <Compile Include="UniversityRepository.cs" />
+    <Compile Include="VCoverageDistrictRepository.cs" />
+    <Compile Include="VendorCoverageRepository.cs" />
+    <Compile Include="VendorRepository.cs" />
+    <Compile Include="VerificationRepository\DashboardPVRepository.cs" />
+    <Compile Include="VerificationRepository\DashboardVerificationRepository.cs" />
+    <Compile Include="VerificationRepository\IDashboardPVRepository.cs" />
+    <Compile Include="VerificationRepository\IDashboardVerificationRepository.cs" />
+    <Compile Include="VerificationRepository\IPQAddressVerRepository.cs" />
+    <Compile Include="VerificationRepository\IPQCriminalVerRepository.cs" />
+    <Compile Include="VerificationRepository\IPQEducationVerRepository.cs" />
+    <Compile Include="VerificationRepository\IPQEmploymentVerRepository.cs" />
+    <Compile Include="VerificationRepository\IPQNationalIdentityVerRepository.cs" />
+    <Compile Include="VerificationRepository\IPQReferenceVerRepository.cs" />
+    <Compile Include="VerificationRepository\IPQSpecialCheckVerRepository.cs" />
+    <Compile Include="VerificationRepository\IVerificationInfoRepository.cs" />
+    <Compile Include="VerificationRepository\PQAddressVerRepository.cs" />
+    <Compile Include="VerificationRepository\PQCriminalVerRepository.cs" />
+    <Compile Include="VerificationRepository\PQEducationVerRepository.cs" />
+    <Compile Include="VerificationRepository\PQEmploymentVerRepository.cs" />
+    <Compile Include="VerificationRepository\PQNationalIdentityVerRepository.cs" />
+    <Compile Include="VerificationRepository\PQReferenceVerRepository.cs" />
+    <Compile Include="VerificationRepository\SpecialVerificationRepository.cs" />
+    <Compile Include="VerificationRepository\VerificationInfoRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{48666944-4098-4e4a-8e38-53519c7e7f57}</Project>
+      <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ViewModels\ViewModels.csproj">
+      <Project>{642c2c78-ac09-4bae-9890-8192e1bbe47f}</Project>
+      <Name>ViewModels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
