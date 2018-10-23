@@ -1,0 +1,1205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{48666944-4098-4E4A-8E38-53519C7E7F57}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DAL</RootNamespace>
+    <AssemblyName>DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CaseActionHistory.cs" />
+    <Compile Include="CheckActionHistory.cs" />
+    <Compile Include="InboxAddress.cs" />
+    <Compile Include="Mappings\CaseActionHistoryMap.cs" />
+    <Compile Include="Mappings\CheckActionHistoryMap.cs" />
+    <Compile Include="Mappings\InboxAddressMap.cs" />
+    <Compile Include="Mappings\TempPQSpecialCheckMap.cs" />
+    <Compile Include="Mappings\MasterCheckFamilyEmailAuthMap.cs" />
+    <Compile Include="Mappings\MasterVendorLoginMap.cs" />
+    <Compile Include="Mappings\PQAddressStatusMap.cs" />
+    <Compile Include="Mappings\PQAddressVarPartenerMap.cs" />
+    <Compile Include="Mappings\PQCandidateInsuffLoginMap.cs" />
+    <Compile Include="Mappings\PQCriminalStatusMap.cs" />
+    <Compile Include="Mappings\PQCriminalVerDispositionMap.cs" />
+    <Compile Include="Mappings\PQEducationStatusMap.cs" />
+    <Compile Include="Mappings\PQEducationVerDispositionMap.cs" />
+    <Compile Include="Mappings\PQEmploymentStatusMap.cs" />
+    <Compile Include="Mappings\PQNationalIdentityStatusMap.cs" />
+    <Compile Include="Mappings\PQNationalIdentityVerDispositionMap.cs" />
+    <Compile Include="Mappings\PQReferenceStatusMap.cs" />
+    <Compile Include="Mappings\PQReferenceVerDispositionMap.cs" />
+    <Compile Include="Mappings\PQEmploymentVerDispositionMap.cs" />
+    <Compile Include="Mappings\PQAddressVerDispositionMap.cs" />
+    <Compile Include="Mappings\PQClientBulkUploadMap.cs" />
+    <Compile Include="Mappings\PQClientCandidateBulkUploadMap.cs" />
+    <Compile Include="Mappings\PQEducationResearchMap.cs" />
+    <Compile Include="Mappings\PQEmploymentResearchMap.cs" />
+    <Compile Include="Mappings\PQSpecialCheckMap.cs" />
+    <Compile Include="Mappings\PQSpecialCheckStatusMap.cs" />
+    <Compile Include="Mappings\PQSpecialCheckVerMap.cs" />
+    <Compile Include="Mappings\PQVerifiedUploadCaseDocMap.cs" />
+    <Compile Include="Mappings\PQAddressPartenerUploadDocsMap.cs" />
+    <Compile Include="Mappings\TeamDepartmentMap.cs" />
+    <Compile Include="Mappings\TempPQAddressMap.cs" />
+    <Compile Include="Mappings\TempPQCandidateCheckMap.cs" />
+    <Compile Include="Mappings\PQCandidateLoginMap.cs" />
+    <Compile Include="Mappings\TempPQCriminalMap.cs" />
+    <Compile Include="Mappings\PQCVValidationMap.cs" />
+    <Compile Include="Mappings\PQCVValidationVerMap.cs" />
+    <Compile Include="Mappings\TempPQEducationMap.cs" />
+    <Compile Include="Mappings\TempPQEmploymentMap.cs" />
+    <Compile Include="Mappings\TempPQNationalIdentityMap.cs" />
+    <Compile Include="Mappings\TempPQReferenceMap.cs" />
+    <Compile Include="Mappings\TempPQPersonalMap.cs" />
+    <Compile Include="Mappings\TempPQVerifiedUploadDocMap.cs" />
+    <Compile Include="MasterCheckFamilyEmailAuth.cs" />
+    <Compile Include="MasterVendorLogin.cs" />
+    <Compile Include="Migrations\201703070556130_AddColumnsIntoMasterCompany.cs" />
+    <Compile Include="Migrations\201703070556130_AddColumnsIntoMasterCompany.Designer.cs">
+      <DependentUpon>201703070556130_AddColumnsIntoMasterCompany.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703070557473_AddColumnsIntoPQClientMaster.cs" />
+    <Compile Include="Migrations\201703070557473_AddColumnsIntoPQClientMaster.Designer.cs">
+      <DependentUpon>201703070557473_AddColumnsIntoPQClientMaster.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703070558515_AddTable_TeamMember.cs" />
+    <Compile Include="Migrations\201703070558515_AddTable_TeamMember.Designer.cs">
+      <DependentUpon>201703070558515_AddTable_TeamMember.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703070605492_AddTable_TeamDepartment.cs" />
+    <Compile Include="Migrations\201703070605492_AddTable_TeamDepartment.Designer.cs">
+      <DependentUpon>201703070605492_AddTable_TeamDepartment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703070615491_AddTable_TeamMemberReporting.cs" />
+    <Compile Include="Migrations\201703070615491_AddTable_TeamMemberReporting.Designer.cs">
+      <DependentUpon>201703070615491_AddTable_TeamMemberReporting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703070626362_AddTable_WebUser.cs" />
+    <Compile Include="Migrations\201703070626362_AddTable_WebUser.Designer.cs">
+      <DependentUpon>201703070626362_AddTable_WebUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703070645255_AddTable_UserLoginLogOutDetail.cs" />
+    <Compile Include="Migrations\201703070645255_AddTable_UserLoginLogOutDetail.Designer.cs">
+      <DependentUpon>201703070645255_AddTable_UserLoginLogOutDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703070653099_AddTable_PQClientHoliday.cs" />
+    <Compile Include="Migrations\201703070653099_AddTable_PQClientHoliday.Designer.cs">
+      <DependentUpon>201703070653099_AddTable_PQClientHoliday.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071016051_AddTable_PQClientLogin.cs" />
+    <Compile Include="Migrations\201703071016051_AddTable_PQClientLogin.Designer.cs">
+      <DependentUpon>201703071016051_AddTable_PQClientLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071023318_AddTable_PQClientTeamMember.cs" />
+    <Compile Include="Migrations\201703071023318_AddTable_PQClientTeamMember.Designer.cs">
+      <DependentUpon>201703071023318_AddTable_PQClientTeamMember.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071028342_AddTable_PQClientBulkUpload.cs" />
+    <Compile Include="Migrations\201703071028342_AddTable_PQClientBulkUpload.Designer.cs">
+      <DependentUpon>201703071028342_AddTable_PQClientBulkUpload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071032072_AddTable_PQClientCandidateBulkUpload.cs" />
+    <Compile Include="Migrations\201703071032072_AddTable_PQClientCandidateBulkUpload.Designer.cs">
+      <DependentUpon>201703071032072_AddTable_PQClientCandidateBulkUpload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071041354_AddTable_PQPersonal.cs" />
+    <Compile Include="Migrations\201703071041354_AddTable_PQPersonal.Designer.cs">
+      <DependentUpon>201703071041354_AddTable_PQPersonal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071104024_AddTable_PQCandidateCheck.cs" />
+    <Compile Include="Migrations\201703071104024_AddTable_PQCandidateCheck.Designer.cs">
+      <DependentUpon>201703071104024_AddTable_PQCandidateCheck.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071110373_AddTable_PQLogTrasaction.cs" />
+    <Compile Include="Migrations\201703071110373_AddTable_PQLogTrasaction.Designer.cs">
+      <DependentUpon>201703071110373_AddTable_PQLogTrasaction.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071155404_AddTable_PQVerifiedUploadDoc.cs" />
+    <Compile Include="Migrations\201703071155404_AddTable_PQVerifiedUploadDoc.Designer.cs">
+      <DependentUpon>201703071155404_AddTable_PQVerifiedUploadDoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071213252_AddTable_PQAddress.cs" />
+    <Compile Include="Migrations\201703071213252_AddTable_PQAddress.Designer.cs">
+      <DependentUpon>201703071213252_AddTable_PQAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071219090_AddTable_PQEmployment.cs" />
+    <Compile Include="Migrations\201703071219090_AddTable_PQEmployment.Designer.cs">
+      <DependentUpon>201703071219090_AddTable_PQEmployment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071222201_AddTable_PQEducation.cs" />
+    <Compile Include="Migrations\201703071222201_AddTable_PQEducation.Designer.cs">
+      <DependentUpon>201703071222201_AddTable_PQEducation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071223160_AddTable_PQCriminal.cs" />
+    <Compile Include="Migrations\201703071223160_AddTable_PQCriminal.Designer.cs">
+      <DependentUpon>201703071223160_AddTable_PQCriminal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071249252_AddTable_PQReference.cs" />
+    <Compile Include="Migrations\201703071249252_AddTable_PQReference.Designer.cs">
+      <DependentUpon>201703071249252_AddTable_PQReference.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071250271_AddTable_PQNationalIdentity.cs" />
+    <Compile Include="Migrations\201703071250271_AddTable_PQNationalIdentity.Designer.cs">
+      <DependentUpon>201703071250271_AddTable_PQNationalIdentity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071301386_AddTable_CaseActionHistory.cs" />
+    <Compile Include="Migrations\201703071301386_AddTable_CaseActionHistory.Designer.cs">
+      <DependentUpon>201703071301386_AddTable_CaseActionHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071313063_AddTable_CheckActionHistory.cs" />
+    <Compile Include="Migrations\201703071313063_AddTable_CheckActionHistory.Designer.cs">
+      <DependentUpon>201703071313063_AddTable_CheckActionHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071314313_AddTable_TempPQPersonal.cs" />
+    <Compile Include="Migrations\201703071314313_AddTable_TempPQPersonal.Designer.cs">
+      <DependentUpon>201703071314313_AddTable_TempPQPersonal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071334230_AddTable_TempPQCandidateCheck.cs" />
+    <Compile Include="Migrations\201703071334230_AddTable_TempPQCandidateCheck.Designer.cs">
+      <DependentUpon>201703071334230_AddTable_TempPQCandidateCheck.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071339471_AddTable_TempPQAddress.cs" />
+    <Compile Include="Migrations\201703071339471_AddTable_TempPQAddress.Designer.cs">
+      <DependentUpon>201703071339471_AddTable_TempPQAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071343444_AddTable_TempPQEmployment.cs" />
+    <Compile Include="Migrations\201703071343444_AddTable_TempPQEmployment.Designer.cs">
+      <DependentUpon>201703071343444_AddTable_TempPQEmployment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071354315_AddTable_TempPQEducation.cs" />
+    <Compile Include="Migrations\201703071354315_AddTable_TempPQEducation.Designer.cs">
+      <DependentUpon>201703071354315_AddTable_TempPQEducation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071400266_AddTable_TempPQReference.cs" />
+    <Compile Include="Migrations\201703071400266_AddTable_TempPQReference.Designer.cs">
+      <DependentUpon>201703071400266_AddTable_TempPQReference.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071410395_AddTable_TempPQCriminal.cs" />
+    <Compile Include="Migrations\201703071410395_AddTable_TempPQCriminal.Designer.cs">
+      <DependentUpon>201703071410395_AddTable_TempPQCriminal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071413463_AddTable_TempPQNationalIdentity.cs" />
+    <Compile Include="Migrations\201703071413463_AddTable_TempPQNationalIdentity.Designer.cs">
+      <DependentUpon>201703071413463_AddTable_TempPQNationalIdentity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703071424081_AddTable_PQCandidateLogin.cs" />
+    <Compile Include="Migrations\201703071424081_AddTable_PQCandidateLogin.Designer.cs">
+      <DependentUpon>201703071424081_AddTable_PQCandidateLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703080525171_AddTable_PQAddressVer.cs" />
+    <Compile Include="Migrations\201703080525171_AddTable_PQAddressVer.Designer.cs">
+      <DependentUpon>201703080525171_AddTable_PQAddressVer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703080623055_AddTable_PQAddressVerDisposition.cs" />
+    <Compile Include="Migrations\201703080623055_AddTable_PQAddressVerDisposition.Designer.cs">
+      <DependentUpon>201703080623055_AddTable_PQAddressVerDisposition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703140851380_AddColumnIntoPQClientSeverity.cs" />
+    <Compile Include="Migrations\201703140851380_AddColumnIntoPQClientSeverity.Designer.cs">
+      <DependentUpon>201703140851380_AddColumnIntoPQClientSeverity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703150811029_AddColumnIntoCaseActionHistory.cs" />
+    <Compile Include="Migrations\201703150811029_AddColumnIntoCaseActionHistory.Designer.cs">
+      <DependentUpon>201703150811029_AddColumnIntoCaseActionHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703150814280_AddColumnIntoCheckActionHistory.cs" />
+    <Compile Include="Migrations\201703150814280_AddColumnIntoCheckActionHistory.Designer.cs">
+      <DependentUpon>201703150814280_AddColumnIntoCheckActionHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703160809300_AddTable_PQEducationResearch.cs" />
+    <Compile Include="Migrations\201703160809300_AddTable_PQEducationResearch.Designer.cs">
+      <DependentUpon>201703160809300_AddTable_PQEducationResearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703161303416_AddTable_PQEmploymentResearch.cs" />
+    <Compile Include="Migrations\201703161303416_AddTable_PQEmploymentResearch.Designer.cs">
+      <DependentUpon>201703161303416_AddTable_PQEmploymentResearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703180555143_AddTable_PQEmploymentVer.cs" />
+    <Compile Include="Migrations\201703180555143_AddTable_PQEmploymentVer.Designer.cs">
+      <DependentUpon>201703180555143_AddTable_PQEmploymentVer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703180557038_AddTable_PQEmploymentVerDisposition.cs" />
+    <Compile Include="Migrations\201703180557038_AddTable_PQEmploymentVerDisposition.Designer.cs">
+      <DependentUpon>201703180557038_AddTable_PQEmploymentVerDisposition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703211316434_AddTable_PQEducationVer.cs" />
+    <Compile Include="Migrations\201703211316434_AddTable_PQEducationVer.Designer.cs">
+      <DependentUpon>201703211316434_AddTable_PQEducationVer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703211325290_AddTable_PQEducationVerDisposition.cs" />
+    <Compile Include="Migrations\201703211325290_AddTable_PQEducationVerDisposition.Designer.cs">
+      <DependentUpon>201703211325290_AddTable_PQEducationVerDisposition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703221013203_AddTable_PQCriminalVer.cs" />
+    <Compile Include="Migrations\201703221013203_AddTable_PQCriminalVer.Designer.cs">
+      <DependentUpon>201703221013203_AddTable_PQCriminalVer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703221014494_AddTable_PQCriminalVerDisposition.cs" />
+    <Compile Include="Migrations\201703221014494_AddTable_PQCriminalVerDisposition.Designer.cs">
+      <DependentUpon>201703221014494_AddTable_PQCriminalVerDisposition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703221106565_AddTable_PQReferenceVer.cs" />
+    <Compile Include="Migrations\201703221106565_AddTable_PQReferenceVer.Designer.cs">
+      <DependentUpon>201703221106565_AddTable_PQReferenceVer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703221224026_AddTable_PQReferenceVerDisposition.cs" />
+    <Compile Include="Migrations\201703221224026_AddTable_PQReferenceVerDisposition.Designer.cs">
+      <DependentUpon>201703221224026_AddTable_PQReferenceVerDisposition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703221228444_AddTable_PQNationalIdentityVer.cs" />
+    <Compile Include="Migrations\201703221228444_AddTable_PQNationalIdentityVer.Designer.cs">
+      <DependentUpon>201703221228444_AddTable_PQNationalIdentityVer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703221231416_AddTable_PQNationalIdentityVerDisposition.cs" />
+    <Compile Include="Migrations\201703221231416_AddTable_PQNationalIdentityVerDisposition.Designer.cs">
+      <DependentUpon>201703221231416_AddTable_PQNationalIdentityVerDisposition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703250823044_UpdateColumnIntoPQReferenceVer.cs" />
+    <Compile Include="Migrations\201703250823044_UpdateColumnIntoPQReferenceVer.Designer.cs">
+      <DependentUpon>201703250823044_UpdateColumnIntoPQReferenceVer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703251057475_TempPQVerifiedUploadDoc.cs" />
+    <Compile Include="Migrations\201703251057475_TempPQVerifiedUploadDoc.Designer.cs">
+      <DependentUpon>201703251057475_TempPQVerifiedUploadDoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703280730503_UpdateTable_PQClientCandidateBulkUpload.cs" />
+    <Compile Include="Migrations\201703280730503_UpdateTable_PQClientCandidateBulkUpload.Designer.cs">
+      <DependentUpon>201703280730503_UpdateTable_PQClientCandidateBulkUpload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703291336581_UpdateColumnIntoPQCriminalVer.cs" />
+    <Compile Include="Migrations\201703291336581_UpdateColumnIntoPQCriminalVer.Designer.cs">
+      <DependentUpon>201703291336581_UpdateColumnIntoPQCriminalVer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704060637209_UpdateColumnInto_MasterUniversity.cs" />
+    <Compile Include="Migrations\201704060637209_UpdateColumnInto_MasterUniversity.Designer.cs">
+      <DependentUpon>201704060637209_UpdateColumnInto_MasterUniversity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704060640023_UpdateColumnInto_MasterCollege.cs" />
+    <Compile Include="Migrations\201704060640023_UpdateColumnInto_MasterCollege.Designer.cs">
+      <DependentUpon>201704060640023_UpdateColumnInto_MasterCollege.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704060641335_UpdateColumnInto_MasterEmployer.cs" />
+    <Compile Include="Migrations\201704060641335_UpdateColumnInto_MasterEmployer.Designer.cs">
+      <DependentUpon>201704060641335_UpdateColumnInto_MasterEmployer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704060646233_UpdateColumnInto_MasterPoliceStation.cs" />
+    <Compile Include="Migrations\201704060646233_UpdateColumnInto_MasterPoliceStation.Designer.cs">
+      <DependentUpon>201704060646233_UpdateColumnInto_MasterPoliceStation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704060647502_UpdateColumnInto_MasterVendor.cs" />
+    <Compile Include="Migrations\201704060647502_UpdateColumnInto_MasterVendor.Designer.cs">
+      <DependentUpon>201704060647502_UpdateColumnInto_MasterVendor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704060653084_AddTable_PQVerifiedUploadCaseDoc.cs" />
+    <Compile Include="Migrations\201704060653084_AddTable_PQVerifiedUploadCaseDoc.Designer.cs">
+      <DependentUpon>201704060653084_AddTable_PQVerifiedUploadCaseDoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704080458140_UpdateColumnIntoPQAddress.cs" />
+    <Compile Include="Migrations\201704080458140_UpdateColumnIntoPQAddress.Designer.cs">
+      <DependentUpon>201704080458140_UpdateColumnIntoPQAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704080514382_AddTable_PQAddressStatus.cs" />
+    <Compile Include="Migrations\201704080514382_AddTable_PQAddressStatus.Designer.cs">
+      <DependentUpon>201704080514382_AddTable_PQAddressStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704100442025_UpdateColumnIntoPQEmployment.cs" />
+    <Compile Include="Migrations\201704100442025_UpdateColumnIntoPQEmployment.Designer.cs">
+      <DependentUpon>201704100442025_UpdateColumnIntoPQEmployment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704100446277_AddTable_PQEmploymentStatus.cs" />
+    <Compile Include="Migrations\201704100446277_AddTable_PQEmploymentStatus.Designer.cs">
+      <DependentUpon>201704100446277_AddTable_PQEmploymentStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704100451501_UpdateColumnIntoPQEducation.cs" />
+    <Compile Include="Migrations\201704100451501_UpdateColumnIntoPQEducation.Designer.cs">
+      <DependentUpon>201704100451501_UpdateColumnIntoPQEducation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704100456345_AddTable_PQEducationStatus.cs" />
+    <Compile Include="Migrations\201704100456345_AddTable_PQEducationStatus.Designer.cs">
+      <DependentUpon>201704100456345_AddTable_PQEducationStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704100503060_UpdateColumnIntoPQCriminal.cs" />
+    <Compile Include="Migrations\201704100503060_UpdateColumnIntoPQCriminal.Designer.cs">
+      <DependentUpon>201704100503060_UpdateColumnIntoPQCriminal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704100506149_AddTable_PQCriminalStatus.cs" />
+    <Compile Include="Migrations\201704100506149_AddTable_PQCriminalStatus.Designer.cs">
+      <DependentUpon>201704100506149_AddTable_PQCriminalStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704100508382_UpdateColumnIntoPQReference.cs" />
+    <Compile Include="Migrations\201704100508382_UpdateColumnIntoPQReference.Designer.cs">
+      <DependentUpon>201704100508382_UpdateColumnIntoPQReference.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704100511487_AddTable_PQReferenceStatus.cs" />
+    <Compile Include="Migrations\201704100511487_AddTable_PQReferenceStatus.Designer.cs">
+      <DependentUpon>201704100511487_AddTable_PQReferenceStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704100514297_UpdateColumnIntoPQNationalIdentity.cs" />
+    <Compile Include="Migrations\201704100514297_UpdateColumnIntoPQNationalIdentity.Designer.cs">
+      <DependentUpon>201704100514297_UpdateColumnIntoPQNationalIdentity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704100517245_AddTable_PQNationalIdentityStatus.cs" />
+    <Compile Include="Migrations\201704100517245_AddTable_PQNationalIdentityStatus.Designer.cs">
+      <DependentUpon>201704100517245_AddTable_PQNationalIdentityStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704130943322_AddTable_MasterVendorLogin.cs" />
+    <Compile Include="Migrations\201704130943322_AddTable_MasterVendorLogin.Designer.cs">
+      <DependentUpon>201704130943322_AddTable_MasterVendorLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706211145353_AddTable_PQAddressVarPartener.cs" />
+    <Compile Include="Migrations\201706211145353_AddTable_PQAddressVarPartener.Designer.cs">
+      <DependentUpon>201706211145353_AddTable_PQAddressVarPartener.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706211153302_AddTable_PQAddressPartenerUploadDocs.cs" />
+    <Compile Include="Migrations\201706211153302_AddTable_PQAddressPartenerUploadDocs.Designer.cs">
+      <DependentUpon>201706211153302_AddTable_PQAddressPartenerUploadDocs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706271151019_UpdateTable_PQPersonal.cs" />
+    <Compile Include="Migrations\201706271151019_UpdateTable_PQPersonal.Designer.cs">
+      <DependentUpon>201706271151019_UpdateTable_PQPersonal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706281315586_AddColumnIntoPQAddressVarPartener.cs" />
+    <Compile Include="Migrations\201706281315586_AddColumnIntoPQAddressVarPartener.Designer.cs">
+      <DependentUpon>201706281315586_AddColumnIntoPQAddressVarPartener.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708050629481_AddColumn_TeamMember.cs" />
+    <Compile Include="Migrations\201708050629481_AddColumn_TeamMember.Designer.cs">
+      <DependentUpon>201708050629481_AddColumn_TeamMember.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708050633442_AddedColumnConvertIntoForeignkey_TeamMember.cs" />
+    <Compile Include="Migrations\201708050633442_AddedColumnConvertIntoForeignkey_TeamMember.Designer.cs">
+      <DependentUpon>201708050633442_AddedColumnConvertIntoForeignkey_TeamMember.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708051125132_AddColumn_MasterEmployer.cs" />
+    <Compile Include="Migrations\201708051125132_AddColumn_MasterEmployer.Designer.cs">
+      <DependentUpon>201708051125132_AddColumn_MasterEmployer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708051126446_AddColumn_MasterUniversity.cs" />
+    <Compile Include="Migrations\201708051126446_AddColumn_MasterUniversity.Designer.cs">
+      <DependentUpon>201708051126446_AddColumn_MasterUniversity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708051127338_AddColumn_MasterCollege.cs" />
+    <Compile Include="Migrations\201708051127338_AddColumn_MasterCollege.Designer.cs">
+      <DependentUpon>201708051127338_AddColumn_MasterCollege.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708210820014_AddTable_PQCandidateInsuffLogin.cs" />
+    <Compile Include="Migrations\201708210820014_AddTable_PQCandidateInsuffLogin.Designer.cs">
+      <DependentUpon>201708210820014_AddTable_PQCandidateInsuffLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708210832525_AddColumns_PQPersonal.cs" />
+    <Compile Include="Migrations\201708210832525_AddColumns_PQPersonal.Designer.cs">
+      <DependentUpon>201708210832525_AddColumns_PQPersonal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708210834028_AddColumns_PQVerifiedUploadDoc.cs" />
+    <Compile Include="Migrations\201708210834028_AddColumns_PQVerifiedUploadDoc.Designer.cs">
+      <DependentUpon>201708210834028_AddColumns_PQVerifiedUploadDoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708220751509_UpdateTable_PQCandidateInsuffLogin.cs" />
+    <Compile Include="Migrations\201708220751509_UpdateTable_PQCandidateInsuffLogin.Designer.cs">
+      <DependentUpon>201708220751509_UpdateTable_PQCandidateInsuffLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709250857189_UpdateTable_PQClientBulkUpload.cs" />
+    <Compile Include="Migrations\201709250857189_UpdateTable_PQClientBulkUpload.Designer.cs">
+      <DependentUpon>201709250857189_UpdateTable_PQClientBulkUpload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710061124467_AddTable_PQSpecialCheck.cs" />
+    <Compile Include="Migrations\201710061124467_AddTable_PQSpecialCheck.Designer.cs">
+      <DependentUpon>201710061124467_AddTable_PQSpecialCheck.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710061142350_AddTable_PQSpecialCheckVer.cs" />
+    <Compile Include="Migrations\201710061142350_AddTable_PQSpecialCheckVer.Designer.cs">
+      <DependentUpon>201710061142350_AddTable_PQSpecialCheckVer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710061144327_AddTable_PQSpecialCheckStatus.cs" />
+    <Compile Include="Migrations\201710061144327_AddTable_PQSpecialCheckStatus.Designer.cs">
+      <DependentUpon>201710061144327_AddTable_PQSpecialCheckStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710100548461_AddTable_TempPQSpecialCheck.cs" />
+    <Compile Include="Migrations\201710100548461_AddTable_TempPQSpecialCheck.Designer.cs">
+      <DependentUpon>201710100548461_AddTable_TempPQSpecialCheck.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711101119576_UpdateTable_PQVerifiedUploadDoc_PQVerifiedUploadCaseDoc.cs" />
+    <Compile Include="Migrations\201711101119576_UpdateTable_PQVerifiedUploadDoc_PQVerifiedUploadCaseDoc.Designer.cs">
+      <DependentUpon>201711101119576_UpdateTable_PQVerifiedUploadDoc_PQVerifiedUploadCaseDoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711131248293_AddColumnsIntoPQPersonal.cs" />
+    <Compile Include="Migrations\201711131248293_AddColumnsIntoPQPersonal.Designer.cs">
+      <DependentUpon>201711131248293_AddColumnsIntoPQPersonal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PQAddressStatus.cs" />
+    <Compile Include="PQAddressVarPartener.cs" />
+    <Compile Include="PQCandidateInsuffLogin.cs" />
+    <Compile Include="PQCriminalStatus.cs" />
+    <Compile Include="PQCriminalVerDisposition.cs" />
+    <Compile Include="PQEducationStatus.cs" />
+    <Compile Include="PQEmploymentStatus.cs" />
+    <Compile Include="PQNationalIdentityStatus.cs" />
+    <Compile Include="PQNationalIdentityVerDisposition.cs" />
+    <Compile Include="PQReferenceStatus.cs" />
+    <Compile Include="PQReferenceVerDisposition.cs" />
+    <Compile Include="PQEducationVerDisposition.cs" />
+    <Compile Include="PQEmploymentVerDisposition.cs" />
+    <Compile Include="PQAddressVerDisposition.cs" />
+    <Compile Include="PQCandidateLogin.cs" />
+    <Compile Include="PQClientBulkUpload.cs" />
+    <Compile Include="PQClientCandidateBulkUpload.cs" />
+    <Compile Include="PQCVValidationVer.cs" />
+    <Compile Include="Mappings\PQHealthCheckMap.cs" />
+    <Compile Include="Mappings\PQAddressVerMap.cs" />
+    <Compile Include="Mappings\PQCompanyInvestigationMap.cs" />
+    <Compile Include="Mappings\PQCompanyInvestigationVerMap.cs" />
+    <Compile Include="Mappings\PQCandidateCheckMap.cs" />
+    <Compile Include="Mappings\PQCibilMap.cs" />
+    <Compile Include="Mappings\PQCibilVerMap.cs" />
+    <Compile Include="Mappings\PQCriminalVerMap.cs" />
+    <Compile Include="Mappings\PQDrugTestMap.cs" />
+    <Compile Include="Mappings\PQDrugTestVerMap.cs" />
+    <Compile Include="Mappings\PQEducationVerMap.cs" />
+    <Compile Include="Mappings\PQEmploymentVerMap.cs" />
+    <Compile Include="Mappings\PQGapCheckMap.cs" />
+    <Compile Include="Mappings\PQGapCheckVerMap.cs" />
+    <Compile Include="Mappings\PQGlobalDatabaseMap.cs" />
+    <Compile Include="Mappings\PQGlobalDatabaseVerMap.cs" />
+    <Compile Include="Mappings\PQHealthCheckVerMap.cs" />
+    <Compile Include="Mappings\PQIndianDatabaseMap.cs" />
+    <Compile Include="Mappings\PQIndianDatabaseVerMap.cs" />
+    <Compile Include="Mappings\PQInsuranceMap.cs" />
+    <Compile Include="Mappings\PQInsuranceVerMap.cs" />
+    <Compile Include="Mappings\PQLogTrasactionMap.cs" />
+    <Compile Include="Mappings\PQNationalIdentityMap.cs" />
+    <Compile Include="Mappings\PQNationalIdentityVerMap.cs" />
+    <Compile Include="Mappings\PQProfileMap.cs" />
+    <Compile Include="Mappings\PQProfileVerMap.cs" />
+    <Compile Include="Mappings\PQReferenceVerMap.cs" />
+    <Compile Include="Mappings\PQVerifiedUploadDocMap.cs" />
+    <Compile Include="PQAddress.cs" />
+    <Compile Include="Mappings\MasterHolidayMap.cs" />
+    <Compile Include="Mappings\MasterVendorCoverageDistrictMap.cs" />
+    <Compile Include="Mappings\MasterVendorCoverageMap.cs" />
+    <Compile Include="Mappings\PQClientDispositionMap.cs" />
+    <Compile Include="Mappings\PQClientHolidayMap.cs" />
+    <Compile Include="MasterAntecedentType.cs" />
+    <Compile Include="Migrations\201612231221585_AddTable_PQClientSeverity.cs" />
+    <Compile Include="Migrations\201612231221585_AddTable_PQClientSeverity.Designer.cs">
+      <DependentUpon>201612231221585_AddTable_PQClientSeverity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612231225220_AddTable_PQClientContract.cs" />
+    <Compile Include="Migrations\201612231225220_AddTable_PQClientContract.Designer.cs">
+      <DependentUpon>201612231225220_AddTable_PQClientContract.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612231228326_AddTable_PQClientCheck.cs" />
+    <Compile Include="Migrations\201612231228326_AddTable_PQClientCheck.Designer.cs">
+      <DependentUpon>201612231228326_AddTable_PQClientCheck.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612231247470_AddTable_PQClientField.cs" />
+    <Compile Include="Migrations\201612231247470_AddTable_PQClientField.Designer.cs">
+      <DependentUpon>201612231247470_AddTable_PQClientField.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612231252115_AddTable_PQClientPackage.cs" />
+    <Compile Include="Migrations\201612231252115_AddTable_PQClientPackage.Designer.cs">
+      <DependentUpon>201612231252115_AddTable_PQClientPackage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612231254287_AddTable_PQClientDisposition.cs" />
+    <Compile Include="Migrations\201612231254287_AddTable_PQClientDisposition.Designer.cs">
+      <DependentUpon>201612231254287_AddTable_PQClientDisposition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PQAddressVer.cs" />
+    <Compile Include="PQCandidateCheck.cs" />
+    <Compile Include="PQCibil.cs" />
+    <Compile Include="PQCibilVer.cs" />
+    <Compile Include="PQClientContract.cs" />
+    <Compile Include="PQCompanyInvestigation.cs" />
+    <Compile Include="PQCompanyInvestigationVer.cs" />
+    <Compile Include="PQCriminal.cs" />
+    <Compile Include="PQCVValidation.cs" />
+    <Compile Include="PQDrugTest.cs" />
+    <Compile Include="PQDrugTestVer.cs" />
+    <Compile Include="PQEducation.cs" />
+    <Compile Include="PQEducationResearch.cs" />
+    <Compile Include="PQEducationVer.cs" />
+    <Compile Include="PQEmployment.cs" />
+    <Compile Include="Mappings\PQAddressMap.cs" />
+    <Compile Include="Mappings\MasterAntecedentTypeMap.cs" />
+    <Compile Include="Mappings\PQClientContractMap.cs" />
+    <Compile Include="Mappings\PQCriminalMap.cs" />
+    <Compile Include="Mappings\PQEducationMap.cs" />
+    <Compile Include="Mappings\PQEmploymentMap.cs" />
+    <Compile Include="Mappings\MasterAntecedentMap.cs" />
+    <Compile Include="Mappings\PQClientLoginMap.cs" />
+    <Compile Include="Mappings\MasterCompanyMap.cs" />
+    <Compile Include="Mappings\MasterDispositionMap.cs" />
+    <Compile Include="Mappings\MasterSeverityGridMap.cs" />
+    <Compile Include="Mappings\PQClientFieldMap.cs" />
+    <Compile Include="Mappings\PQClientMasterMap.cs" />
+    <Compile Include="Mappings\PQClientCheckMap.cs" />
+    <Compile Include="Mappings\PQClientPackageMap.cs" />
+    <Compile Include="Mappings\PQClientSeverityMap.cs" />
+    <Compile Include="Mappings\PQPersonalMap.cs" />
+    <Compile Include="Mappings\PQReferenceMap.cs" />
+    <Compile Include="Mappings\ServerDetailMap.cs" />
+    <Compile Include="MasterAntecedent.cs" />
+    <Compile Include="PQClientLogin.cs" />
+    <Compile Include="MasterCompany.cs" />
+    <Compile Include="MasterDisposition.cs" />
+    <Compile Include="MasterHoliday.cs" />
+    <Compile Include="MasterSeverityGrid.cs" />
+    <Compile Include="MasterVendorCoverage.cs" />
+    <Compile Include="MasterVendorCoverageDistrict.cs" />
+    <Compile Include="Migrations\201612160947574_AddTable_MasterCountry.cs" />
+    <Compile Include="Migrations\201612160947574_AddTable_MasterCountry.Designer.cs">
+      <DependentUpon>201612160947574_AddTable_MasterCountry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161004016_AddTable_MasterState.cs" />
+    <Compile Include="Migrations\201612161004016_AddTable_MasterState.Designer.cs">
+      <DependentUpon>201612161004016_AddTable_MasterState.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161027402_AddTable_MasterDistrict.cs" />
+    <Compile Include="Migrations\201612161027402_AddTable_MasterDistrict.Designer.cs">
+      <DependentUpon>201612161027402_AddTable_MasterDistrict.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161117276_AddTable_MasterLocation.cs" />
+    <Compile Include="Migrations\201612161117276_AddTable_MasterLocation.Designer.cs">
+      <DependentUpon>201612161117276_AddTable_MasterLocation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161141420_AddTable_MasterDepartment.cs" />
+    <Compile Include="Migrations\201612161141420_AddTable_MasterDepartment.Designer.cs">
+      <DependentUpon>201612161141420_AddTable_MasterDepartment.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161147238_AddTable_MasterDesignation.cs" />
+    <Compile Include="Migrations\201612161147238_AddTable_MasterDesignation.Designer.cs">
+      <DependentUpon>201612161147238_AddTable_MasterDesignation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161154555_AddTable_MasterCategory.cs" />
+    <Compile Include="Migrations\201612161154555_AddTable_MasterCategory.Designer.cs">
+      <DependentUpon>201612161154555_AddTable_MasterCategory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161158569_AddTable_MasterBillingCycle.cs" />
+    <Compile Include="Migrations\201612161158569_AddTable_MasterBillingCycle.Designer.cs">
+      <DependentUpon>201612161158569_AddTable_MasterBillingCycle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161202351_AddTable_MasterDegreeType.cs" />
+    <Compile Include="Migrations\201612161202351_AddTable_MasterDegreeType.Designer.cs">
+      <DependentUpon>201612161202351_AddTable_MasterDegreeType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161257134_AddTable_MasterUniversity.cs" />
+    <Compile Include="Migrations\201612161257134_AddTable_MasterUniversity.Designer.cs">
+      <DependentUpon>201612161257134_AddTable_MasterUniversity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161344489_AddTable_MasterCollege.cs" />
+    <Compile Include="Migrations\201612161344489_AddTable_MasterCollege.Designer.cs">
+      <DependentUpon>201612161344489_AddTable_MasterCollege.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612161427476_AddTable_MasterEmployer.cs" />
+    <Compile Include="Migrations\201612161427476_AddTable_MasterEmployer.Designer.cs">
+      <DependentUpon>201612161427476_AddTable_MasterEmployer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612170525255_AddTable_MasterPoliceStation.cs" />
+    <Compile Include="Migrations\201612170525255_AddTable_MasterPoliceStation.Designer.cs">
+      <DependentUpon>201612170525255_AddTable_MasterPoliceStation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612170632326_AddTable_MasterCheckFamily.cs" />
+    <Compile Include="Migrations\201612170632326_AddTable_MasterCheckFamily.Designer.cs">
+      <DependentUpon>201612170632326_AddTable_MasterCheckFamily.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612170653379_AddTable_MasterSubCheckFamily.cs" />
+    <Compile Include="Migrations\201612170653379_AddTable_MasterSubCheckFamily.Designer.cs">
+      <DependentUpon>201612170653379_AddTable_MasterSubCheckFamily.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612170759323_AddTable_MasterAntecedentType.cs" />
+    <Compile Include="Migrations\201612170759323_AddTable_MasterAntecedentType.Designer.cs">
+      <DependentUpon>201612170759323_AddTable_MasterAntecedentType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612170816478_AddTable_MasterAntecedent.cs" />
+    <Compile Include="Migrations\201612170816478_AddTable_MasterAntecedent.Designer.cs">
+      <DependentUpon>201612170816478_AddTable_MasterAntecedent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612171021396_AddTable_MasterSeverityGrid.cs" />
+    <Compile Include="Migrations\201612171021396_AddTable_MasterSeverityGrid.Designer.cs">
+      <DependentUpon>201612171021396_AddTable_MasterSeverityGrid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612171223441_AddTable_MasterDisposition.cs" />
+    <Compile Include="Migrations\201612171223441_AddTable_MasterDisposition.Designer.cs">
+      <DependentUpon>201612171223441_AddTable_MasterDisposition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612171255592_AddTable_MasterCompany.cs" />
+    <Compile Include="Migrations\201612171255592_AddTable_MasterCompany.Designer.cs">
+      <DependentUpon>201612171255592_AddTable_MasterCompany.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612171313487_AddTable_MasterCompanyBranch.cs" />
+    <Compile Include="Migrations\201612171313487_AddTable_MasterCompanyBranch.Designer.cs">
+      <DependentUpon>201612171313487_AddTable_MasterCompanyBranch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612190522446_AddTable_MasterClientAbbreviation.cs" />
+    <Compile Include="Migrations\201612190522446_AddTable_MasterClientAbbreviation.Designer.cs">
+      <DependentUpon>201612190522446_AddTable_MasterClientAbbreviation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612190553200_AddTable_MasterClientSubGroup.cs" />
+    <Compile Include="Migrations\201612190553200_AddTable_MasterClientSubGroup.Designer.cs">
+      <DependentUpon>201612190553200_AddTable_MasterClientSubGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612220830488_AddTable_MasterHoliday.cs" />
+    <Compile Include="Migrations\201612220830488_AddTable_MasterHoliday.Designer.cs">
+      <DependentUpon>201612220830488_AddTable_MasterHoliday.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612220837460_AddTable_MasterVendor.cs" />
+    <Compile Include="Migrations\201612220837460_AddTable_MasterVendor.Designer.cs">
+      <DependentUpon>201612220837460_AddTable_MasterVendor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612220847340_AddTable_MasterVendorCoverage.cs" />
+    <Compile Include="Migrations\201612220847340_AddTable_MasterVendorCoverage.Designer.cs">
+      <DependentUpon>201612220847340_AddTable_MasterVendorCoverage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612220849004_AddTable_MasterVendorCoverageDistrict.cs" />
+    <Compile Include="Migrations\201612220849004_AddTable_MasterVendorCoverageDistrict.Designer.cs">
+      <DependentUpon>201612220849004_AddTable_MasterVendorCoverageDistrict.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612221413476_AddTable_PQClientMaster.cs" />
+    <Compile Include="Migrations\201612221413476_AddTable_PQClientMaster.Designer.cs">
+      <DependentUpon>201612221413476_AddTable_PQClientMaster.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="PQClientDisposition.cs" />
+    <Compile Include="PQClientField.cs" />
+    <Compile Include="PQClientHoliday.cs" />
+    <Compile Include="PQClientMaster.cs" />
+    <Compile Include="PQClientCheck.cs" />
+    <Compile Include="PQClientPackage.cs" />
+    <Compile Include="PQClientSeverity.cs" />
+    <Compile Include="PQCriminalVer.cs" />
+    <Compile Include="PQEmploymentResearch.cs" />
+    <Compile Include="PQEmploymentVer.cs" />
+    <Compile Include="PQGapCheck.cs" />
+    <Compile Include="PQGapCheckVer.cs" />
+    <Compile Include="PQGlobalDatabase.cs" />
+    <Compile Include="PQGlobalDatabaseVer.cs" />
+    <Compile Include="PQHealthCheck.cs" />
+    <Compile Include="PQHealthCheckVer.cs" />
+    <Compile Include="PQIndianDatabase.cs" />
+    <Compile Include="PQIndianDatabaseVer.cs" />
+    <Compile Include="PQInsurance.cs" />
+    <Compile Include="PQInsuranceVer.cs" />
+    <Compile Include="PQLogTrasaction.cs" />
+    <Compile Include="PQNationalIdentity.cs" />
+    <Compile Include="PQNationalIdentityVer.cs" />
+    <Compile Include="PQPersonal.cs" />
+    <Compile Include="PQProfile.cs" />
+    <Compile Include="PQProfileVer.cs" />
+    <Compile Include="PQReference.cs" />
+    <Compile Include="PQReferenceVer.cs" />
+    <Compile Include="PQSpecialCheck.cs" />
+    <Compile Include="PQSpecialCheckStatus.cs" />
+    <Compile Include="PQSpecialCheckVer.cs" />
+    <Compile Include="PQVerifiedUploadCaseDoc.cs" />
+    <Compile Include="PQVerifiedUploadDoc.cs" />
+    <Compile Include="PQAddressPartenerUploadDocs.cs" />
+    <Compile Include="ServerDetail.cs" />
+    <Compile Include="DataContext.cs" />
+    <Compile Include="TeamDepartment.cs" />
+    <Compile Include="TempPQAddress.cs" />
+    <Compile Include="TempPQCandidateCheck.cs" />
+    <Compile Include="TempPQCriminal.cs" />
+    <Compile Include="TempPQEducation.cs" />
+    <Compile Include="TempPQEmployment.cs" />
+    <Compile Include="TempPQNationalIdentity.cs" />
+    <Compile Include="TempPQPersonal.cs" />
+    <Compile Include="TempPQReference.cs" />
+    <Compile Include="TempPQSpecialCheck.cs" />
+    <Compile Include="TempPQVerifiedUploadDoc.cs" />
+    <Compile Include="UserLoginLogOutDetail.cs" />
+    <Compile Include="Mappings\UserLoginLogOutDetailMap.cs" />
+    <Compile Include="Mappings\MasterClientAbbreviationMap.cs" />
+    <Compile Include="Mappings\MasterBillingCycleMap.cs" />
+    <Compile Include="Mappings\MasterCompanyBranchMap.cs" />
+    <Compile Include="Mappings\MasterCategoryMap.cs" />
+    <Compile Include="Mappings\MasterCheckFamilyMap.cs" />
+    <Compile Include="Mappings\MasterClientSubGroupMap.cs" />
+    <Compile Include="Mappings\MasterCollegeMap.cs" />
+    <Compile Include="Mappings\MasterCountryMap.cs" />
+    <Compile Include="Mappings\MasterDegreeTypeMap.cs" />
+    <Compile Include="Mappings\MasterDepartmentMap.cs" />
+    <Compile Include="Mappings\MasterDesignationMap.cs" />
+    <Compile Include="Mappings\MasterDistrictMap.cs" />
+    <Compile Include="Mappings\MasterEmployerMap.cs" />
+    <Compile Include="Mappings\MasterLocationMap.cs" />
+    <Compile Include="Mappings\MasterPoliceStationMap.cs" />
+    <Compile Include="Mappings\MasterStateMap.cs" />
+    <Compile Include="Mappings\MasterSubCheckFamilyMap.cs" />
+    <Compile Include="Mappings\MasterUniversityMap.cs" />
+    <Compile Include="Mappings\MasterVendorMap.cs" />
+    <Compile Include="Mappings\PQClientTeamMemberMap.cs" />
+    <Compile Include="Mappings\TeamMemberReportingMap.cs" />
+    <Compile Include="Mappings\TeamMemberMap.cs" />
+    <Compile Include="Mappings\UserRightModuleMap.cs" />
+    <Compile Include="Mappings\UserRightMap.cs" />
+    <Compile Include="Mappings\UserTypeMap.cs" />
+    <Compile Include="Mappings\WebUserMap.cs" />
+    <Compile Include="MasterClientAbbreviation.cs" />
+    <Compile Include="MasterClientSubGroup.cs" />
+    <Compile Include="MasterPoliceStation.cs" />
+    <Compile Include="MasterBillingCycle.cs" />
+    <Compile Include="MasterCompanyBranch.cs" />
+    <Compile Include="MasterCategory.cs" />
+    <Compile Include="MasterCheckFamily.cs" />
+    <Compile Include="MasterCollege.cs" />
+    <Compile Include="MasterCountry.cs" />
+    <Compile Include="MasterDegreeType.cs" />
+    <Compile Include="MasterDepartment.cs" />
+    <Compile Include="MasterDesignation.cs" />
+    <Compile Include="MasterDistrict.cs" />
+    <Compile Include="MasterEmployer.cs" />
+    <Compile Include="MasterLocation.cs" />
+    <Compile Include="MasterState.cs" />
+    <Compile Include="MasterUniversity.cs" />
+    <Compile Include="UserRightModule.cs" />
+    <Compile Include="MasterVendor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MasterSubCheckFamily.cs" />
+    <Compile Include="PQClientTeamMember.cs" />
+    <Compile Include="TeamMemberReporting.cs" />
+    <Compile Include="TeamMember.cs" />
+    <Compile Include="UserRight.cs" />
+    <Compile Include="UserType.cs" />
+    <Compile Include="WebUser.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201612160947574_AddTable_MasterCountry.resx">
+      <DependentUpon>201612160947574_AddTable_MasterCountry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161004016_AddTable_MasterState.resx">
+      <DependentUpon>201612161004016_AddTable_MasterState.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161027402_AddTable_MasterDistrict.resx">
+      <DependentUpon>201612161027402_AddTable_MasterDistrict.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161117276_AddTable_MasterLocation.resx">
+      <DependentUpon>201612161117276_AddTable_MasterLocation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161141420_AddTable_MasterDepartment.resx">
+      <DependentUpon>201612161141420_AddTable_MasterDepartment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161147238_AddTable_MasterDesignation.resx">
+      <DependentUpon>201612161147238_AddTable_MasterDesignation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161154555_AddTable_MasterCategory.resx">
+      <DependentUpon>201612161154555_AddTable_MasterCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161158569_AddTable_MasterBillingCycle.resx">
+      <DependentUpon>201612161158569_AddTable_MasterBillingCycle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161202351_AddTable_MasterDegreeType.resx">
+      <DependentUpon>201612161202351_AddTable_MasterDegreeType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161257134_AddTable_MasterUniversity.resx">
+      <DependentUpon>201612161257134_AddTable_MasterUniversity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161344489_AddTable_MasterCollege.resx">
+      <DependentUpon>201612161344489_AddTable_MasterCollege.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612161427476_AddTable_MasterEmployer.resx">
+      <DependentUpon>201612161427476_AddTable_MasterEmployer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612170525255_AddTable_MasterPoliceStation.resx">
+      <DependentUpon>201612170525255_AddTable_MasterPoliceStation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612170632326_AddTable_MasterCheckFamily.resx">
+      <DependentUpon>201612170632326_AddTable_MasterCheckFamily.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612170653379_AddTable_MasterSubCheckFamily.resx">
+      <DependentUpon>201612170653379_AddTable_MasterSubCheckFamily.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612170759323_AddTable_MasterAntecedentType.resx">
+      <DependentUpon>201612170759323_AddTable_MasterAntecedentType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612170816478_AddTable_MasterAntecedent.resx">
+      <DependentUpon>201612170816478_AddTable_MasterAntecedent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612171021396_AddTable_MasterSeverityGrid.resx">
+      <DependentUpon>201612171021396_AddTable_MasterSeverityGrid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612171223441_AddTable_MasterDisposition.resx">
+      <DependentUpon>201612171223441_AddTable_MasterDisposition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612171255592_AddTable_MasterCompany.resx">
+      <DependentUpon>201612171255592_AddTable_MasterCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612171313487_AddTable_MasterCompanyBranch.resx">
+      <DependentUpon>201612171313487_AddTable_MasterCompanyBranch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612190522446_AddTable_MasterClientAbbreviation.resx">
+      <DependentUpon>201612190522446_AddTable_MasterClientAbbreviation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612190553200_AddTable_MasterClientSubGroup.resx">
+      <DependentUpon>201612190553200_AddTable_MasterClientSubGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612220830488_AddTable_MasterHoliday.resx">
+      <DependentUpon>201612220830488_AddTable_MasterHoliday.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612220837460_AddTable_MasterVendor.resx">
+      <DependentUpon>201612220837460_AddTable_MasterVendor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612220847340_AddTable_MasterVendorCoverage.resx">
+      <DependentUpon>201612220847340_AddTable_MasterVendorCoverage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612220849004_AddTable_MasterVendorCoverageDistrict.resx">
+      <DependentUpon>201612220849004_AddTable_MasterVendorCoverageDistrict.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612221413476_AddTable_PQClientMaster.resx">
+      <DependentUpon>201612221413476_AddTable_PQClientMaster.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612231221585_AddTable_PQClientSeverity.resx">
+      <DependentUpon>201612231221585_AddTable_PQClientSeverity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612231225220_AddTable_PQClientContract.resx">
+      <DependentUpon>201612231225220_AddTable_PQClientContract.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612231228326_AddTable_PQClientCheck.resx">
+      <DependentUpon>201612231228326_AddTable_PQClientCheck.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612231247470_AddTable_PQClientField.resx">
+      <DependentUpon>201612231247470_AddTable_PQClientField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612231252115_AddTable_PQClientPackage.resx">
+      <DependentUpon>201612231252115_AddTable_PQClientPackage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612231254287_AddTable_PQClientDisposition.resx">
+      <DependentUpon>201612231254287_AddTable_PQClientDisposition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703070556130_AddColumnsIntoMasterCompany.resx">
+      <DependentUpon>201703070556130_AddColumnsIntoMasterCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703070557473_AddColumnsIntoPQClientMaster.resx">
+      <DependentUpon>201703070557473_AddColumnsIntoPQClientMaster.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703070558515_AddTable_TeamMember.resx">
+      <DependentUpon>201703070558515_AddTable_TeamMember.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703070605492_AddTable_TeamDepartment.resx">
+      <DependentUpon>201703070605492_AddTable_TeamDepartment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703070615491_AddTable_TeamMemberReporting.resx">
+      <DependentUpon>201703070615491_AddTable_TeamMemberReporting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703070626362_AddTable_WebUser.resx">
+      <DependentUpon>201703070626362_AddTable_WebUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703070645255_AddTable_UserLoginLogOutDetail.resx">
+      <DependentUpon>201703070645255_AddTable_UserLoginLogOutDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703070653099_AddTable_PQClientHoliday.resx">
+      <DependentUpon>201703070653099_AddTable_PQClientHoliday.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071016051_AddTable_PQClientLogin.resx">
+      <DependentUpon>201703071016051_AddTable_PQClientLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071023318_AddTable_PQClientTeamMember.resx">
+      <DependentUpon>201703071023318_AddTable_PQClientTeamMember.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071028342_AddTable_PQClientBulkUpload.resx">
+      <DependentUpon>201703071028342_AddTable_PQClientBulkUpload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071032072_AddTable_PQClientCandidateBulkUpload.resx">
+      <DependentUpon>201703071032072_AddTable_PQClientCandidateBulkUpload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071041354_AddTable_PQPersonal.resx">
+      <DependentUpon>201703071041354_AddTable_PQPersonal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071104024_AddTable_PQCandidateCheck.resx">
+      <DependentUpon>201703071104024_AddTable_PQCandidateCheck.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071110373_AddTable_PQLogTrasaction.resx">
+      <DependentUpon>201703071110373_AddTable_PQLogTrasaction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071155404_AddTable_PQVerifiedUploadDoc.resx">
+      <DependentUpon>201703071155404_AddTable_PQVerifiedUploadDoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071213252_AddTable_PQAddress.resx">
+      <DependentUpon>201703071213252_AddTable_PQAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071219090_AddTable_PQEmployment.resx">
+      <DependentUpon>201703071219090_AddTable_PQEmployment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071222201_AddTable_PQEducation.resx">
+      <DependentUpon>201703071222201_AddTable_PQEducation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071223160_AddTable_PQCriminal.resx">
+      <DependentUpon>201703071223160_AddTable_PQCriminal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071249252_AddTable_PQReference.resx">
+      <DependentUpon>201703071249252_AddTable_PQReference.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071250271_AddTable_PQNationalIdentity.resx">
+      <DependentUpon>201703071250271_AddTable_PQNationalIdentity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071301386_AddTable_CaseActionHistory.resx">
+      <DependentUpon>201703071301386_AddTable_CaseActionHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071313063_AddTable_CheckActionHistory.resx">
+      <DependentUpon>201703071313063_AddTable_CheckActionHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071314313_AddTable_TempPQPersonal.resx">
+      <DependentUpon>201703071314313_AddTable_TempPQPersonal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071334230_AddTable_TempPQCandidateCheck.resx">
+      <DependentUpon>201703071334230_AddTable_TempPQCandidateCheck.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071339471_AddTable_TempPQAddress.resx">
+      <DependentUpon>201703071339471_AddTable_TempPQAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071343444_AddTable_TempPQEmployment.resx">
+      <DependentUpon>201703071343444_AddTable_TempPQEmployment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071354315_AddTable_TempPQEducation.resx">
+      <DependentUpon>201703071354315_AddTable_TempPQEducation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071400266_AddTable_TempPQReference.resx">
+      <DependentUpon>201703071400266_AddTable_TempPQReference.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071410395_AddTable_TempPQCriminal.resx">
+      <DependentUpon>201703071410395_AddTable_TempPQCriminal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071413463_AddTable_TempPQNationalIdentity.resx">
+      <DependentUpon>201703071413463_AddTable_TempPQNationalIdentity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703071424081_AddTable_PQCandidateLogin.resx">
+      <DependentUpon>201703071424081_AddTable_PQCandidateLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703080525171_AddTable_PQAddressVer.resx">
+      <DependentUpon>201703080525171_AddTable_PQAddressVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703080623055_AddTable_PQAddressVerDisposition.resx">
+      <DependentUpon>201703080623055_AddTable_PQAddressVerDisposition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703140851380_AddColumnIntoPQClientSeverity.resx">
+      <DependentUpon>201703140851380_AddColumnIntoPQClientSeverity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703150811029_AddColumnIntoCaseActionHistory.resx">
+      <DependentUpon>201703150811029_AddColumnIntoCaseActionHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703150814280_AddColumnIntoCheckActionHistory.resx">
+      <DependentUpon>201703150814280_AddColumnIntoCheckActionHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703160809300_AddTable_PQEducationResearch.resx">
+      <DependentUpon>201703160809300_AddTable_PQEducationResearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703161303416_AddTable_PQEmploymentResearch.resx">
+      <DependentUpon>201703161303416_AddTable_PQEmploymentResearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703180555143_AddTable_PQEmploymentVer.resx">
+      <DependentUpon>201703180555143_AddTable_PQEmploymentVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703180557038_AddTable_PQEmploymentVerDisposition.resx">
+      <DependentUpon>201703180557038_AddTable_PQEmploymentVerDisposition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703211316434_AddTable_PQEducationVer.resx">
+      <DependentUpon>201703211316434_AddTable_PQEducationVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703211325290_AddTable_PQEducationVerDisposition.resx">
+      <DependentUpon>201703211325290_AddTable_PQEducationVerDisposition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703221013203_AddTable_PQCriminalVer.resx">
+      <DependentUpon>201703221013203_AddTable_PQCriminalVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703221014494_AddTable_PQCriminalVerDisposition.resx">
+      <DependentUpon>201703221014494_AddTable_PQCriminalVerDisposition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703221106565_AddTable_PQReferenceVer.resx">
+      <DependentUpon>201703221106565_AddTable_PQReferenceVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703221224026_AddTable_PQReferenceVerDisposition.resx">
+      <DependentUpon>201703221224026_AddTable_PQReferenceVerDisposition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703221228444_AddTable_PQNationalIdentityVer.resx">
+      <DependentUpon>201703221228444_AddTable_PQNationalIdentityVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703221231416_AddTable_PQNationalIdentityVerDisposition.resx">
+      <DependentUpon>201703221231416_AddTable_PQNationalIdentityVerDisposition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703250823044_UpdateColumnIntoPQReferenceVer.resx">
+      <DependentUpon>201703250823044_UpdateColumnIntoPQReferenceVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703251057475_TempPQVerifiedUploadDoc.resx">
+      <DependentUpon>201703251057475_TempPQVerifiedUploadDoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703280730503_UpdateTable_PQClientCandidateBulkUpload.resx">
+      <DependentUpon>201703280730503_UpdateTable_PQClientCandidateBulkUpload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703291336581_UpdateColumnIntoPQCriminalVer.resx">
+      <DependentUpon>201703291336581_UpdateColumnIntoPQCriminalVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704060637209_UpdateColumnInto_MasterUniversity.resx">
+      <DependentUpon>201704060637209_UpdateColumnInto_MasterUniversity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704060640023_UpdateColumnInto_MasterCollege.resx">
+      <DependentUpon>201704060640023_UpdateColumnInto_MasterCollege.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704060641335_UpdateColumnInto_MasterEmployer.resx">
+      <DependentUpon>201704060641335_UpdateColumnInto_MasterEmployer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704060646233_UpdateColumnInto_MasterPoliceStation.resx">
+      <DependentUpon>201704060646233_UpdateColumnInto_MasterPoliceStation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704060647502_UpdateColumnInto_MasterVendor.resx">
+      <DependentUpon>201704060647502_UpdateColumnInto_MasterVendor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704060653084_AddTable_PQVerifiedUploadCaseDoc.resx">
+      <DependentUpon>201704060653084_AddTable_PQVerifiedUploadCaseDoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704080458140_UpdateColumnIntoPQAddress.resx">
+      <DependentUpon>201704080458140_UpdateColumnIntoPQAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704080514382_AddTable_PQAddressStatus.resx">
+      <DependentUpon>201704080514382_AddTable_PQAddressStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704100442025_UpdateColumnIntoPQEmployment.resx">
+      <DependentUpon>201704100442025_UpdateColumnIntoPQEmployment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704100446277_AddTable_PQEmploymentStatus.resx">
+      <DependentUpon>201704100446277_AddTable_PQEmploymentStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704100451501_UpdateColumnIntoPQEducation.resx">
+      <DependentUpon>201704100451501_UpdateColumnIntoPQEducation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704100456345_AddTable_PQEducationStatus.resx">
+      <DependentUpon>201704100456345_AddTable_PQEducationStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704100503060_UpdateColumnIntoPQCriminal.resx">
+      <DependentUpon>201704100503060_UpdateColumnIntoPQCriminal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704100506149_AddTable_PQCriminalStatus.resx">
+      <DependentUpon>201704100506149_AddTable_PQCriminalStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704100508382_UpdateColumnIntoPQReference.resx">
+      <DependentUpon>201704100508382_UpdateColumnIntoPQReference.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704100511487_AddTable_PQReferenceStatus.resx">
+      <DependentUpon>201704100511487_AddTable_PQReferenceStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704100514297_UpdateColumnIntoPQNationalIdentity.resx">
+      <DependentUpon>201704100514297_UpdateColumnIntoPQNationalIdentity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704100517245_AddTable_PQNationalIdentityStatus.resx">
+      <DependentUpon>201704100517245_AddTable_PQNationalIdentityStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704130943322_AddTable_MasterVendorLogin.resx">
+      <DependentUpon>201704130943322_AddTable_MasterVendorLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706211145353_AddTable_PQAddressVarPartener.resx">
+      <DependentUpon>201706211145353_AddTable_PQAddressVarPartener.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706211153302_AddTable_PQAddressPartenerUploadDocs.resx">
+      <DependentUpon>201706211153302_AddTable_PQAddressPartenerUploadDocs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706271151019_UpdateTable_PQPersonal.resx">
+      <DependentUpon>201706271151019_UpdateTable_PQPersonal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706281315586_AddColumnIntoPQAddressVarPartener.resx">
+      <DependentUpon>201706281315586_AddColumnIntoPQAddressVarPartener.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708050629481_AddColumn_TeamMember.resx">
+      <DependentUpon>201708050629481_AddColumn_TeamMember.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708050633442_AddedColumnConvertIntoForeignkey_TeamMember.resx">
+      <DependentUpon>201708050633442_AddedColumnConvertIntoForeignkey_TeamMember.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708051125132_AddColumn_MasterEmployer.resx">
+      <DependentUpon>201708051125132_AddColumn_MasterEmployer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708051126446_AddColumn_MasterUniversity.resx">
+      <DependentUpon>201708051126446_AddColumn_MasterUniversity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708051127338_AddColumn_MasterCollege.resx">
+      <DependentUpon>201708051127338_AddColumn_MasterCollege.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708210820014_AddTable_PQCandidateInsuffLogin.resx">
+      <DependentUpon>201708210820014_AddTable_PQCandidateInsuffLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708210832525_AddColumns_PQPersonal.resx">
+      <DependentUpon>201708210832525_AddColumns_PQPersonal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708210834028_AddColumns_PQVerifiedUploadDoc.resx">
+      <DependentUpon>201708210834028_AddColumns_PQVerifiedUploadDoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708220751509_UpdateTable_PQCandidateInsuffLogin.resx">
+      <DependentUpon>201708220751509_UpdateTable_PQCandidateInsuffLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709250857189_UpdateTable_PQClientBulkUpload.resx">
+      <DependentUpon>201709250857189_UpdateTable_PQClientBulkUpload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710061124467_AddTable_PQSpecialCheck.resx">
+      <DependentUpon>201710061124467_AddTable_PQSpecialCheck.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710061142350_AddTable_PQSpecialCheckVer.resx">
+      <DependentUpon>201710061142350_AddTable_PQSpecialCheckVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710061144327_AddTable_PQSpecialCheckStatus.resx">
+      <DependentUpon>201710061144327_AddTable_PQSpecialCheckStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710100548461_AddTable_TempPQSpecialCheck.resx">
+      <DependentUpon>201710100548461_AddTable_TempPQSpecialCheck.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711101119576_UpdateTable_PQVerifiedUploadDoc_PQVerifiedUploadCaseDoc.resx">
+      <DependentUpon>201711101119576_UpdateTable_PQVerifiedUploadDoc_PQVerifiedUploadCaseDoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711131248293_AddColumnsIntoPQPersonal.resx">
+      <DependentUpon>201711131248293_AddColumnsIntoPQPersonal.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
