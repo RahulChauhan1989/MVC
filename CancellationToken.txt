@@ -1,0 +1,2932 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.IO;
+using System.Xml;
+using System.Xml.Linq;
+using System.Diagnostics;
+using iTextSharp.text.pdf;
+using System.Net;
+using System.Text.RegularExpressions;
+using Ionic.Zip;
+using ErrorLogs;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Data;
+using System.Reflection;
+
+namespace ACMPMS_Trial
+{
+    public partial class Form1 : Form
+    {
+        #region global variables for process
+
+        string XMLFileName = "AutoAcm.xml";
+        bool bIsWatching = false;
+        bool IsXMLFinish = false;
+        string Watch_Path = System.Configuration.ConfigurationSettings.AppSettings["Watch_Path"].ToString();
+        string AutoAcmXml_Path = System.Configuration.ConfigurationSettings.AppSettings["LCPATH_AutoAcm_XML"].ToString(); //D:\AcmPmsFiles\
+        string strLCPATH_Docx_File_Output = System.Configuration.ConfigurationSettings.AppSettings["LCPATH_Docx_File_Output"].ToString(); //D:\AcmPmsFiles\
+        string strLCPowerEditPath = System.Configuration.ConfigurationSettings.AppSettings["LCPowerEditPath"].ToString(); //C:\PowerEdit\
+        string ClientName = System.Configuration.ConfigurationSettings.AppSettings["ClientName"].ToString(); //--ELS
+        string strLCPATH_AutoPowerEdit_XML = System.Configuration.ConfigurationSettings.AppSettings["LCPATH_AutoPowerEdit_XML"].ToString();
+        string validationpath = System.Configuration.ConfigurationSettings.AppSettings["ValidationPath"].ToString();
+        int MaxProcessTime = Convert.ToInt32(System.Configuration.ConfigurationSettings.AppSettings["MaxProcessTime"]);
+        string strUName = System.Configuration.ConfigurationSettings.AppSettings["UserName"].ToString();
+        string strACMTech01 = System.Configuration.ConfigurationSettings.AppSettings["ACMTech01"].ToString();
+        static string CurrentStatusForPorcess = "";
+        ACM objacm = new ACM();
+        ErrorLog oErrorLog = new ErrorLog();
+        string _servicereturn = string.Empty;
+        WebApiReader war = new WebApiReader();
+        string versioninfo = "";
+
+        enum DEFAULT_MSG_TYPE
+        {
+            STARTING_LINE = 0,
+            ENDING_LINE,
+            EMPTY_LINEBREAK,
+            POWEREDIT_EXE_APPLICATION_IS_RUNNING,
+            NO_FILE_DETAIL_FOUND_IN_DATABASE,
+            EMPTY_DATABASE_FOUND,
+            DRAW_LINE
+        }
+
+
+        string applicationDebugPath;
+        string strFTPURL;
+        string strFTPUID;
+        string strFTPPWD;
+        string strLCPATH;
+
+        #endregion
+
+        public Form1()
+        {
+            InitializeComponent();
+            strFTPURL = System.Configuration.ConfigurationSettings.AppSettings["FTPURL"].ToString();
+            strFTPUID = System.Configuration.ConfigurationSettings.AppSettings["FTPUID"].ToString();
+            strFTPPWD = System.Configuration.ConfigurationSettings.AppSettings["FTPPWD"].ToString();
+            strLCPATH = System.Configuration.ConfigurationSettings.AppSettings["LCPATH"].ToString();
+            applicationDebugPath = Application.ExecutablePath.Substring(0, Application.ExecutablePath.LastIndexOf('\\'));
+        }
+
+        private void btnWatch_Click(object sender, EventArgs e)
+        {
+            timer1.Enabled = false;
+            try
+            {
+                if (!bIsWatching)
+                {
+                    //if (txtIniFileLoc.Text.Trim() == "")
+                    //{
+                    //    MessageBox.Show("Please choose a folder to watch for INI Files");
+                    //    return;
+                    //}
+                    bIsWatching = true;
+                    timer1.Enabled = true;
+                    btnWatch.BackColor = System.Drawing.Color.Red;
+                    btnWatch.Text = "Stop Watch";
+                    Entry_All_Ini_Files();
+                    //watch_inifiles = new FileSystemWatcher();
+                    //watch_inifiles.Filter = "*.txt";
+                    //watch_inifiles.Path = strLCPATH_AutoPowerEdit_XML;
+                    //watch_inifiles.NotifyFilter = NotifyFilters.LastWrite;
+                    //watch_inifiles.Created += new FileSystemEventHandler(onchange());
+                    //watch_inifiles.EnableRaisingEvents = true;
+                    Read_Update_XML();
+                }
+                else
+                {
+                    bIsWatching = false;
+                    //watch_inifiles.EnableRaisingEvents = false;
+                    //watch_inifiles.Dispose();
+                    btnWatch.BackColor = System.Drawing.Color.Sienna;
+                    btnWatch.Text = "Start Watch";
+                }
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+            }
+
+
+        }
+
+        #region ini file read and process
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                Entry_All_Ini_Files();
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+            }
+
+        }
+
+        private void Entry_All_Ini_Files()
+        {
+            string docx_path = "";
+            string filename = "";
+            string eventid = "";
+            string workshopid = "";
+            string proceedingid = "";
+            string paperid = "";
+            string acronym = "";
+            string stage = "";
+            string resubmit = ""; // Updated 14/6/2018
+
+
+            foreach (string iniFiles in Directory.GetFiles(Watch_Path, "*.ini"))
+            {
+                using (StreamReader sr = new StreamReader(iniFiles))
+                {
+                    try
+                    {
+                        string line;
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            line = line.Trim();
+                            if (line.Length == 0)
+                                continue;
+
+                            if (line.Trim().ToLower().Split('=')[0].Trim() == "path".ToLower())
+                            {
+                                docx_path = line.Trim().Split('=')[1];
+                                filename = iniFiles.Split('\\').Last();
+                            }
+                            else if (line.Trim().ToLower().Split('=')[0].Trim() == "event id".ToLower())
+                            {
+                                eventid = line.Trim().Split('=')[1];
+                            }
+                            else if (line.Trim().ToLower().Split('=')[0].Trim() == "workshop id".ToLower())
+                            {
+                                workshopid = line.Trim().Split('=')[1];
+                            }
+                            else if (line.Trim().ToLower().Split('=')[0].Trim() == "proceeding id".ToLower())
+                            {
+                                proceedingid = line.Trim().Split('=')[1];
+                            }
+                            else if (line.Trim().ToLower().Split('=')[0].Trim() == "paper id".ToLower())
+                            {
+                                paperid = line.Trim().Split('=')[1];
+                            }
+                            else if (line.Trim().ToLower().Split('=')[0].Trim() == "acronym".ToLower())
+                            {
+                                acronym = line.Trim().Split('=')[1];
+                            }
+                            else if (line.Trim().ToLower().Split('=')[0].Trim() == "stage".ToLower())
+                            {
+                                stage = line.Trim().Split('=')[1];
+                            }
+                            else if (line.Trim().ToLower().Split('=')[0].Trim() == "resubmit".ToLower())
+                            {
+                                resubmit = line.Trim().Split('=')[1];
+                            }
+
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        oErrorLog.WriteErrorLog(ex);
+                    }
+                    finally
+                    {
+                        sr.Close();
+                        sr.Dispose();
+                    }
+                }
+
+                if (docx_path != "")
+                {
+                    //string ini_path = (e.FullPath.Trim()).Replace(filename + ".ini", "");
+                    if (!System.IO.Directory.Exists(Watch_Path + "\\processed"))
+                    {
+                        System.IO.Directory.CreateDirectory(Watch_Path + "\\processed");
+                    }
+                    if (File.Exists(Watch_Path + "\\processed\\" + filename))
+                    {
+                        File.Delete(Watch_Path + "\\processed\\" + filename);
+                    }
+                    File.Move(iniFiles, Watch_Path + "\\processed\\" + filename);
+                    filename = filename.Split('.')[0];
+                    Create_Append_XML(docx_path, filename, eventid, workshopid, proceedingid, paperid, acronym, stage, resubmit); // Resubmit module introduced 14\6\2018 
+                }
+            }
+
+            if (IsXMLFinish)
+            {
+                Read_Update_XML();
+            }
+        }
+
+        #endregion
+
+        #region Watch Locater XML process
+
+        public void Create_Append_XML(string docx_path, string inifilename, string eventid, string workshopid, string proceedingid, string paperid, string acronym, string stage, string resubmit)
+        {
+            string LocalDocxPath = "";
+            string xmlfilepath = AutoAcmXml_Path + XMLFileName; //----D:\AcmPmsFiles\AutoAcm.xml
+            string OutputPath = docx_path.Substring(0, docx_path.Length - 2) + "OUT";
+            //string LocalDocxPath = docx_path.Split('/')[0].Contains(':') ? docx_path.Replace(docx_path.Split('/')[0], strLCPATH_Docx_File_Output) : strLCPATH_Docx_File_Output + docx_path; // P:/ACM/8954/6887/95/IN
+            //string LocalDocxPath = docx_path.Split('/')[0].Contains(':') ? docx_path.Replace(docx_path.Split('/')[0], strLCPATH_Docx_File_Output) : strLCPATH_Docx_File_Output + docx_path;
+            if (docx_path.Contains('/'))
+            {
+                LocalDocxPath = docx_path.Split('/')[0].Contains(':') ? docx_path.Replace(docx_path.Split('/')[0], strLCPATH_Docx_File_Output) : strLCPATH_Docx_File_Output + docx_path;
+            }
+            else if (docx_path.Contains("\\"))
+            {
+                LocalDocxPath = docx_path.Split('\\')[0].Contains(':') ? docx_path.Replace(docx_path.Split('\\')[0], strLCPATH_Docx_File_Output) : strLCPATH_Docx_File_Output + docx_path;
+
+            }
+
+            LocalDocxPath = LocalDocxPath.Replace("/", "\\");
+
+            if (!File.Exists(xmlfilepath))
+            {
+
+                if (!Directory.Exists(AutoAcmXml_Path))
+                {
+                    Directory.CreateDirectory(AutoAcmXml_Path);
+                }
+
+                StringBuilder sbXml = new StringBuilder();
+                sbXml.Append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+                sbXml.Append("<AutoACM>");
+                sbXml.Append("<FileInfo Id=\"1\" IniName=\"" + inifilename + "\" DocxPath=\"" + docx_path + "\" OutputPath=\"" + OutputPath + "\" LocalDocxPath=\"" + LocalDocxPath + "\" EntryDate=\"" + DateTime.Now.ToString() + "\" ACMPowerManage=\"" + "" + "\" eventid=\"" + eventid + "\" workshopid=\"" + workshopid + "\" proceedingid=\"" + proceedingid + "\" paperid=\"" + paperid + "\" acronym=\"" + acronym + "\" Stage=\"" + stage + "\" resubmit=\"" + resubmit + "\" Status=\"YTS\"/>"); // Resubmit module introduced 14\6\2018 
+                sbXml.Append("</AutoACM>");
+
+                //sbXml.Append("<FileInfo Id=\"1\" IniName=\"" + inifilename + "\" DocxPath=\"" + docx_path + "\" OutputPath=\"" + OutputPath + "\" LocalDocxPath=\"" + LocalDocxPath + "\" EntryDate=\"" + DateTime.Now.ToString() + "\" ACMPowerManage=\"" + "" + "\" eventid=\"" + eventid + "\" workshopid=\"" + workshopid + "\" proceedingid=\"" + proceedingid + "\" paperid=\"" + paperid + "\" acronym=\"" + acronym + "\" Stage=\"" + stage + "\" Status=\"YTS\" />");
+
+                XmlDocument xmlDoc = new XmlDocument();
+                try
+                {
+                    xmlDoc.LoadXml(sbXml.ToString());
+                    using (StreamWriter writer = new StreamWriter(xmlfilepath, true))
+                    {
+                        writer.WriteLine(sbXml.ToString());
+                        writer.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    oErrorLog.WriteErrorLog(ex);
+                }
+
+            }
+
+            else
+            {
+
+                try
+                {
+                    //DocxPath=\"" + docx_path + "\" OutputPath=\"" + OutputPath + "\" EntryDate=\"" + DateTime.Now.ToString() + "\" Status=\"YTS\" />");
+                    XDocument doc = XDocument.Load(xmlfilepath);
+                    int maxId = doc.Descendants("FileInfo").Max(x => (int)x.Attribute("Id"));
+                    XElement root = new XElement("FileInfo");
+                    root.Add(new XAttribute("Id", (maxId + 1).ToString()));
+                    root.Add(new XAttribute("IniName", inifilename));
+                    root.Add(new XAttribute("DocxPath", docx_path));
+                    root.Add(new XAttribute("OutputPath", OutputPath));
+                    root.Add(new XAttribute("LocalDocxPath", LocalDocxPath));
+                    root.Add(new XAttribute("EntryDate", DateTime.Now.ToString()));
+                    root.Add(new XAttribute("ACMPowerManage", ""));
+                    root.Add(new XAttribute("eventid", eventid));
+                    root.Add(new XAttribute("workshopid", workshopid));
+                    root.Add(new XAttribute("proceedingid", proceedingid));
+                    root.Add(new XAttribute("paperid", paperid));
+                    root.Add(new XAttribute("acronym", acronym));
+                    root.Add(new XAttribute("Stage", stage));
+                    root.Add(new XAttribute("Status", "YTS"));
+                    root.Add(new XAttribute("resubmit", resubmit)); //Resubmit module introduced 14\6\2018 
+                    doc.Element("AutoACM").Add(root);
+                    doc.Save(xmlfilepath);
+                }
+                catch (Exception ex)
+                {
+                    oErrorLog.WriteErrorLog(ex);
+                }
+
+            }
+
+        }
+
+        private void Read_Update_XML(string flag = "NA")
+        {
+            try
+            {
+                XElement doc = XElement.Load(AutoAcmXml_Path + XMLFileName);
+
+
+                #region START
+
+                if (flag.ToUpper().Trim() == "NA")
+                {
+                    IEnumerable<XElement> elementlist = from el in doc.Elements("FileInfo")
+                                                        where (string)el.Attribute("Status") == "START"
+                                                        select el;
+                    XElement element1 = (XElement)elementlist.FirstOrDefault();
+
+                    if (element1 == null)
+                    {
+                        elementlist = from el in doc.Elements("FileInfo")
+                                      where (string)el.Attribute("Status") == "YTS"
+                                      select el;
+                        element1 = (XElement)elementlist.FirstOrDefault();
+                    }
+
+                    if (element1 != null)
+                    {
+                        IsXMLFinish = false;
+                        element1.Attribute("Status").Value = "START";
+
+                        doc.Save(AutoAcmXml_Path + XMLFileName);
+
+                        var resultFlag = StartProcess(element1.Attribute("DocxPath").Value, element1.Attribute("OutputPath").Value, element1.Attribute("LocalDocxPath").Value, element1.Attribute("IniName").Value, element1.Attribute("eventid").Value, element1.Attribute("workshopid").Value, element1.Attribute("proceedingid").Value, element1.Attribute("paperid").Value, element1.Attribute("acronym").Value, element1.Attribute("Stage").Value, element1.Attribute("resubmit").Value); //Resubmit module introduced 14\6\2018 
+
+                        if (resultFlag.Item1)
+                        {
+                            element1.Attribute("Status").Value = "DONE";
+                            element1.Attribute("ACMPowerManage").Value = resultFlag.Item2;
+                            //oErrorLog.WorkProcessLog(
+                            CurrentStatus("", "", "Process has been completed...", "End");
+                        }
+                        else
+                        {
+                            element1.Attribute("Status").Value = "ERROR";
+                            element1.Attribute("ACMPowerManage").Value = resultFlag.Item2;
+                            CurrentStatus("", "", "Process has been completed with error...", "End");
+                        }
+                        doc.Save(AutoAcmXml_Path + XMLFileName);
+                        Read_Update_XML();
+                    }
+                    else
+                    {
+                        IsXMLFinish = true;
+                    }
+
+                }
+                #endregion START
+
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+            }
+
+        }
+
+        #endregion
+
+        #region Copy file to directory and create zip file
+
+        // private bool ZipFile(string LocalFileLocation, string filename) //Change this func name ZipFile to  ZipIndexFile as Zipfile is sys func by Avanish on 19-02-2018
+
+        private bool ZipIndexFile(string LocalFileLocation, string filename)
+        {
+            bool flag = false;
+            try
+            {
+                string index = LocalFileLocation + "\\" + "index";
+                string indexfilepath = LocalFileLocation + "\\" + "index\\index.html";
+                string imagesfolder = LocalFileLocation + "\\" + "index\\images";
+                //string libfolder = LocalFileLocation + "\\" + "index\\lib"; // Commented : 20-6-2018 -- no need of lib folder in new version (taken globallly)
+                string imagefolder = LocalFileLocation + "\\images";
+                //string cssfolder = LocalFileLocation + "\\lib"; // Commented : 20-6-2018 -- no need of lib folder in new version (taken globallly)
+                string htmlfile = LocalFileLocation + "\\index.html";
+
+                //copyDirectory(cssfolder, libfolder); // Commented : 20-6-2018 -- no need of copying
+
+                if (Directory.Exists(imagefolder))
+                {
+                    if (!Directory.Exists(imagesfolder))
+                        System.IO.Directory.CreateDirectory(imagesfolder);
+
+                    copyDirectory(imagefolder, imagesfolder);
+                }
+
+                if (File.Exists(htmlfile))
+                    File.Copy(htmlfile, indexfilepath);
+
+                using (ZipFile zip = new ZipFile())
+                {
+                    zip.AddDirectory(index);
+                    zip.Save(LocalFileLocation + @"\index.zip");
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+            }
+
+            return flag;
+        }
+
+        private void copyDirectory(string strSource, string strDestination)
+        {
+
+            try
+            {
+                foreach (string dirPath in Directory.GetDirectories(strSource, "*",
+       SearchOption.AllDirectories))
+                {
+                    Directory.CreateDirectory(dirPath.Replace(strSource, strDestination));
+
+                }
+
+                //Copy all the files & Replaces any files with the same name
+                foreach (string newPath in Directory.GetFiles(strSource, "*.*",
+                    SearchOption.AllDirectories))
+                {
+                    File.Copy(newPath, newPath.Replace(strSource, strDestination), true);
+                }
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+            }
+        }
+
+        #endregion
+
+        #region Write current status
+
+        public void CurrentStatus(string StartDateTime, string FileName, string ProcessStatus, string Action)
+        {
+            try
+            {
+                Label.CheckForIllegalCrossThreadCalls = false;
+                if (!StartDateTime.Equals(""))
+                {
+                    LblProcessStartOn.Text = StartDateTime;
+                }
+                if (!FileName.Equals(""))
+                {
+                    LblFileName.Text = FileName;
+                }
+                if (!ProcessStatus.Equals(""))
+                {
+                    LblCurrentStatus.Text = ProcessStatus;
+                }
+                if (Action.Equals("Start"))
+                {
+                    CurrentStatusForPorcess = "";
+                }
+                CurrentStatusForPorcess += BuildWorkProcessLog(ProcessStatus, FileName, Action);
+                if (Action.Equals("End"))
+                {
+                    oErrorLog.WorkProcessLog(CurrentStatusForPorcess);
+                    CurrentStatusForPorcess = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+            }
+        }
+
+
+
+
+        private string BuildWorkProcessLog(string CurrentStatus, string FileName, string Action)
+        {
+            string message = "";
+
+
+            StringBuilder loglineStringBuilder = new StringBuilder();
+            if (Action.Equals("Start"))
+            //if ( Action.Equals("Version"))
+            {
+                loglineStringBuilder.Append(" \t");
+                message += string.Format("Process Start Time: {0}", DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"));
+                message += Environment.NewLine;
+                message += "-----------------------------------------------------------";
+
+
+
+                //if (Action.Equals("Version"))
+                //{
+                //    message += Environment.NewLine;
+                //    message += string.Format("Version: {0}", CurrentStatus);
+                //    loglineStringBuilder.Append(message);
+                //}
+
+
+                if (!FileName.Equals(""))
+                {
+                    message += Environment.NewLine;
+                    message += string.Format("{0}", versioninfo);
+                    message += Environment.NewLine;
+                    message += string.Format("File Name: {0}", FileName);
+
+                }
+
+                else
+                {
+                    message += Environment.NewLine;
+                    message += string.Format("File Name: {0}", "File not found...!!!");
+                }
+
+                message += Environment.NewLine;
+                message += string.Format("Current Process Time: {0}", DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"));
+                message += Environment.NewLine;
+                message += string.Format("Current Process: {0}", CurrentStatus);
+                loglineStringBuilder.Append(message);
+            }
+
+            //if (Action.Equals("Start"))
+            //{
+
+            //    if (!FileName.Equals(""))
+            //    {
+
+            //        message += Environment.NewLine;
+            //        message += string.Format("File Name: {0}", FileName);
+
+            //    }
+
+
+            //    else 
+            //    {
+            //        message += Environment.NewLine;
+            //        message += string.Format("File Name: {0}", "File not found...!!!");
+            //    }
+
+            //    //message += Environment.NewLine;
+            //    //message += string.Format("Current Process Time: {0}", DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"));
+            //    //message += Environment.NewLine;
+            //    //message += string.Format("Current Process: {0}", CurrentStatus);
+            //    loglineStringBuilder.Append(message);
+            //}
+
+
+            if (Action.Equals("Process"))
+            {
+                message += Environment.NewLine;
+                message += string.Format("Current Process Time: {0}", DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"));
+                message += Environment.NewLine;
+                message += string.Format("Current Process: {0}", CurrentStatus);
+                loglineStringBuilder.Append(message);
+            }
+
+
+
+            if (Action.Equals("End"))
+            {
+                message += Environment.NewLine;
+                message += string.Format("Current Process Time: {0}", DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"));
+                message += Environment.NewLine;
+                message += string.Format("Current Process: {0}", CurrentStatus);
+                message += Environment.NewLine;
+                message += string.Format("Process End Time: {0}", DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"));
+                message += Environment.NewLine;
+                message += "-----------------------------------------------------------";
+                message += Environment.NewLine;
+                loglineStringBuilder.Append(message);
+                loglineStringBuilder.Append("___________________________________************_______________________________________");
+                versioninfo = "";
+            }
+
+            return loglineStringBuilder.ToString();
+        }
+
+        #endregion
+
+        #region check version and download lettest poweredit files
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            KillWordEvent();
+            war.XmlApiURL = System.Configuration.ConfigurationSettings.AppSettings["GlobalApiURL"].ToString();
+            string strVersionData = "";
+            string VersionCode = "";
+            strVersionData = war.DownloadVersionDetail();
+            strVersionData = strVersionData.Substring(strVersionData.LastIndexOf("=") + 1).Replace("></Download>", "").Replace("\"", "").Trim();
+            strVersionData = strVersionData.Replace("v", "");
+
+            //-------------------Auto Concept----------------------------------
+
+            //if (Directory.Exists(strLCPATH) == false)
+            //{
+            //    Directory.CreateDirectory(strLCPATH);
+            //}
+
+            if (Directory.Exists(strLCPATH + "\\framework") == false)
+            {
+                Directory.CreateDirectory(strLCPATH + "\\framework");
+            }
+
+            //----------------------------------------------------------------
+
+            if (File.Exists(System.Configuration.ConfigurationSettings.AppSettings["LCPATH"].ToString() + "iniFiles\\Clients.xml"))
+            {
+                using (DataSet ds = new DataSet())
+                {
+
+                    //GlobalVersionCode = File.ReadAllText(ConfigurationManager.AppSettings["LCPATH"].ToString() + "iniFiles\\Version_Code.ini");
+                    ds.ReadXml(System.Configuration.ConfigurationSettings.AppSettings["LCPATH"].ToString() + "iniFiles\\Clients.xml");
+                    VersionCode = ds.Tables["globalfile"].Rows[0]["version"].ToString().Trim();
+                }
+            }
+            else
+            {
+                //VersionCode = "v4";
+                VersionCode = "1";
+            }
+
+            //-------------------------------------------------
+            //This is the function where WebService will call
+            //-------------------------------------------------
+            CallWebAPI(strUName, System.Configuration.ConfigurationSettings.AppSettings["LCPATH"].ToString() + "Framework\\Clients_Temp.xml");
+
+
+            //if (VersionCode != strVersionData)
+            //{
+            //bool Check =
+            ProcessFTP(VersionCode);
+            //war.AbortLoadingWindow();
+            //if (Check)
+            //{
+
+            //-------------------Auto Concept----------------------------------
+
+            //DownloadClientWiseFiles_Auto_Concept();
+
+            //this.Close();
+            //----------------------------------------------------------------
+
+
+
+        }
+
+        private void CallWebAPI(string struname, string TempPathtosave)
+        {
+            string strAPIURL = System.Configuration.ConfigurationSettings.AppSettings["APIURL"].ToString();
+            string strAPIUID = "";
+            string strAPIPWD = "";
+            string strXmlDir = System.Configuration.ConfigurationSettings.AppSettings["CLIXML"].ToString();
+            war.PathToSave = strXmlDir;
+            war.UserName = strAPIUID;
+            war.PassWord = strAPIPWD;
+            war.XmlApiURL = strAPIURL + struname;
+            war.PortNo = 80;
+            war.PathToSave = strXmlDir + "";
+            war.ShowLoading = false;
+            //if (File.Exists(strXmlDir) == true)
+            //{
+            //    File.Delete(strXmlDir);
+            //}
+            if (war.GetClientXMLForUser(struname, TempPathtosave) == false)
+            {
+                MessageBox.Show("Error :" + war.StatusMsg, "Power Edit 6.0", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void ProcessFTP(string VersionCode_Global_Old)
+        {
+            //            strUName
+            MessageToDisplay(DEFAULT_MSG_TYPE.STARTING_LINE);
+            string VersionCode_Global_New = "1";
+            string strLogMessage = "";
+            string user_Name = strUName;
+            //ReadVersion_Client
+
+            if (File.Exists(System.Configuration.ConfigurationSettings.AppSettings["LCPATH"].ToString() + "Framework\\Clients_Temp.xml"))
+            {
+                if (user_Name != null || user_Name != "")
+                {
+                    VersionCode_Global_New = ReadVersion_Global(System.Configuration.ConfigurationSettings.AppSettings["LCPATH"].ToString() + "Framework\\Clients_Temp.xml", user_Name);
+                }
+                // File.Delete(ConfigurationManager.AppSettings["applicationPath"].ToString() + "iniFiles\\Clients.xml");
+            }
+            else
+            {
+                VersionCode_Global_New = "0";
+            }
+
+            #region ## Remove after handle Client used outside
+
+            if (VersionCode_Global_New == "")
+            {
+                VersionCode_Global_New = "0";
+            }
+
+            #endregion
+
+            if (Convert.ToInt32(VersionCode_Global_New) > Convert.ToInt32(VersionCode_Global_Old))
+            {
+                ValidPath(strLCPATH + "Framework");
+                MessageToDisplay(DEFAULT_MSG_TYPE.STARTING_LINE);
+                //-Stage-1-////////////////////////////////////////////////////////////////////////
+                if (CheckProcess("PE_ServerBased.exe") == true)
+                {
+                    MessageToDisplay(DEFAULT_MSG_TYPE.POWEREDIT_EXE_APPLICATION_IS_RUNNING);
+                    MessageToDisplay(DEFAULT_MSG_TYPE.DRAW_LINE);
+                    this.Close();
+                    //return false;
+                }
+                KillWordEvent();
+                //war.ShowLoadingWindow();
+                //-Stage-2-////////////////////////////////////////////////////////////////////////
+                //string strLogMessage = "";
+                Filedetails oFileDetails = new Filedetails();
+                //DataSet dsFiles = oFileDetails.getFileDetails(strUName, "blankMyuF", "blankMyuF");
+                DataSet dsFiles = oFileDetails.getFileDetails(strUName, "blankMyuF", "blankMyuF", VersionCode_Global_Old);
+                if (dsFiles == null)
+                {
+                    MessageToDisplay(DEFAULT_MSG_TYPE.NO_FILE_DETAIL_FOUND_IN_DATABASE);
+                    MessageToDisplay(DEFAULT_MSG_TYPE.DRAW_LINE);
+                    this.Close();
+                    // return false;
+                }
+
+                else if (dsFiles.Tables["UpdateFile"].Rows.Count == 0)
+                {
+                    MessageToDisplay(DEFAULT_MSG_TYPE.EMPTY_DATABASE_FOUND);
+                    MessageToDisplay(DEFAULT_MSG_TYPE.DRAW_LINE);
+                    this.Close();
+                    // return false;
+                }
+                else if (dsFiles.Tables["UpdateFile"].Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dsFiles.Tables[0].Rows)
+                    {
+                        try
+                        {
+                            string strLocalFileName = dr["FilePath"].ToString().Replace("/", "\\");
+                            strLogMessage += "FTP File: " + strLocalFileName + ".".Repeat(Math.Abs(105 - strLocalFileName.Length));
+                            if (File.Exists(strLocalFileName) == false)
+                            {
+
+                            }
+                            strLogMessage += ", File Date: " + DateTime.Now.Day.ToString() + "-" + DateTime.Now.Month.ToString() + "-" +
+                                                DateTime.Now.Year.ToString() + " " + DateTime.Now.Hour.ToString() + "-" +
+                                                DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString();
+                            strLogMessage += Func(strLocalFileName) + "\n";
+                        }
+                        catch (Exception ex)
+                        {
+                            //this.Close();
+                            //return false;
+                            strLogMessage += ", Error : " + ex.Message + ". \n";
+                            //Diff.File(strLogMessage);
+                            MessageToDisplay(DEFAULT_MSG_TYPE.DRAW_LINE);
+                            this.Close();
+                            // return false;
+                        }
+
+                    }
+                    Diff.File(strLogMessage);
+                }
+            }
+
+
+            UpdateVersion_Global(System.Configuration.ConfigurationSettings.AppSettings["LCPATH"].ToString() + "iniFiles\\Clients.xml", user_Name, VersionCode_Global_New);
+
+        }
+
+        private string ReadVersion_Global(string ClientXmlPath, string User_name)
+        {
+            string strVersion = "";
+            XmlDocument document = new XmlDocument();
+            try
+            {
+                if (File.Exists(ClientXmlPath))
+                {
+                    document.Load(ClientXmlPath);
+                    XmlNodeList RemFiltrationList = document.SelectNodes("body/resourcelist/globalfile");///" + FiltrationType+"/P");               
+                    foreach (XmlNode Mainnode in RemFiltrationList)
+                    {
+                        if (Mainnode.Attributes["version"] != null)
+                        {
+                            strVersion = Mainnode.Attributes["version"].Value.ToString().Trim();
+                            break;
+                        }
+                    }
+                }
+            }
+            catch { }
+            return strVersion;
+        }
+
+        private void UpdateVersion_Global(string ClientXmlPath, string User_name, string Version_New)
+        {
+
+            XmlDocument document = new XmlDocument();
+            try
+            {
+                if (File.Exists(ClientXmlPath))
+                {
+                    document.Load(ClientXmlPath);
+                    XmlNodeList RemFiltrationList = document.SelectNodes("body/resourcelist/globalfile");///" + FiltrationType+"/P");               
+                    foreach (XmlNode Mainnode in RemFiltrationList)
+                    {
+                        if (Mainnode.Attributes["version"] != null)
+                        {
+                            Mainnode.Attributes["version"].Value = Version_New;
+                            break;
+                        }
+                    }
+                    document.Save(ClientXmlPath);
+                }
+            }
+            catch { }
+        }
+
+        private void MessageToDisplay(DEFAULT_MSG_TYPE dmy)
+        {
+            switch (dmy)
+            {
+                case DEFAULT_MSG_TYPE.STARTING_LINE:
+                    Diff.File("Start at " + '='.Repeat(60) + DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss tt") + '='.Repeat(92));
+                    break;
+                case DEFAULT_MSG_TYPE.EMPTY_LINEBREAK:
+                    Diff.File("");
+                    break;
+                case DEFAULT_MSG_TYPE.POWEREDIT_EXE_APPLICATION_IS_RUNNING:
+                    Diff.File("Information : Poweredit.exe application is running. close the application and try again.");
+                    break;
+                case DEFAULT_MSG_TYPE.EMPTY_DATABASE_FOUND:
+                    Diff.File("Information : Empty database found.");
+                    break;
+                case DEFAULT_MSG_TYPE.NO_FILE_DETAIL_FOUND_IN_DATABASE:
+                    Diff.File("Information : No file detail found in database or invalid database found.");
+                    break;
+                case DEFAULT_MSG_TYPE.ENDING_LINE:
+                    Diff.File("End at " + '='.Repeat(60) + DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss tt") + '='.Repeat(94));
+                    break;
+                case DEFAULT_MSG_TYPE.DRAW_LINE:
+                    Diff.File('='.Repeat(184));
+                    break;
+            }
+        }
+
+        private void FillWorkflowfrmNetwork(string Path, string Clientcmbx, string Journalcmbx)
+        {
+            Path = Path + Clientcmbx;
+            if (!Directory.Exists(Path))
+            {
+                Directory.CreateDirectory(Path);
+            }
+
+            if (!Directory.Exists(Path + "\\Journals\\" + Journalcmbx))
+            {
+                Directory.CreateDirectory(Path + "\\Journals\\" + Journalcmbx);
+            }
+
+            string strAPIURL = System.Configuration.ConfigurationSettings.AppSettings["APIURLBASE"].ToString().Trim() + "Workflow.aspx?cname=" + Clientcmbx + "&jname=" + Journalcmbx;
+
+            WriteWorkflowIniFile(Path + "\\Journals\\" + Journalcmbx + "\\workflow.xml", strAPIURL);
+        }
+
+        public Boolean WriteWorkflowIniFile(string strWorkFlow_SavePath, string strAPIURL)
+        {
+            string xmlData = war.DownloadClientWiseDetail(strAPIURL);
+            XmlDocument xmlDoc = new XmlDocument();
+            try
+            {
+                //String sFileNameWithPath = @"C:\PowerEdit\final_marking\JournalDB.xml";
+                xmlDoc.LoadXml(xmlData);
+                if (File.Exists(strWorkFlow_SavePath) == true)
+                {
+                    File.Delete(strWorkFlow_SavePath);
+                }
+                ValidPath(strWorkFlow_SavePath.Substring(0, strWorkFlow_SavePath.LastIndexOf("\\")));
+                using (StreamWriter writer = new StreamWriter(strWorkFlow_SavePath, true))
+                {
+                    writer.WriteLine(xmlData);
+                    writer.Close();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+        public DataSet getClientwiseFile(string xmlData)
+        {
+            DataSet ds = new DataSet();
+            try
+            {
+                DataTable dataTable = new DataTable("UpdateFile");
+                dataTable.Columns.Add("FilePath", typeof(string));
+                dataTable.Columns.Add("UPLOADEDBY", typeof(string));
+                dataTable.Columns.Add("DATECREATED", typeof(string));
+                dataTable.Columns.Add("DATEMODIFIED", typeof(string));
+                dataTable.Columns.Add("CLIENTNAME", typeof(string));
+                dataTable.Columns.Add("JOURNALNAME", typeof(string));
+                ds.Tables.Add(dataTable);
+
+                System.IO.StringReader xmlSR = new System.IO.StringReader(xmlData);
+
+                ds.ReadXml(xmlSR, XmlReadMode.IgnoreSchema);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message.ToString());
+                throw new Exception(ex.Message.ToString());
+            }
+            finally
+            {
+
+            }
+            return ds;
+        }
+
+        private string Func(string strServerFileNme)
+        {
+            try
+            {
+                string src = strServerFileNme.Substring(strServerFileNme.IndexOf("\\", 3)).Replace("\\", "/");
+                string tgt = strServerFileNme;
+                Funct(src, tgt);
+                return ", Downloaded.";
+            }
+            catch (Exception ex)
+            {
+                return ", Error :\t" + ex.Message + ".";    // Diff.File("Error :\t" + ex.Message);
+            }
+        }
+
+        private void Funct(string ftpSourceFilePath, string localDestinationFilePath)
+        {
+            int bytesRead = 0;
+            byte[] buffer = new byte[2048];
+
+            FtpWebRequest request = CreateFtpWebRequest(strFTPURL + ftpSourceFilePath, strFTPUID, strFTPPWD, true);
+            request.Method = WebRequestMethods.Ftp.DownloadFile;
+
+            Stream reader = request.GetResponse().GetResponseStream();
+            if (ValidPath(localDestinationFilePath.Substring(0, localDestinationFilePath.LastIndexOf("\\"))))
+            {
+                try
+                {
+                    string strTemp = System.IO.Path.GetTempPath() + System.IO.Path.GetFileName(localDestinationFilePath);
+                    if (File.Exists(strTemp) == true)
+                    {
+                        File.Delete(strTemp);
+                    }
+                    FileStream fileStream = new FileStream(localDestinationFilePath, FileMode.Create);
+                    while (true)
+                    {
+                        bytesRead = reader.Read(buffer, 0, buffer.Length);
+                        if (bytesRead == 0)
+                        {
+                            break;
+                        }
+                        fileStream.Write(buffer, 0, bytesRead);
+                    }
+                    fileStream.Close();
+                }
+                catch (Exception ex)
+                {
+                    Diff.File("Error : \t" + ex.Message);
+                }
+            }
+        }
+
+        private FtpWebRequest CreateFtpWebRequest(string ftpDirectoryPath, string userName, string password, bool keepAlive = false)
+        {
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(new Uri(ftpDirectoryPath));
+            request.Proxy = null; ; ;
+            request.UsePassive = true;
+            request.UseBinary = true;
+            request.KeepAlive = keepAlive;
+            request.Credentials = new NetworkCredential(userName, password);
+            return request;
+        }
+
+        private Boolean ValidPath(String sFileNameWithPath)
+        {
+            if (Directory.Exists(sFileNameWithPath) == false)
+            {
+                ValidPath(sFileNameWithPath.Substring(0, sFileNameWithPath.LastIndexOf("\\")));
+                {
+                    Directory.CreateDirectory(sFileNameWithPath);
+                }
+            }
+            return true;
+        }
+
+        private Boolean CheckProcess(string ProcessName)
+        {
+            try
+            {
+                bool flagProcess = false;
+                ProcessName = ProcessName.Substring(ProcessName.LastIndexOf(@"\") + 1);
+                Process[] allProcs = Process.GetProcesses();
+                foreach (Process thisProc in allProcs)
+                {
+                    if (thisProc.ProcessName.ToLower() == ProcessName.ToLower().Replace(".exe", ""))
+                    {
+                        MessageBox.Show("Power Edit Application already runing!!");
+                        flagProcess = true;
+                    }
+                }
+                return flagProcess;
+            }
+            catch (Exception)
+            {
+                KillProcess("DownloadUpdatedFiles.exe");
+                return true;
+            }
+        }
+
+        private void KillProcess(string ProcessName)
+        {
+            try
+            {
+                ProcessName = ProcessName.Substring(ProcessName.LastIndexOf(@"\") + 1);
+                Process[] allProcs = Process.GetProcesses();
+                foreach (Process thisProc in allProcs)
+                {
+                    if (thisProc.ProcessName.ToLower() == ProcessName.ToLower().Replace(".exe", ""))
+                    {
+                        thisProc.Kill();
+                    }
+                }
+            }
+            catch
+            {
+                KillProcess("DownloadUpdatedFiles.exe");
+            }
+        }
+
+        #endregion
+
+        #region NOT IN USE
+
+        //private void WaterMarkInsertion(string docxPath)
+        //{
+        //    try
+        //    {
+        //        Microsoft.Office.Interop.Word.Document wordDocument = new Microsoft.Office.Interop.Word.Document();
+        //        Microsoft.Office.Interop.Word.Application appWord = new Microsoft.Office.Interop.Word.Application();
+        //        wordDocument = appWord.Documents.Open(docxPath);
+        //        appWord.ActiveWindow.View.Type = Microsoft.Office.Interop.Word.WdViewType.wdPrintView;
+        //        appWord.Selection.WholeStory();
+        //        Object missing = System.Reflection.Missing.Value;
+        //        appWord.ActiveDocument.Sections[1].Range.Select();
+        //        appWord.ActiveWindow.View.Type = Microsoft.Office.Interop.Word.WdViewType.wdPrintView;
+        //        appWord.ActiveWindow.ActivePane.View.SeekView = Microsoft.Office.Interop.Word.WdSeekView.wdSeekCurrentPageHeader;
+        //        appWord.Selection.HeaderFooter.Shapes.AddTextEffect(Microsoft.Office.Core.MsoPresetTextEffect.msoTextEffect1, "Not for Submission", "Arial", 16, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoFalse, 0, 0, ref missing).Select();
+        //        appWord.Selection.ShapeRange.Name = "WordArt 1";
+        //        appWord.Selection.ShapeRange.TextEffect.NormalizedHeight = Microsoft.Office.Core.MsoTriState.msoFalse;
+        //        appWord.Selection.ShapeRange.Line.Visible = Microsoft.Office.Core.MsoTriState.msoFalse;
+        //        appWord.Selection.ShapeRange.Fill.Visible = Microsoft.Office.Core.MsoTriState.msoTrue;
+        //        appWord.Selection.ShapeRange.Fill.Solid();
+        //        appWord.Selection.ShapeRange.Fill.ForeColor.RGB = 201452;
+        //        appWord.Selection.ShapeRange.Fill.Transparency = 0.4f;
+        //        appWord.Selection.ShapeRange.Rotation = 270;
+        //        appWord.Selection.ShapeRange.LockAspectRatio = Microsoft.Office.Core.MsoTriState.msoTrue;
+        //        appWord.Selection.ShapeRange.Height = 3.17f;
+        //        appWord.Selection.ShapeRange.Width = 20.7f;
+        //        appWord.Selection.ShapeRange.WrapFormat.AllowOverlap = -1;
+        //        appWord.Selection.ShapeRange.WrapFormat.Side = Microsoft.Office.Interop.Word.WdWrapSideType.wdWrapBoth;
+        //        appWord.Selection.ShapeRange.WrapFormat.Type = Microsoft.Office.Interop.Word.WdWrapType.wdWrapInline;
+        //        appWord.Selection.ShapeRange.RelativeHorizontalPosition = Microsoft.Office.Interop.Word.WdRelativeHorizontalPosition.wdRelativeHorizontalPositionMargin;
+        //        appWord.Selection.ShapeRange.RelativeVerticalPosition = Microsoft.Office.Interop.Word.WdRelativeVerticalPosition.wdRelativeVerticalPositionMargin;
+        //        appWord.Selection.ShapeRange.Left = -225f;
+        //        appWord.Selection.ShapeRange.Top = 300f;
+        //        appWord.ActiveWindow.ActivePane.View.SeekView = Microsoft.Office.Interop.Word.WdSeekView.wdSeekMainDocument;
+
+
+        //        wordDocument.Close();
+        //    }
+        //    catch (Exception ex)
+        //    { }
+        //}
+
+        //public void DownloadClientWiseFiles_Auto_Concept()
+        //{
+        //    //string strAPIURL1 = ConfigurationManager.AppSettings["CommonApiURL"].ToString().Trim() + "Workflow.aspx?cname=" + strClient + "&jname=" + strJournal + "";
+
+        //    FillWorkflowfrmNetwork(System.Configuration.ConfigurationSettings.AppSettings["LCPATH"].ToString().Trim() + "Clients\\", strClient, strJournal);
+
+        //    string strAPIURL1 = System.Configuration.ConfigurationSettings.AppSettings["GlobalApiURL"].ToString().Trim() + "?client=" + strClient + "";
+        //    string xmlData = war.DownloadClientWiseDetail(strAPIURL1);
+        //    string strLogMessage = "";
+        //    DataSet dsFiles = getClientwiseFile(xmlData);
+
+        //    if (dsFiles == null)
+        //    {
+        //        MessageToDisplay(DEFAULT_MSG_TYPE.NO_FILE_DETAIL_FOUND_IN_DATABASE);
+        //        MessageToDisplay(DEFAULT_MSG_TYPE.DRAW_LINE);
+        //        this.Close();
+        //        // return false;
+        //    }
+
+        //    else if (dsFiles.Tables["UpdateFile"].Rows.Count == 0)
+        //    {
+        //        MessageToDisplay(DEFAULT_MSG_TYPE.EMPTY_DATABASE_FOUND);
+        //        MessageToDisplay(DEFAULT_MSG_TYPE.DRAW_LINE);
+        //        this.Close();
+        //        // return false;
+        //    }
+        //    else if (dsFiles.Tables["UpdateFile"].Rows.Count > 0)
+        //    {
+        //        foreach (DataRow dr in dsFiles.Tables[0].Rows)
+        //        {
+        //            try
+        //            {
+        //                string strLocalFileName = dr["FilePath"].ToString().Replace("/", "\\");
+        //                strLogMessage += "FTP File: " + strLocalFileName + ".".Repeat(Math.Abs(105 - strLocalFileName.Length));
+        //                if (File.Exists(strLocalFileName) == false)
+        //                {
+
+        //                }
+        //                strLogMessage += ", File Date: " + DateTime.Now.Day.ToString() + "-" + DateTime.Now.Month.ToString() + "-" +
+        //                                    DateTime.Now.Year.ToString() + " " + DateTime.Now.Hour.ToString() + "-" +
+        //                                    DateTime.Now.Minute.ToString() + "-" + DateTime.Now.Second.ToString();
+        //                strLogMessage += Func(strLocalFileName) + "\n";
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                //this.Close();
+        //                //return false;
+        //                strLogMessage += ", Error : " + ex.Message + ". \n";
+        //                //Diff.File(strLogMessage);
+        //                MessageToDisplay(DEFAULT_MSG_TYPE.DRAW_LINE);
+        //                this.Close();
+        //                // return false;
+        //            }
+
+        //        }
+        //        Diff.File(strLogMessage);
+        //    }
+
+        //}
+
+
+
+        //if (Action.Equals("InputValid"))
+        //{
+        //    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=2";
+        //    //XmlApiURL = "http://acmtech.ind.aptaracorp.com:8080/ACMWB/resources/Tx3U69/3yZ2?acronym=" + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=2";
+        //}
+        //if (Action.Equals("InputInvalid"))
+        //{
+        //    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=3";
+        //    //XmlApiURL = "http://acmtech.ind.aptaracorp.com:8080/ACMWB/resources/Tx3U69/3yZ2?acronym=" + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=3";
+        //}
+        //if (Action.Equals("InputWarning"))
+        //{
+        //    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&ZS=4";
+        //    //XmlApiURL = "http://acmtech.ind.aptaracorp.com:8080/ACMWB/resources/Tx3U69/3yZ2?acronym=" + acronym + "&paperid=" + paperid + "&ZS=4";
+        //}
+        //if (Action.Equals("XMLInProgress"))
+        //{
+        //    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&ZS=5";
+        //    //XmlApiURL = "http://acmtech.ind.aptaracorp.com:8080/ACMWB/resources/Tx3U69/3yZ2?acronym=" + acronym + "&paperid=" + paperid + "&ZS=5";
+        //}
+        //if (Action.Equals("XMLCompleted"))
+        //{
+
+        //    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=6";
+        //    //XmlApiURL = "http://acmtech.ind.aptaracorp.com:8080/ACMWB/resources/Tx3U69/3yZ2?acronym=" + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=6";
+        //}
+        //if (Action.Equals("HTML5inProgress"))
+        //{
+        //    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&ZS=7";
+        //    //XmlApiURL = "http://acmtech.ind.aptaracorp.com:8080/ACMWB/resources/Tx3U69/3yZ2?acronym=" + acronym + "&paperid=" + paperid + "&ZS=7";
+        //}
+        //if (Action.Equals("HTML5Completed"))
+        //{
+        //    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=8";
+        //    //XmlApiURL = "http://acmtech.ind.aptaracorp.com:8080/ACMWB/resources/Tx3U69/3yZ2?acronym=" + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=8";
+        //}
+        //if (Action.Equals("SpecificError"))
+        //{
+        //    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=26";
+
+        //    //XmlApiURL = "http://acmtech.ind.aptaracorp.com:8080/ACMWB/resources/Tx3U69/3yZ2?acronym=" + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=8";
+        //}
+
+
+        //if (type[0].ToString().Equals("Information: ACM template not recognize in manuscript.Please check."))
+        //                            {
+        //                                _specificError = true;
+        //                            }
+
+
+
+        private void btnBrowse_Click(object sender, EventArgs e)
+        {
+            //DialogResult resDialog = dlgIniFiles.ShowDialog();
+            //if (resDialog == DialogResult.OK)
+            //{
+            //    txtIniFileLoc.Text = dlgIniFiles.SelectedPath;
+            //}
+        }
+
+        #endregion NOT IN USE
+
+        #region Call Web Serivce
+
+        //public string WebServiceCall(string Action, string acronym, string paperid, string OF, string Log = null)
+        public string WebServiceCall(string Action, string acronym, string paperid, string OF, string Log = null, int PDFPAGECOUNT = 0)
+        {
+            string XmlApiURL = string.Empty;
+            switch (Action)
+            {
+                case "InputValid":
+                    // XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=2&Log=" + Log; //16-02-2018
+                    break;
+
+                case "InputError":
+                    //  XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=3&Log=" + Log; //16-02-2018
+                    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&ZS=4&OF=" + OF;
+                    break;
+
+                case "InputInvalid":
+                    //  XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=3&Log=" + Log; //16-02-2018
+                    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&ZS=3&OF=" + OF;
+                    break;
+
+                case "InputWarning":
+                    // XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&ZS=4&Log=" + Log; 16-02-2018
+                    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&ZS=4&OF=" + OF;
+                    break;
+
+                case "XMLInProgress":
+                    //XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&ZS=5";//16-02-2018
+                    break;
+
+                case "XMLCompleted":
+                    //XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=6";//16-02-2018
+                    break;
+
+                case "HTML5inProgress":
+                    //XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&ZS=7";//16-02-2018
+                    break;
+
+                case "HTML5Completed":
+                    //XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=8";
+                    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=8" + "&CNT=" + PDFPAGECOUNT;
+                    break;
+
+                case "SpecificError"://It is closed from template commneted on 28 feb 2018 
+                    //XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=26";
+                    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=3";
+                    break;
+
+                case "ParsingError":
+                    XmlApiURL = strACMTech01 + acronym + "&paperid=" + paperid + "&OF=" + OF + "&ZS=28";
+                    break;
+
+
+            }
+
+            CurrentStatus("", "", XmlApiURL, "Process");
+
+            // Create a request for the URL.         
+            WebRequest request = WebRequest.Create(XmlApiURL);
+
+            // If required by the server, set the credentials.
+            request.Credentials = CredentialCache.DefaultCredentials;
+
+            //System.Diagnostics.Stopwatch timer = new Stopwatch();
+
+            //timer.Start();
+
+            //Get the response.
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+
+
+
+            //response.Close();
+
+            //timer.Stop();
+            //TimeSpan timeTaken = timer.Elapsed;
+            // Get the stream containing content returned by the server.
+            Stream dataStream = response.GetResponseStream();
+
+            // Open the stream using a StreamReader for easy access.
+            StreamReader reader = new StreamReader(dataStream);
+            // Read the content.
+            string responseFromServer = StripHTML(reader.ReadToEnd());
+
+            // Cleanup the streams and the response.
+
+
+            reader.Close();
+            dataStream.Close();
+            response.Close();
+            CurrentStatus("", "", responseFromServer, "Process");
+
+            return responseFromServer;
+
+        }
+
+        public static string StripHTML(string input)
+        {
+            return Regex.Replace(input, "<.*?>", String.Empty);
+        }
+
+        #endregion
+
+        #region  function process for max time
+        public Tuple<bool, string> StartProcess(string docx_path, string output_path, string LocalDocxPath, string IniName, string eventid, string workshopid, string proceedingid, string paperid, string acronym, string stage, string resubmit) //Resubmit module introduced 14\6\2018 
+        {
+
+            bool _resFlag = false;
+            string _resultWebService = "Fail !!";
+            string _processResult = "";
+
+            // start function on seperate thread
+            CancellationTokenSource cts = new CancellationTokenSource();
+            Task loop = Task.Factory.StartNew(() => _processResult = StartWorkProcess(cts.Token, docx_path, output_path, LocalDocxPath, IniName, eventid, workshopid, proceedingid, paperid, acronym, stage, resubmit));
+            // wait for max seconds
+            if (Task.WaitAll(new Task[] { loop }, MaxProcessTime))
+            {
+                // Loop finished withion max seconds
+                var arr = _processResult.Split('~');
+                _resFlag = Convert.ToBoolean(arr[0]);
+                _resultWebService = arr[1].ToString();
+                cts.Cancel();
+            }
+            else
+            {
+                // it did not finish within max seconds
+                cts.Cancel();
+            }
+            return new Tuple<bool, string>(_resFlag, _resultWebService);
+        }
+
+        public string StartWorkProcess(CancellationToken cancellationToken, string docx_path, string output_path, string LocalDocxPath, string IniName, string eventid, string workshopid, string proceedingid, string paperid, string acronym, string stage, string resubmit) // Resubmit module introduced 14\6\2018 
+        {
+            string _result = string.Empty;
+            string _resFlag = string.Empty;
+            string _resultWebService = string.Empty;
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                // your loop goes here
+                var resultFlag = CreateDirectory_Fetch_File(docx_path, output_path, LocalDocxPath, IniName, eventid, workshopid, proceedingid, paperid, acronym, stage, resubmit);
+                _resFlag = resultFlag.Item1.ToString();
+                _resultWebService = resultFlag.Item2;
+                _result = _resFlag + "~" + _resultWebService;
+
+            }
+
+            return _result;
+        }
+        #endregion
+
+        #region Work process function
+
+        private Tuple<bool, string> CreateDirectory_Fetch_File(string docx_path, string output_path, string LocalDocxPath, string IniName, string eventid, string workshopid, string proceedingid, string paperid, string acronym, string stage, string resubmit)
+        {
+            bool flag = false;
+            try
+            {
+                KillWordEvent();
+                if (Directory.Exists(LocalDocxPath))
+                {
+                    Directory.Move(LocalDocxPath, LocalDocxPath + "_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss"));
+                }
+                else
+                {
+                    System.IO.Directory.CreateDirectory(LocalDocxPath);
+
+                }
+                if (Directory.Exists(output_path))
+                {
+                    Directory.Move(output_path, output_path + "_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss"));
+                }
+
+                if (!Directory.Exists(output_path)) // If OUT Directory not Exists on Server
+                {
+                    Directory.CreateDirectory(output_path);
+                }
+
+                string docxFileName = CopyDocxFileFromServerToLocal(docx_path, LocalDocxPath, IniName).Split('.')[0]; //Fetching Docx file from server
+
+                if (!docxFileName.Trim().Equals(""))
+                {
+                    //File.Copy(Watch_Path + "/processed/" + IniName + ".ini", LocalDocxPath + "/" + docxFileName + ".ini");   // Copy ini file to local
+
+                    #region *** Updated (19-6-2018) Copy ini file to local ***
+                    // 1 -- Layout comes in Double column
+                    // 0 -- Layout comes in Single column
+                    // Generated xml file which helps is creating double layout
+                    CurrentStatus(DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss tt").Trim(), docxFileName + ".docx", "ACM application initilization....", "Start");
+                    if (resubmit == "1")
+                    {
+                        File.Copy(Watch_Path + "/processed/" + IniName + ".ini", LocalDocxPath + "/" + docxFileName + ".ini");
+                    }
+                    else if (resubmit == "0")
+                    {
+                        File.Copy(Watch_Path + "/processed/" + IniName + ".ini", LocalDocxPath + "/" + docxFileName + "_Org" + ".ini");
+                        string dir;
+                        string path = LocalDocxPath + "/" + docxFileName + "_Org" + ".ini";
+                        if (File.Exists(path))
+                        {
+                            dir = string.Format(strLCPowerEditPath + "doc2xml"); //"C:/PowerEdit"
+                            CurrentStatus(DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss tt").Trim(), docxFileName + ".docx", "Process of receving metadata information from web-api...", "Process");
+                            Process p1 = new Process();
+                            p1.StartInfo.WorkingDirectory = dir;
+                            p1.StartInfo.FileName = "ConversionMetaData.bat";
+                            p1.StartInfo.Arguments = String.Format("{0}", path);
+                            p1.StartInfo.CreateNoWindow = true;
+                            p1.Start();
+                            p1.WaitForExit();
+                            CurrentStatus(DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss tt").Trim(), docxFileName + ".docx", "Received metadata information successfully...", "Process");
+                        }
+                        else
+                        {
+                            CurrentStatus("", "", "Fail to receiving metadata information.", "Process");
+
+                        }
+
+
+                    }
+
+                    #endregion
+
+
+
+                    //  CurrentStatus(DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss tt").Trim(), docxFileName + ".docx", "ACM application initilization....", "Start");
+
+                    string RefFile = LocalDocxPath + "\\" + docxFileName + ".docx";
+                    string Checkforxml = LocalDocxPath + "\\" + docxFileName + ".docx";
+                    //CurrentStatus("", "", "Initilizing word object extraction from DOCX...", "Process");
+
+                    var _isValid = objacm.CreateWordObject(RefFile, stage.ToUpper(), validationpath, resubmit);
+
+
+
+
+                    //CurrentStatus("", "", _isValid.Item3.ToString(), "Version");
+                    versioninfo = _isValid.Item3.ToString();
+
+                    // Commented on 19-07-2018
+                    // CurrentStatus(DateTime.Now.ToString("dd-MM-yyyy hh:mm:ss tt").Trim(), docxFileName + ".docx", "ACM application initilization....", "Start");
+
+                    CurrentStatus("", "", "Initilizing word object extraction from DOCX...", "Process");
+
+                    CurrentStatus("", "", "Process of word object has been completed...", "Process");
+
+                    if (_isValid.Item1.Equals("ValidationError") || _isValid.Item1.Equals("ValidationWarning"))
+                    {
+
+                        bool _specificError = false;
+                        //int srno = 0;
+                        string html = string.Empty;
+
+                        // html = GenerateHTML(docxFileName, _isValid.Item2.ToString(), "",_specificError);
+
+                        #region Commented
+
+
+                        //                        html += @"<html><head><title>LOG Report</title></head><body>
+                        //                          <h2>ACM PUBLISHING MANAGEMENT SYSTEM : Processing LOG Report <sup><a href='#ID1'>1</a></sup></h2> ";
+                        //                        html += @"<p>File name:" + docxFileName + ".docx Dated:" + DateTime.Now.ToString("dd-MM-yyyy").Trim() + "	Source type: docx</p>";
+
+                        //                        // changes suggested by Sunil Kukreti Mailed dared: Tue 6/20/2017 9:31 PM
+
+                        //                        //1. Following statements are showing twice in Errorlog file, please remove one statement and also change word sought to seek in following statement
+
+                        //                        //html += @"<p>Users can either correct the errors mentioned below and re-upload the corrected source files or they can seek the help of Technical support services.</p>                         
+                        //                        html += @"<table style='width:80%' border='1'>
+                        //                          <tr style='text-align:center;background-color:#D8D6D6'>
+                        //                          <th>Sr. No.</th><th>Location</th><th>Validation Details</th><th>Type</th></tr>";
+                        //                            string[] Error = _isValid.Item2.ToString().Split('|');
+                        //                            for (int i = 0; i < Error.Length; i++)
+                        //                            {
+                        //                                if (!Error[i].Equals(""))
+                        //                                {
+                        //                                    string[] type = Error[i].ToString().Split('#');
+                        //                                    html += @"<tr style='text-align:left'><td>" + (i + 1) + "</td><td></td><td>" + type[0] + "</td><td>" + type[1] + "</td></tr>";
+                        //                                    switch (type[0].ToString())
+                        //                                    {
+                        //                                        case "Information: ACM template not recognize in manuscript.Please check.":
+                        //                                            _specificError = true;
+                        //                                            break;
+                        //                                    }
+                        //                                }
+                        //                            }
+
+                        //                            // changes suggested by Sunil Kukreti Mailed dared: Tue 6/20/2017 9:31 PM
+
+                        //                            //1. Following statements are showing twice in Errorlog file, please remove one statement and also change word sought to seek in following statement
+                        //                           html += @"</table>
+                        //                           <p id='ID1'><sup>1</sup>Users can either correct the errors mentioned below and re-upload the corrected source files or they can seek the help of Technical support services.</p>
+                        //                           <p>Level 2 Email support: acmtexsupport@aptaracorp.com </p>
+                        //                           <p>Level 3 support via Interface (will correct the files for you - chargeable)</p></body></html>";
+
+                        #endregion
+
+                        string ValidationLocation = LocalDocxPath + "\\" + "ValidationError.txt";
+                        //  File.AppendAllText(ValidationLocation, html);
+
+                        //if (File.Exists(ValidationLocation))
+                        //{
+                        //    //File.Copy(ValidationLocation, output_path + "/" + "Errorlog.html", true); 16-02-2018
+                        //    if (_isValid.Item1.Equals("ValidationError"))
+                        //    {
+                        //        html = GenerateHTML(docxFileName, _isValid.Item2.ToString(), "", _specificError);
+                        //        File.AppendAllText(ValidationLocation, html);
+                        //        File.Copy(ValidationLocation, output_path + "/" + "ValidationError.html", true);
+                        //    }
+                        //}                       
+                        //File.Copy(ValidationLocation, output_path + "/" + "Errorlog.html", true); 16-02-2018
+                        if (_isValid.Item1.Equals("ValidationError"))
+                        {
+                            html = GenerateHTML(docxFileName, _isValid.Item2.ToString(), "", _specificError);
+                            File.AppendAllText(ValidationLocation, html);
+                            if (File.Exists(ValidationLocation))
+                            {
+                                File.Copy(ValidationLocation, output_path + "/" + "ValidationError.html", true);
+                            }
+                        }
+
+
+                        #region For Specific Error ACM template not recognize in manuscript. Please check.
+
+                        if (_specificError)
+                        {
+                            //_servicereturn = WebServiceCall("SpecificError", acronym, paperid, "Errorlog.html");16-02-2018
+                            _servicereturn = WebServiceCall("SpecificError", acronym, paperid, "ValidationError.html");
+                            flag = false;
+                            return new Tuple<bool, string>(flag, _servicereturn);
+                        }
+
+                        #endregion
+
+
+                    }
+                    // if (stage.ToUpper().Equals("INITIAL"))16-02-2018
+                    if (stage.ToUpper().Equals("XML"))
+                    {
+
+                        // if (_isValid.Item1.Equals("ValidFile") || _isValid.Item1.Equals("ValidationWarning")) //12-6-2018 Handling Success case (No error,No Warning)
+                        if (_isValid.Item1.Equals("ValidFile") || _isValid.Item1.Equals("ValidationWarning"))
+                        {
+
+                            if (_isValid.Item1.Equals("ValidationWarning"))
+                            {
+                                //_servicereturn = WebServiceCall("InputWarning", acronym, paperid, "");21-02-2018
+                                //_servicereturn = WebServiceCall("InputWarning", acronym, paperid, "ValidationError.html");//Commented by avanish on 28 Feb 2018 as suggested by Hemant sir not to call web service in this case 
+
+                            }
+
+                            if (XMLConversionForPDF(docxFileName, LocalDocxPath, output_path, IniName, eventid, workshopid, proceedingid, paperid, acronym, stage, resubmit, Checkforxml).Item1)
+                            {
+
+                                flag = ConvertToPdf_And_UploadToServer(LocalDocxPath, docxFileName, output_path, eventid, workshopid, proceedingid, paperid, acronym, stage, resubmit); //Convert DOCX to PDF and Upload to server and Water mark insertion
+                                if (flag)
+                                {
+                                    #region Added by Avanish  22-08-2017
+                                    PdfReader pdfReader = new PdfReader(output_path + "/" + docxFileName + ".pdf");
+                                    int PDFPAGECOUNT = pdfReader.NumberOfPages;
+                                    // _servicereturn = WebServiceCall("PDFPAGECOUNT", acronym, paperid, docxFileName, "", PDFPAGECOUNT);
+                                    #endregion
+                                    #region Added by Piyush 21-06-2017
+
+                                    //string FilePrefix = docxFileName.Split('\\').Last();
+
+                                    // GenerateErrorlog(output_path, docxFileName, LocalDocxPath, "Input Valid# ", docxFileName + ".html"); //Commented by Avanish on 19-02-2018 for not generating HTML file in OUT folder
+
+                                    //GenerateErrorlog(output_path, docxFileName, LocalDocxPath, "Input Valid# ", docxFileName + ".log");
+
+
+                                    #endregion
+                                    //_servicereturn = WebServiceCall("InputValid", acronym, paperid, docxFileName + ".pdf", docxFileName + ".log");
+
+                                    //_servicereturn = WebServiceCall("InputValid", acronym, paperid, docxFileName + ".pdf", docxFileName + ".html"); Commented by Avanish on 20-02-2018 for not hitting service in this case 
+
+
+                                    var _xmlresult = XMLConversionHTML(docxFileName, LocalDocxPath, output_path, IniName, eventid, workshopid, proceedingid, paperid, acronym, stage, resubmit, RefFile, PDFPAGECOUNT);
+                                    flag = _xmlresult.Item1;
+                                    _servicereturn = _xmlresult.Item2;
+                                    #region Added by Avanish Kumar on 20-02-2018
+                                    bool isUnzip = UnZipIndexFile(output_path, "index");
+                                    if (isUnzip)
+                                    {
+                                        RenameIndexFile(output_path, docxFileName);
+                                        DeleteIndexZip(output_path, "index");
+                                        #region ** Copying .docx file to out folder because client can download the .docx (03-07-2018) **
+
+                                        if (resubmit == "0")
+                                        {
+                                            File.Copy(LocalDocxPath + "\\" + docxFileName + ".docx", output_path + "\\" + docxFileName + ".docx");
+                                        }
+                                        else if (resubmit == "1")
+                                        {
+                                            File.Copy(LocalDocxPath + "\\" + docxFileName + "_Org.docx", output_path + "\\" + docxFileName + ".docx");
+                                        }
+
+                                        #endregion ** Copying .docx file to out folder because client can download the .docx (03-07-2018) **
+
+                                        //   GenerateErrorlog(output_path, docxFileName, LocalDocxPath, "Input Valid# ", "ValidationSuccess" + ".html"); //Added on 24-02-2018 BY avansh
+                                        GenerateErrorlog(output_path, docxFileName, LocalDocxPath, _isValid.Item2.ToString(), "ValidationSuccess" + ".html"); // implemented warning in success errorlog
+
+                                    }
+
+                                    #endregion
+                                }
+                                else
+                                {
+                                    CurrentStatus("", "", "Issue in PDF creation. Unknown Error...!!!", "Process");
+
+                                    #region Added by Piyush 13-06-2017
+
+                                    GenerateErrorlog(output_path, docxFileName, LocalDocxPath, "Issue in PDF creation#Error", "ValidationError.html");//16-02-2018
+
+                                    #endregion
+                                    //_servicereturn = WebServiceCall("ParsingError", acronym, paperid, "Errorlog.html");
+                                    _servicereturn = WebServiceCall("ParsingError", acronym, paperid, "ValidationError.html");//16-02-2018
+                                }
+
+                            }
+
+                            else
+                            {
+                                CurrentStatus("", "", "Unknown Error...!!!", "Process");
+
+                                #region Added by Piyush 13-06-2017
+
+                                GenerateErrorlog(output_path, docxFileName, LocalDocxPath, "XML not parsed#Error", "ValidationError.html");//16-02-2018
+
+                                #endregion
+                                //This webservice commented by Avanish on 26-02-2018 for not calling it as webservice have to be called once and in this case service is already called in previous case
+                                //_servicereturn = WebServiceCall("ParsingError", acronym, paperid, "ValidationError.html");//16-02-2018
+                            }
+
+                        }
+                        else if (_isValid.Item1.Equals("ValidationError"))
+                        {
+
+                            CurrentStatus("", "", "Validation Error...!!!", "Process");
+                            //_servicereturn = WebServiceCall("InputInvalid", acronym, paperid, "ValidationError.html");//16-02-2018
+                            _servicereturn = WebServiceCall("InputError", acronym, paperid, "ValidationError.html");//27-03-2018
+                        }
+                        else if (_isValid.Item1.Equals("InvalidFile"))
+                        {
+                            CurrentStatus("", "", "Invalid File...!!!", "Process");
+
+                            #region Added by Piyush 13-06-2017
+
+                            GenerateErrorlog(output_path, docxFileName, LocalDocxPath, "Invalid File#Error", "ValidationError.html");//16-02-2018
+
+                            #endregion
+
+                            _servicereturn = WebServiceCall("InputInvalid", acronym, paperid, "ValidationError.html");//16-02-2018
+                            flag = false;
+                        }
+
+
+
+
+                    }
+                    //else if (stage.ToUpper().Equals("XML"))
+                    //{
+                    //var _xmlresult = XMLConversionHTML(docxFileName, LocalDocxPath, output_path, IniName, eventid, workshopid, proceedingid, paperid, acronym, stage, RefFile);
+                    //flag = _xmlresult.Item1;
+                    //_servicereturn = _xmlresult.Item2;
+                    //#region Added by Avanish Kumar on 20-02-2018
+                    //bool isUnzip = UnZipIndexFile(output_path, "index");
+                    //if (isUnzip)
+                    //{
+                    //    RenameIndexFile(output_path, docxFileName);
+                    //    DeleteIndexZip(output_path, "index");
+
+                    //}
+                    //#endregion
+                    //}
+
+                }
+                else
+                {
+
+                    if (!Directory.Exists(LocalDocxPath))
+                    {
+
+                        Directory.CreateDirectory(LocalDocxPath);
+
+                    }
+
+                    //CurrentStatus("", "", "DOCX File not found...!!!", "Start");
+                    CurrentStatus("", "", "This system only accepts DOCX version of input files.", "Start");
+
+                    #region Added by Piyush 13-06-2017
+
+                    GenerateErrorlog(output_path, docxFileName, LocalDocxPath, "This system only accepts DOCX version of input files.#Error", "ValidationError.html");//16-02-2018
+
+                    //if (File.Exists(output_path + "/" + "Errorlog.html"))
+                    //{
+                    //    File.Delete(output_path + "/" + "Errorlog.htm l");
+
+
+                    //}
+
+                    //File.Create(output_path + "/" + "Errorlog.html");
+
+                    #endregion
+
+                    _servicereturn = WebServiceCall("InputInvalid", acronym, paperid, "ValidationError.html");//16-02-2018
+                    CurrentStatus("", "", "File not found...!!!", "Process");
+                    flag = false;
+                }
+
+                //File.Create(strLCPATH_AutoPowerEdit_XML + "acm_done.txt");
+            }
+            catch (Exception ex)
+            {
+                //File.Create(strLCPATH_AutoPowerEdit_XML + "acm_error.txt");               
+                flag = false;
+                oErrorLog.WriteErrorLog(ex);
+            }
+
+            return new Tuple<bool, string>(flag, _servicereturn);
+        }
+
+        #region ## Generate Log Dated 14-06-2017 by Piyush
+        private void GenerateErrorlog(string output_path, string docxFileName, string LocalDocxPath, string ErrorMsg, string ErrorFileName)
+        {
+            string html = string.Empty;
+
+            //html = GenerateHTML(docxFileName, ErrorMsg); // 12-6-2018 validation successs with warning included
+            html = GenerateHTML(docxFileName, ErrorMsg, ErrorFileName);
+            //            html += @"<html><head><title>LOG Report</title></head><body>
+            //                          <h2>ACM PUBLISHING MANAGEMENT SYSTEM : Processing LOG Report <sup><a href='#ID1'>1</a></sup></h2>";
+            //            html += @"<p>File name:" + docxFileName + ".docx Dated:" + DateTime.Now.ToString("dd-MM-yyyy").Trim() + "	Source type: docx</p>";
+            //            html += @"<table style='width:80%' border='1'>
+            //                          <tr style='text-align:center;background-color:#D8D6D6'>
+            //                          <th>Sr. No.</th><th>Location</th><th>Error Details</th></tr>";
+            //            html += @"<tr style='text-align:left'><td>1</td><td></td><td>" + ErrorMsg + "</td></tr>";
+            //            html += @"</table>
+            //                           <p id='ID1'><sup>1</sup> Users can either correct the errors mentioned below and re-upload the corrected source files or they can seek the help of Technical support services.</p>
+            //                           <p>Level 2 Email support: acmtexsupport@aptaracorp.com </p>
+            //                           <p>Level 3 support via Interface (will correct the files for you - chargeable)</p></body></html>";
+            string ValidationLocation = LocalDocxPath + "\\" + "ValidationError.txt";
+            File.AppendAllText(ValidationLocation, html);
+            if (File.Exists(output_path + "/" + ErrorFileName))
+            {
+                File.Delete(output_path + "/" + ErrorFileName);
+            }
+            if (File.Exists(ValidationLocation))
+            {
+                File.Copy(ValidationLocation, output_path + "/" + ErrorFileName, true);
+            }
+        }
+
+
+
+        private string GenerateHTML(string docxFileName, string ErrorMsg, string ErrorFileName, bool _specificError = false)
+        {
+            //Added by avanish for s.no. start with 1st rather than 2nd on 21-11-2017
+            //Start
+            int j = 0;
+
+            //End
+            //#region
+            //string[] typeLoc = ErrorMsg.ToString().Split('$');
+            //string[] typeLoc1 = typeLoc[1].ToString().Split('#');
+            //#endregion
+            string html = "";
+            string supFootNote = ErrorMsg.Equals("Success") ? "" : "<sup><a href='#ID1'>1</a></sup>";
+            html += @"<html><head><title>LOG Report</title><meta charset='UTF-8'></head><body><h2>The ACM Publishing System (TAPS) – Processing LOG Report" + supFootNote + "</h2>";
+            html += @"<p>File name:<b>" + docxFileName + ".docx</b>&nbsp;&nbsp;&nbsp;&nbsp;Dated:<b>" + DateTime.Now.ToString("dd-MM-yyyy").Trim() + "</b>&nbsp;&nbsp;&nbsp;&nbsp;Source type: <b>DOCX</b></p>";
+            if (ErrorFileName.ToLower().Contains("validationsuccess"))
+            {
+                string warningTitle = ErrorMsg.Contains("#Warning") ? "but it has following warnings" : "";
+                html += @"<p><b>Success: Source is Compatible " + warningTitle + " !!!</b></p>";
+                ErrorMsg = ErrorMsg.ToLower().Equals("success") ? ErrorMsg.Replace("Success", "") : ErrorMsg;
+            }
+            if (ErrorMsg != "")
+            {
+                html += @"<table style='width:80%' border='1'>
+                          <tr style='text-align:center;background-color:#D8D6D6'>
+                          <th>Sr. No.</th><th>Location</th><th>Details</th><th>Type</th></tr>";
+            }
+
+            string[] Error = ErrorMsg.Split('|');
+            for (int i = 0; i < Error.Length; i++)
+            {
+                if (!Error[i].Equals(""))
+                {
+                    string[] type = Error[i].ToString().Split('#');
+                    if (type[0].Contains('$'))
+                    {
+                        string[] typeloc = type[0].Split('$');
+                        html += @"<tr style='text-align:left'><td>" + (j + 1) + "</td><td>" + typeloc[1] + "</td><td>" + typeloc[0] + "</td><td>" + type[1] + "</td></tr>";
+                    }
+                    else
+                    {
+                        html += @"<tr style='text-align:left'><td>" + (j + 1) + "</td><td></td><td>" + type[0] + "</td><td>" + type[1] + "</td></tr>";
+                    }
+
+
+                    //Commented by avanish for s.no. start with 1st rather than 2nd on 21-11-2017
+                    //  html += @"<tr style='text-align:left'><td>" + (i + 1) + "</td><td></td><td>" + type[0] + "</td><td>" + type[1] + "</td></tr>";
+                    //Added by avanish for s.no. start with 1st rather than 2nd on 21-11-2017
+                    //html += @"<tr style='text-align:left'><td>" + (j + 1) + "</td><td></td><td>" + type[0] + "</td><td>" + type[1] + "</td></tr>";
+                    // html += @"<tr style='text-align:left'><td>" + (j + 1) + "</td><td>" + typeloc[1] + "</td><td>" + typeloc[0] + "</td><td>" + type[1] + "</td></tr>";
+                    // html += @"<tr style='text-align:left'><td>" + (j + 1) + "</td><td></td><td>" + typeLoc[0] + "</td><td>" + type[1] + "</td></tr>";
+
+                    switch (type[0].ToString())
+                    {
+                        case "Information: ACM template not recognize in manuscript.Please check.":
+                            _specificError = true;
+                            break;
+                    }
+                    //Added by avanish for s.no. start with 1st rather than 2nd on 21-11-2017
+                    j++;
+                }
+            }
+
+
+            //html += @"<tr style='text-align:left'><td>1</td><td></td><td>" + ErrorMsg + "</td></tr>";
+            //            html += @"</table>
+            //                           <p id='ID1'><sup>1</sup> Users can either correct the errors mentioned below and re-upload the corrected source files or they can seek the help of Technical support services.</p>
+            //                           <p>Level 2 Email support: acmtexsupport@aptaracorp.com </p>
+            //                           //<p>Level 3 support via Interface (will correct the files for you - chargeable)</p></body></html>";           
+            if (ErrorMsg != "")
+            {
+                string Errwar = ErrorMsg.Contains("#Error") ? "errors" : "warnings";
+                html += @"</table>
+                         <p id='ID1'><sup>1</sup> Users can either correct the " + Errwar + " mentioned below and re-upload the corrected source files or they can seek the help of Technical support services.</p><p>Level 2 Email support: acmtexsupport@aptaracorp.com </p></body></html>";
+            }
+
+            return html;
+        }
+
+
+        #endregion // Generate Log Dated 14-06-2017 by Piyush
+
+        //private string CopyDocxFileFromServerToLocal(string source, string destination,string IniName)
+        //{
+        //    string docxFileName = "";
+        //    try
+        //    {
+        //        if (Directory.Exists(source))
+        //        {
+        //            foreach (string DocxFileWithFullPath in Directory.GetFiles(source, "*.docx")) // Getting Docx file from the server
+        //            {
+        //                DocxFileWithFullPath.Replace("/", "\\");
+        //                string DocxFileName = DocxFileWithFullPath.Split('\\').Last();
+        //                if (!System.IO.Directory.Exists(destination))
+        //                {
+        //                    System.IO.Directory.CreateDirectory(destination);
+        //                }
+
+        //                if (File.Exists(destination + "\\" + DocxFileName))
+        //                    File.Delete(destination + "\\" + DocxFileName);
+        //                File.Copy(DocxFileWithFullPath, destination + "\\" + DocxFileName);
+        //                docxFileName = DocxFileName;
+
+        //                System.IO.File.Move(destination + "\\" + DocxFileName, destination + "\\" + IniName + ".docx");
+        //                docxFileName = IniName + ".docx";
+
+
+        //                break;  // Break here because we only need one file for processing.
+        //            }
+
+        //            //foreach (string DocxFileWithFullPath in Directory.GetFiles(source, "*.doc"))
+        //            //{
+        //            //    DocxFileWithFullPath.Replace("/", "\\");
+        //            //    string DocxFileName = DocxFileWithFullPath.Split('\\').Last();
+        //            //    if (!System.IO.Directory.Exists(destination))
+        //            //    {
+        //            //        System.IO.Directory.CreateDirectory(destination);
+        //            //    }
+
+        //            //    if (File.Exists(destination + "\\" + DocxFileName))
+        //            //        File.Delete(destination + "\\" + DocxFileName);
+        //            //    File.Copy(DocxFileWithFullPath, destination + "\\" + DocxFileName);
+        //            //    docxFileName = DocxFileName;
+        //            //    break;
+        //            //}
+
+        //            //if (docxFileName.Split('.')[1].ToLower().Trim().Equals("doc"))
+        //            //{
+
+        //            //}
+
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        oErrorLog.WriteErrorLog(ex);
+        //    }
+        //    return docxFileName;
+        //}
+
+        #region By Avanish For doc And docx
+        private string CopyDocxFileFromServerToLocal(string source, string destination, string IniName)
+        {
+            string docxFileName = "";
+            bool isDocx = false; ;
+            ACM objacm1 = new ACM();
+            try
+            {
+                if (Directory.Exists(source))
+                {
+
+                    foreach (string DocxFileWithFullPath in Directory.GetFiles(source, "*.docx")) // Getting Docx file from the server
+                    {
+
+                        //MessageBox.Show("CopyDocxFileFromServerToLocal in DOCx condition invoked ini name " + IniName);
+
+
+                        DocxFileWithFullPath.Replace("/", "\\");
+                        string DocxFileName = DocxFileWithFullPath.Split('\\').Last();
+                        if (!System.IO.Directory.Exists(destination))
+                        {
+                            System.IO.Directory.CreateDirectory(destination);
+                        }
+
+                        if (File.Exists(destination + "\\" + DocxFileName))
+                            File.Delete(destination + "\\" + DocxFileName);
+                        File.Copy(DocxFileWithFullPath, destination + "\\" + DocxFileName);
+                        docxFileName = DocxFileName;
+                        System.IO.File.Move(destination + "\\" + DocxFileName, destination + "\\" + IniName + ".docx");
+                        docxFileName = IniName + ".docx";
+
+                        //MessageBox.Show("CopyDocxFileFromServerToLocal in DOCx return file name  " + docxFileName);
+                        isDocx = true;
+                        break;  // Break here because we only need one file for processing.
+                    }
+
+                    //--Uncommneted For processing doc file also by Avanish on 5-02-2017
+                    //Start
+
+                    if (!isDocx)
+                    {
+                        foreach (string DocxFileWithFullPath in Directory.GetFiles(source, "*.doc"))
+                        {
+                            // MessageBox.Show("CopyDocxFileFromServerToLocal in DOC..condition invoked ini name " + IniName);                         
+
+                            DocxFileWithFullPath.Replace("/", "\\");
+                            string DocxFileName = DocxFileWithFullPath.Split('\\').Last();
+                            if (!System.IO.Directory.Exists(destination))
+                            {
+                                System.IO.Directory.CreateDirectory(destination);
+                            }
+
+                            if (File.Exists(destination + "\\" + DocxFileName))
+                                File.Delete(destination + "\\" + DocxFileName);
+                            File.Copy(DocxFileWithFullPath, destination + "\\" + DocxFileName);
+
+                            // Added 17-10-2018
+                            //docxFileName = DocxFileName;
+                            System.IO.File.Move(destination + "\\" + DocxFileName, destination + "\\" + IniName + ".doc");
+                            docxFileName = IniName + ".doc";
+                            objacm1.SaveDocToDocx(destination + "\\" + docxFileName);
+                            //  objacm1.SaveDocToDocx(destination + "\\" + DocxFileName); // Function call doc to docx 5-02-2018
+                            if (docxFileName.Contains(".doc") == true && docxFileName.Contains(".docx") == false)
+                            {
+                                docxFileName = docxFileName.Replace(".doc", ".docx");
+                            }
+                            docxFileName = IniName + ".doc";
+                            // //Added by Avanish on 5-02-2018
+                            ////Start
+                            //System.IO.File.Move(destination + "\\" + DocxFileName, destination + "\\" + IniName + ".docx");
+                            //docxFileName = IniName + ".docx";
+                            ////End
+                            //MessageBox.Show("CopyDocxFileFromServerToLocal in DOC..return file name  " + docxFileName);
+                            break;
+                        }
+                    }
+
+                    if (docxFileName.Split('.')[1].ToLower().Trim().Equals("doc"))
+                    {
+
+                    }
+
+                    //End
+
+                }
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+            }
+            return docxFileName;
+        }
+        #endregion
+
+        private bool ConvertToPdf_And_UploadToServer(string filepath, string filename, string output_path, string eventid, string workshopid, string proceedingid, string paperid, string acronym, string stage, string resubmit)
+        {
+            try
+            {
+
+
+                CurrentStatus("", "", "Initialization for convertion from DOCX file to PDF........", "Process");
+                string pdfFilePath = filepath + "\\" + filename + "_Org.pdf";
+
+                #region *** Updated 18-6-2018 ***
+
+                //string pdfFilePath = String.Empty;
+                // if (resubmit == "1")
+                //{
+                //    pdfFilePath = filepath + "\\" + filename + ".pdf";
+                //}
+                //else if (resubmit == "0")
+                //{
+                //    pdfFilePath = filepath + "\\" + filename + "_Org.pdf";
+                //}
+
+                #endregion
+                Microsoft.Office.Interop.Word.Document wordDocument = new Microsoft.Office.Interop.Word.Document();
+                Microsoft.Office.Interop.Word.Application appWord = new Microsoft.Office.Interop.Word.Application();
+                // wordDocument = appWord.Documents.Open(filepath + "\\" + filename + "_Org.docx");
+                #region *** Updated 18-6-2018 ***
+                // 1 - Layout for double column
+                // 0 - Layout for single column              
+
+                if (resubmit == "1")
+                {
+                    wordDocument = appWord.Documents.Open(filepath + "\\" + filename + "_Org.docx");
+                }
+                else if (resubmit == "0")
+                {
+                    wordDocument = appWord.Documents.Open(filepath + "\\" + filename + ".docx");
+                }
+
+                #endregion
+
+                wordDocument.ExportAsFixedFormat(pdfFilePath, Microsoft.Office.Interop.Word.WdExportFormat.wdExportFormatPDF);
+                wordDocument.Close();
+
+
+
+                #region Water Mark Addition
+
+                //Document document = new Document();
+
+                // PdfReader pdfReader = new PdfReader(pdfFilePath);
+
+                #region *** Updated 18-6-2017 ***
+
+                PdfReader pdfReader = new PdfReader(System.IO.File.ReadAllBytes(pdfFilePath));
+
+                #endregion
+
+
+
+                PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileStream(filepath + "\\" + filename + ".pdf", FileMode.Create, FileAccess.Write, FileShare.None));
+
+                #region *** Watermark removal (17-07-2018) ***
+
+                //string yourpath = Environment.CurrentDirectory + @"\YourImage.jpg";
+                // iTextSharp.text.Image img = iTextSharp.text.Image.GetInstance(Environment.CurrentDirectory + @"\not_for_submission.png");
+                //iTextSharp.text.Image img = iTextSharp.text.Image.GetInstance(Environment.CurrentDirectory + @"\not_for_submission.png");
+                //img.SetAbsolutePosition(150, 400);
+                //PdfContentByte waterMark;
+                ////    
+                //for (int pageIndex = 1; pageIndex <= pdfReader.NumberOfPages; pageIndex++)
+                //{
+                //    waterMark = pdfStamper.GetOverContent(pageIndex);
+                //    waterMark.AddImage(img);
+
+                //}
+                //
+                #endregion *** Watermark removal (17-07-2018) ***
+                pdfStamper.FormFlattening = true;
+                pdfStamper.Close();
+
+                //PdfWriter docWriter = PdfWriter.GetInstance(document, new FileStream(outputLocation, FileMode.Create));
+                //PdfWriterEvents writerEvent = new PdfWriterEvents(watermark);
+                //docWriter.PageEvent = writerEvent;
+
+
+                #endregion Water Mark Addition
+
+                if (File.Exists(filepath + "\\" + filename + ".pdf"))
+                {
+                    File.Copy(filepath + "\\" + filename + ".pdf", output_path + "/" + filename + ".pdf");   // Copy PDF file to Server
+                }
+                CurrentStatus("", "", "PDF generation has been completed...", "Process");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+                return false;
+            }
+        }
+
+        private Tuple<bool> XMLConversionForPDF(string pRefFile, string LocalDocxPath, string output_path, string IniName, string eventid, string workshopid, string proceedingid, string paperid, string acronym, string stage, string resubmit, string RefFile)
+        {
+            bool _flag = false;
+            try
+            {
+                KillWordEvent();
+                CurrentStatus("", "", "Back process initializing word to XML conversion......", "Process");
+                CurrentStatus("", "", "XMLConversionForPDF......pRefFile  " + pRefFile, "Process");
+                CurrentStatus("", "", "XMLConversionForPDF......LocalDocxPath  " + LocalDocxPath, "Process");
+                CurrentStatus("", "", "XMLConversionForPDF......output_path  " + output_path, "Process");
+                CurrentStatus("", "", "XMLConversionForPDF......RefFile  " + RefFile, "Process");
+
+
+                #region ## XML Conversion exe
+                //String ars = " \"" + RefFile + "\"";
+                //String ars = RefFile;
+                //Process p = null;
+                //string targetDir;
+                //targetDir = string.Format(strLCPowerEditPath + "doc2xml"); //"C:/PowerEdit"
+                //p = new Process();
+                //p.StartInfo.WorkingDirectory = targetDir;
+                //p.StartInfo.FileName = "jats.bat";
+                //p.StartInfo.Arguments = String.Format("{0}", ars);
+                //p.StartInfo.CreateNoWindow = true;
+                //p.Start();
+                //p.WaitForExit();
+
+
+
+                #region **** Updated 15-06-2018 XML Generation Single/Double Column Wise ****
+                // 1 -- Layout in double column
+                // 2 -- Layout in single column
+
+
+                Process p = null;
+                string targetDir;
+                targetDir = string.Format(strLCPowerEditPath + "doc2xml"); //"C:/PowerEdit"
+                p = new Process();
+                p.StartInfo.WorkingDirectory = targetDir;
+                p.StartInfo.FileName = "jats.bat";
+                string path = String.Empty;
+
+                if (resubmit == "1")
+                {
+                    path = RefFile;
+                    p.StartInfo.Arguments = String.Format("{0}", path);
+                }
+                else if (resubmit == "0")
+                {
+                    path = LocalDocxPath + "\\" + pRefFile + "_Org.docx";
+                    p.StartInfo.Arguments = String.Format("{0}", path);
+                }
+                p.StartInfo.CreateNoWindow = true;
+                p.Start();
+                p.WaitForExit();
+
+                #endregion
+
+
+
+                #endregion // XML Conversion exe
+
+                #region Commented
+
+
+                //if (RefFile.Contains(".docx"))
+                //{
+
+                //    string errFilename = RefFile.Replace(".docx", "");
+
+                //    if (File.Exists(errFilename + ".pe.xml.err.log"))
+                //    {
+                //        FileInfo f = new FileInfo(errFilename + ".pe.xml.err.log");
+                //        if (f.Length == 0)
+                //        {
+                //            CurrentStatus("", "", "Back process Intermidiate files creation...", "Process");
+                //            #region ## post xml conversion
+                //            Process procNLM;
+                //            String arsNLM1 = ClientName.Trim();
+                //            String arsNLM2 = RefFile.Substring(0, RefFile.LastIndexOf('.')) + ".pe.xml";
+                //            arsNLM1 = ClientName.Trim();
+                //            arsNLM2 = RefFile.Substring(0, RefFile.LastIndexOf('.')) + ".pe.xml";
+                //            targetDir = string.Format(strLCPowerEditPath + "iniFiles\\");
+                //            p = new Process();
+                //            p.StartInfo.WorkingDirectory = targetDir;
+                //            p.StartInfo.FileName = "postxmlconversion.bat";
+                //            p.StartInfo.Arguments = String.Format("{0} {1}", arsNLM1, arsNLM2);
+                //            p.StartInfo.CreateNoWindow = true;
+                //            p.Start();
+                //            p.WaitForExit();
+                //            #endregion
+
+
+
+                //            #region ## Parsing
+                //            if (File.Exists(RefFile.Substring(0, RefFile.LastIndexOf('.')) + ".xml"))
+                //            {
+                //                CurrentStatus("", "", "XML Parsing", "Process");
+                //                Parsing PS = new Parsing();
+                //                string socPath = strLCPowerEditPath + "Clients\\" + ClientName.Trim() + "\\Conversion\\xml.soc";
+                //                if (PS.ParseXML(RefFile.Substring(0, RefFile.LastIndexOf('.')) + ".xml"/*, wordApp*/, strLCPowerEditPath, socPath))
+                //                {
+                //                    CurrentStatus("", "", "Back process XML has been converted and parsed successfully...", "Process");
+
+
+                //                    //--------------------------------------------------------------------------
+                //                    //-----------SENDING FILE OF XML TO OUT FOLDER ON SERVER--------------------
+                //                    //--------------------------------------------------------------------------
+
+
+                //                    string XMLFile = LocalDocxPath + "\\" + pRefFile + ".xml";
+                //                    if (File.Exists(XMLFile))
+                //                    {
+                //                        targetDir = string.Format(strLCPowerEditPath + "doc2xml"); //"C:/PowerEdit"
+                //                        CurrentStatus("", "", "Back process HTML has been genereted successfully...", "Process");
+                //                        #region ## Conversion HTML
+                //                        Process p1 = new Process();
+                //                        p1.StartInfo.WorkingDirectory = targetDir;
+                //                        p1.StartInfo.FileName = "ConversionHTML.bat";
+                //                        p1.StartInfo.Arguments = String.Format("{0}", XMLFile);
+                //                        p1.StartInfo.CreateNoWindow = true;
+                //                        p1.Start();
+                //                        p1.WaitForExit();
+                //                        #endregion
+
+                //                        KillWordEvent();
+                //                        CurrentStatus("", "", "Back process has been completed sussesfully...", "Process");
+                //                        _flag = true;
+                //                    }
+                //                }
+                //                else
+                //                {
+                //                    CurrentStatus("", "", "XML Not Parsed", "Process");
+                //                    //_servicereturn = WebServiceCall("ParsingError", acronym, paperid, pRefFile + ".xml");21-02-2018 
+                //                    _servicereturn = WebServiceCall("ParsingError", acronym, paperid, "ValidationError.html");
+                //                    _flag = false;
+                //                    return new Tuple<bool>(_flag);
+                //                }
+                //            }
+
+                //            #endregion
+
+                //        }
+                //        else
+                //        {
+                //            // XML not parsed
+                //            CurrentStatus("", "", "XML Not Parsed", "Process");
+                //            //_servicereturn = WebServiceCall("ParsingError", acronym, paperid, pRefFile + ".xml"); 21-02-2018
+                //            _servicereturn = WebServiceCall("ParsingError", acronym, paperid, pRefFile + "ValidationError.html");
+                //            _flag = false;
+                //            return new Tuple<bool>(_flag);
+                //        }
+                //    }
+
+                //}
+                // E:\Process_ForWord_ACMPMS\RahulAnalyzing\Data\IN\WWW2018-144_Org.docx
+
+                #endregion
+
+                //#region **** Updated 15-6-2017 ****
+
+                if (path.Contains(".docx"))
+                {
+
+                    string errFilename = string.Empty;
+                    if (resubmit == "1")
+                    {
+                        errFilename = path.Replace(".docx", "");
+                    }
+                    else if (resubmit == "0")
+                    {
+                        errFilename = path.Replace("_Org.docx", "");
+                        errFilename = errFilename + "_Org";
+                    }
+
+                    if (File.Exists(errFilename + ".pe.xml.err.log"))
+                    {
+                        FileInfo f = new FileInfo(errFilename + ".pe.xml.err.log");
+                        if (f.Length == 0)
+                        {
+                            CurrentStatus("", "", "Back process Intermediate files creation...", "Process");
+                            #region ## post xml conversion
+                            Process procNLM;
+                            String arsNLM1 = ClientName.Trim();
+                            String arsNLM2 = path.Substring(0, path.LastIndexOf('.')) + ".pe.xml";
+                            arsNLM1 = ClientName.Trim();
+                            arsNLM2 = path.Substring(0, path.LastIndexOf('.')) + ".pe.xml";
+                            targetDir = string.Format(strLCPowerEditPath + "iniFiles\\");
+                            p = new Process();
+                            p.StartInfo.WorkingDirectory = targetDir;
+                            p.StartInfo.FileName = "postxmlconversion.bat";
+                            p.StartInfo.Arguments = String.Format("{0} {1}", arsNLM1, arsNLM2);
+                            p.StartInfo.CreateNoWindow = true;
+                            p.Start();
+                            p.WaitForExit();
+                            #endregion
+
+                            #region ## Parsing
+                            if (File.Exists(path.Substring(0, path.LastIndexOf('.')) + ".xml"))
+                            {
+                                CurrentStatus("", "", "XML Parsing", "Process");
+                                Parsing PS = new Parsing();
+                                string socPath = strLCPowerEditPath + "Clients\\" + ClientName.Trim() + "\\Conversion\\xml.soc";
+                                if (PS.ParseXML(path.Substring(0, path.LastIndexOf('.')) + ".xml"/*, wordApp*/, strLCPowerEditPath, socPath))
+                                {
+                                    CurrentStatus("", "", "Back process XML has been converted and parsed successfully...", "Process");
+                                    string XMLFile1 = LocalDocxPath + "\\" + pRefFile + ".xml";
+                                    // Updated 18-6-2018
+                                    string XMLFile = path.Substring(0, path.LastIndexOf('.')) + ".xml";
+                                    if (File.Exists(XMLFile))
+                                    {
+                                        targetDir = string.Format(strLCPowerEditPath + "doc2xml"); //"C:/PowerEdit"
+                                        CurrentStatus("", "", "Back process HTML has been genereted successfully...", "Process");
+                                        #region ## Conversion HTML
+                                        Process p1 = new Process();
+                                        p1.StartInfo.WorkingDirectory = targetDir;
+                                        p1.StartInfo.FileName = "ConversionHTML.bat";
+                                        p1.StartInfo.Arguments = String.Format("{0}", XMLFile);
+                                        p1.StartInfo.CreateNoWindow = true;
+                                        p1.Start();
+                                        p1.WaitForExit();
+                                        #endregion
+                                        KillWordEvent();
+                                        CurrentStatus("", "", "Back process has been completed sussesfully...", "Process");
+                                        _flag = true;
+                                    }
+                                }
+                                else
+                                {
+                                    CurrentStatus("", "", "XML Not Parsed", "Process");
+                                    //_servicereturn = WebServiceCall("ParsingError", acronym, paperid, pRefFile + ".xml");21-02-2018 
+                                    _servicereturn = WebServiceCall("ParsingError", acronym, paperid, "ValidationError.html");
+                                    _flag = false;
+                                    return new Tuple<bool>(_flag);
+                                }
+                            }
+
+                            #endregion
+
+                        }
+                        else
+                        {
+                            // XML not parsed
+                            CurrentStatus("", "", "XML Not Parsed", "Process");
+                            //_servicereturn = WebServiceCall("ParsingError", acronym, paperid, pRefFile + ".xml"); 21-02-2018
+                            _servicereturn = WebServiceCall("ParsingError", acronym, paperid, pRefFile + "ValidationError.html");
+                            _flag = false;
+                            return new Tuple<bool>(_flag);
+                        }
+                    }
+
+                }
+                //#endregion
+                return new Tuple<bool>(_flag);
+            }
+            catch (Exception ex)
+            {
+                _flag = false;
+                oErrorLog.WriteErrorLog(ex);
+                return new Tuple<bool>(_flag);
+            }
+        }
+
+        private Tuple<bool, string> XMLConversionHTML(string pRefFile, string LocalDocxPath, string output_path, string IniName, string eventid, string workshopid, string proceedingid, string paperid, string acronym, string stage, string resubmit, string RefFile, int PDFPAGECOUNT = 0)
+        {
+            bool _flag = false;
+            try
+            {
+                KillWordEvent();
+                CurrentStatus("", "", "Initializing word to XML conversion...", "Process");
+                //_servicereturn = WebServiceCall("XMLInProgress", acronym, paperid, "");Commented by Avanish on 20-02-2018 for not hitting service in this case
+
+                #region ## XML Conversion exe
+                //  String ars = " \"" + RefFile + "\"";
+                //String ars = RefFile;
+                //Process p = null;
+                //string targetDir;
+                //targetDir = string.Format(strLCPowerEditPath + "doc2xml"); //"C:/PowerEdit"
+                //p = new Process();
+                //p.StartInfo.WorkingDirectory = targetDir;
+                //p.StartInfo.FileName = "jats.bat";
+                //p.StartInfo.Arguments = String.Format("{0}", ars);
+                //p.StartInfo.CreateNoWindow = true;
+                //p.Start();
+                //p.WaitForExit();
+
+                #region *** Updated 19-6-2018 HTML Conversion Single/Double Column ***
+                //  1 -- Layout in double column
+                //  2 -- Layout in single column
+
+                Process p = null;
+                string targetDir;
+                targetDir = string.Format(strLCPowerEditPath + "doc2xml"); //"C:/PowerEdit"
+                p = new Process();
+                p.StartInfo.WorkingDirectory = targetDir;
+
+                p.StartInfo.FileName = "jats.bat";
+                string path = String.Empty;
+                if (resubmit == "1")
+                {
+                    path = RefFile;
+                    p.StartInfo.Arguments = String.Format("{0}", path);
+                }
+                else if (resubmit == "0")
+                {
+                    path = LocalDocxPath + "\\" + pRefFile + "_Org.docx";
+                    p.StartInfo.Arguments = String.Format("{0}", path);
+                }
+                p.StartInfo.CreateNoWindow = true;
+                p.Start();
+                p.WaitForExit();
+
+                #endregion // XML Conversion exe
+
+                #region Commented
+
+
+                //if (RefFile.Contains(".docx"))
+                //{
+
+                //    string errFilename = RefFile.Replace(".docx", "");
+
+                //    if (File.Exists(errFilename + ".pe.xml.err.log"))
+                //    {
+                //        FileInfo f = new FileInfo(errFilename + ".pe.xml.err.log");
+                //        if (f.Length == 0)
+                //        {
+                //            CurrentStatus("", "", "Intermidiate files creation...", "Process");
+                //            #region ## post xml conversion
+                //            Process procNLM;
+                //            String arsNLM1 = ClientName.Trim();
+                //            String arsNLM2 = RefFile.Substring(0, RefFile.LastIndexOf('.')) + ".pe.xml";
+                //            arsNLM1 = ClientName.Trim();
+                //            arsNLM2 = RefFile.Substring(0, RefFile.LastIndexOf('.')) + ".pe.xml";
+                //            targetDir = string.Format(strLCPowerEditPath + "iniFiles\\");
+                //            p = new Process();
+                //            p.StartInfo.WorkingDirectory = targetDir;
+                //            p.StartInfo.FileName = "postxmlconversion.bat";
+                //            p.StartInfo.Arguments = String.Format("{0} {1}", arsNLM1, arsNLM2);
+                //            p.StartInfo.CreateNoWindow = true;
+                //            p.Start();
+                //            p.WaitForExit();
+                //            #endregion
+
+                //            #region ## Parsing
+                //            if (File.Exists(RefFile.Substring(0, RefFile.LastIndexOf('.')) + ".xml"))
+                //            {
+                //                CurrentStatus("", "", "XML Parsing", "Process");
+                //                Parsing PS = new Parsing();
+                //                string socPath = strLCPowerEditPath + "Clients\\" + ClientName.Trim() + "\\Conversion\\xml.soc";
+                //                if (PS.ParseXML(RefFile.Substring(0, RefFile.LastIndexOf('.')) + ".xml"/*, wordApp*/, strLCPowerEditPath, socPath))
+                //                {
+                //                    #region ## copy XML file to server
+
+
+                //                    if (File.Exists(LocalDocxPath + "\\" + pRefFile + ".xml"))
+                //                    {
+
+                //                        CurrentStatus("", "", "copy XML file to server", "Process");
+
+                //                        if (!Directory.Exists(output_path)) // If OUT Directory not Exists on Server
+                //                        {
+
+                //                            Directory.CreateDirectory(output_path);
+                //                        }
+
+                //                        //bool _result = ZipFile(LocalDocxPath, pRefFile);
+                //                        //string zipfile = RefFile.Replace(".docx", ".xml");
+                //                        //File.Copy(XMLFile, output_path + "/" + pRefFile + ".html");   // Copy html file to Server
+
+                //                        File.Copy(RefFile.Replace(".docx", ".xml"), output_path + "/" + pRefFile + ".xml", true);   // Copy zip file to Server
+
+                //                        CurrentStatus("", "", "copy XML file to server successfully.", "Process");
+
+                //                    }
+                //                    #endregion
+
+                //                    //_servicereturn = WebServiceCall("XMLCompleted", acronym, paperid, pRefFile + ".xml");Commented by Avanish on 20-02-2018 for not hitting service in this case
+                //                    CurrentStatus("", "", "Back process XML has been converted and parsed successfully...", "Process");
+
+
+                //                    #region ## SENDING FILE OF XML TO OUT FOLDER ON SERVER
+                //                    //--------------------------------------------------------------------------
+                //                    //-----------SENDING FILE OF XML TO OUT FOLDER ON SERVER--------------------
+                //                    //--------------------------------------------------------------------------
+                //                    //_servicereturn = WebServiceCall("HTML5inProgress", acronym, paperid, "");Commented by Avanish on 20-02-2018 for not hitting service in this case
+
+                //                    string XMLFile = LocalDocxPath + "\\" + pRefFile + ".xml";
+                //                    if (File.Exists(XMLFile))
+                //                    {
+
+                //                        CurrentStatus("", "", "HTML generation initilization.....", "Process");
+                //                        targetDir = string.Format(strLCPowerEditPath + "doc2xml"); //"C:/PowerEdit"
+                //                        #region ## Conversion HTML
+                //                        Process p1 = new Process();
+                //                        p1.StartInfo.WorkingDirectory = targetDir;
+                //                        p1.StartInfo.FileName = "ConversionHTML.bat";
+                //                        p1.StartInfo.Arguments = String.Format("{0}", XMLFile);
+                //                        p1.StartInfo.CreateNoWindow = true;
+                //                        p1.Start();
+                //                        p1.WaitForExit();
+                //                        #endregion
+
+                //                        #region ## copy file to server
+                //                        CurrentStatus("", "", "HTML has been genereted successfully...", "Process");
+
+
+
+                //                        CurrentStatus("", "", "copy file to server", "Process");
+                //                        if (!Directory.Exists(output_path)) // If OUT Directory not Exists on Server
+                //                        {
+                //                            Directory.CreateDirectory(output_path);
+                //                        }
+
+
+
+                //                        // bool _result = ZipFile(LocalDocxPath, pRefFile);   //Change this func name ZipFile to  ZipIndexFile as Zipfile is sys func by Avanish on 19-02-2018
+                //                        bool _result = ZipIndexFile(LocalDocxPath, pRefFile);
+
+
+                //                        string zipfile = LocalDocxPath + "\\index.zip";
+                //                        //File.Copy(XMLFile, output_path + "/" + pRefFile + ".html");   // Copy html file to Server
+                //                        File.Copy(zipfile, output_path + "/" + "index" + ".zip", true);   // Copy zip file to Server
+
+                //                        #endregion
+
+                //                        CurrentStatus("", "", "Process has been completed sussesfully...", "Process");
+
+                //                        KillWordEvent();
+                //                        //_servicereturn = WebServiceCall("HTML5Completed", acronym, paperid, "index.zip");//Commented by avanish on 20-02-2018 for passing file name instead of index.zip
+
+                //                        #region 23-08-2018
+                //                        //if (File.Exists(output_path + "/" + "index" + ".zip"))
+                //                        //{
+                //                        //    File.Move(output_path + "/" + "ValidationError" + ".html", output_path + "/" + "ValidationSuccess" + ".html");
+                //                        //}
+                //                        #endregion
+                //                        _servicereturn = WebServiceCall("HTML5Completed", acronym, paperid, pRefFile, "", PDFPAGECOUNT);
+
+
+
+                //                        _flag = true;
+                //                    }
+                //                    #endregion
+
+                //                }
+                //                else
+                //                {
+
+                //                    CurrentStatus("", "", "XML Not Parsed", "Process");
+                //                    _servicereturn = WebServiceCall("ParsingError", acronym, paperid, pRefFile + ".xml");
+                //                    _flag = false;
+                //                    return new Tuple<bool, string>(_flag, _servicereturn);
+                //                }
+                //            }
+
+                //            #endregion
+
+
+                //        }
+                //        else
+                //        {
+                //            // XML not parsed
+
+                //            CurrentStatus("", "", "XML Not Parsed", "Process");
+                //            _servicereturn = WebServiceCall("ParsingError", acronym, paperid, pRefFile + ".xml");
+                //            _flag = false;
+                //            return new Tuple<bool, string>(_flag, _servicereturn);
+                //        }
+                //    }
+
+                //}
+
+                #endregion
+
+                if (path.Contains(".docx"))
+                {
+
+                    string errFilename = String.Empty;
+                    if (resubmit == "1")
+                    {
+                        errFilename = path.Replace(".docx", "");
+                    }
+                    else if (resubmit == "0")
+                    {
+                        errFilename = path.Replace("_Org.docx", "");
+                        errFilename = errFilename + "_Org";
+                    }
+
+                    if (File.Exists(errFilename + ".pe.xml.err.log"))
+                    {
+                        FileInfo f = new FileInfo(errFilename + ".pe.xml.err.log");
+                        if (f.Length == 0)
+                        {
+                            CurrentStatus("", "", "Intermidiate files creation...", "Process");
+                            #region ## post xml conversion
+                            Process procNLM;
+                            String arsNLM1 = ClientName.Trim();
+                            String arsNLM2 = path.Substring(0, path.LastIndexOf('.')) + ".pe.xml";
+                            arsNLM1 = ClientName.Trim();
+                            arsNLM2 = path.Substring(0, path.LastIndexOf('.')) + ".pe.xml";
+                            targetDir = string.Format(strLCPowerEditPath + "iniFiles\\");
+                            p = new Process();
+                            p.StartInfo.WorkingDirectory = targetDir;
+                            p.StartInfo.FileName = "postxmlconversion.bat";
+                            p.StartInfo.Arguments = String.Format("{0} {1}", arsNLM1, arsNLM2);
+                            p.StartInfo.CreateNoWindow = true;
+                            p.Start();
+                            p.WaitForExit();
+                            #endregion
+
+                            #region ## Parsing
+                            if (File.Exists(path.Substring(0, path.LastIndexOf('.')) + ".xml"))
+                            {
+                                CurrentStatus("", "", "XML Parsing", "Process");
+                                Parsing PS = new Parsing();
+                                string socPath = strLCPowerEditPath + "Clients\\" + ClientName.Trim() + "\\Conversion\\xml.soc";
+                                if (PS.ParseXML(path.Substring(0, path.LastIndexOf('.')) + ".xml"/*, wordApp*/, strLCPowerEditPath, socPath))
+                                {
+                                    #region ## copy XML file to server
+
+                                    string XMLFile = path.Substring(0, path.LastIndexOf('.')) + ".xml"; // Updated 19-6-2018
+                                    //if (File.Exists(LocalDocxPath + "\\" + pRefFile + ".xml"))
+
+                                    // Updated 19-6-2018
+                                    if (File.Exists(XMLFile))
+                                    {
+
+                                        CurrentStatus("", "", "copy XML file to server", "Process");
+                                        if (!Directory.Exists(output_path)) // If OUT Directory not Exists on Server
+                                        {
+
+                                            Directory.CreateDirectory(output_path);
+                                        }
+
+                                        //bool _result = ZipFile(LocalDocxPath, pRefFile);
+                                        //string zipfile = RefFile.Replace(".docx", ".xml");
+                                        //File.Copy(XMLFile, output_path + "/" + pRefFile + ".html");   // Copy html file to Server
+                                        // File.Copy(RefFile.Replace(".docx", ".xml"), output_path + "/" + pRefFile + ".xml", true);   // Copy zip file to Server
+
+                                        #region *** Updated 19-6-2018 Copying XML to server  ***
+
+                                        File.Copy(XMLFile, output_path + "/" + pRefFile + ".xml", true);
+
+                                        //if (resubmit == "1")
+                                        //{
+                                        //    File.Copy(XMLFile, output_path + "/" + pRefFile + ".xml", true);
+                                        //}
+                                        //else if (resubmit == "0")
+                                        //{
+                                        //    File.Copy(XMLFile, output_path + "/" + pRefFile + ".xml", true);
+                                        //}
+
+                                        #endregion
+
+
+                                        CurrentStatus("", "", "copy XML file to server successfully.", "Process");
+
+                                    }
+                                    #endregion
+
+                                    //_servicereturn = WebServiceCall("XMLCompleted", acronym, paperid, pRefFile + ".xml");Commented by Avanish on 20-02-2018 for not hitting service in this case
+                                    CurrentStatus("", "", "Back process XML has been converted and parsed successfully...", "Process");
+
+
+                                    #region ## SENDING FILE OF XML TO OUT FOLDER ON SERVER
+                                    //--------------------------------------------------------------------------
+                                    //-----------SENDING FILE OF XML TO OUT FOLDER ON SERVER--------------------
+                                    //--------------------------------------------------------------------------
+                                    //_servicereturn = WebServiceCall("HTML5inProgress", acronym, paperid, "");Commented by Avanish on 20-02-2018 for not hitting service in this case
+
+                                    //string XMLFile = LocalDocxPath + "\\" + pRefFile + ".xml";
+
+
+                                    if (File.Exists(XMLFile))
+                                    {
+
+                                        CurrentStatus("", "", "HTML generation initilization.....", "Process");
+                                        targetDir = string.Format(strLCPowerEditPath + "doc2xml"); //"C:/PowerEdit"
+                                        #region ## Conversion HTML
+                                        Process p1 = new Process();
+                                        p1.StartInfo.WorkingDirectory = targetDir;
+                                        p1.StartInfo.FileName = "ConversionHTML.bat";
+                                        p1.StartInfo.Arguments = String.Format("{0}", XMLFile);
+                                        p1.StartInfo.CreateNoWindow = true;
+                                        p1.Start();
+                                        p1.WaitForExit();
+                                        #endregion
+
+                                        #region ## copy file to server
+                                        CurrentStatus("", "", "HTML has been genereted successfully...", "Process");
+
+                                        CurrentStatus("", "", "copy file to server", "Process");
+                                        if (!Directory.Exists(output_path)) // If OUT Directory not Exists on Server
+                                        {
+                                            Directory.CreateDirectory(output_path);
+                                        }
+
+                                        // bool _result = ZipFile(LocalDocxPath, pRefFile);   //Change this func name ZipFile to  ZipIndexFile as Zipfile is sys func by                                                                                        Avanish on 19-02-2018
+                                        bool _result = ZipIndexFile(LocalDocxPath, pRefFile);
+
+
+                                        string zipfile = LocalDocxPath + "\\index.zip";
+                                        //File.Copy(XMLFile, output_path + "/" + pRefFile + ".html");   // Copy html file to Server
+                                        File.Copy(zipfile, output_path + "/" + "index" + ".zip", true);   // Copy zip file to Server
+
+                                        #endregion
+
+                                        CurrentStatus("", "", "Process has been completed sussesfully...", "Process");
+
+                                        KillWordEvent();
+                                        //_servicereturn = WebServiceCall("HTML5Completed", acronym, paperid, "index.zip");//Commented by avanish on 20-02-2018 for passing file name instead of index.zip
+
+                                        #region 23-08-2018
+                                        //if (File.Exists(output_path + "/" + "index" + ".zip"))
+                                        //{
+                                        //    File.Move(output_path + "/" + "ValidationError" + ".html", output_path + "/" + "ValidationSuccess" + ".html");
+                                        //}
+                                        #endregion
+                                        _servicereturn = WebServiceCall("HTML5Completed", acronym, paperid, pRefFile, "", PDFPAGECOUNT);
+                                        _flag = true;
+                                    }
+                                    #endregion
+
+                                }
+                                else
+                                {
+
+                                    CurrentStatus("", "", "XML Not Parsed", "Process");
+                                    _servicereturn = WebServiceCall("ParsingError", acronym, paperid, pRefFile + ".xml");
+                                    _flag = false;
+                                    return new Tuple<bool, string>(_flag, _servicereturn);
+                                }
+                            }
+
+                            #endregion
+
+
+                        }
+                        else
+                        {
+                            // XML not parsed
+
+                            CurrentStatus("", "", "XML Not Parsed", "Process");
+                            _servicereturn = WebServiceCall("ParsingError", acronym, paperid, pRefFile + ".xml");
+                            _flag = false;
+                            return new Tuple<bool, string>(_flag, _servicereturn);
+                        }
+                    }
+
+                }
+
+
+                #endregion *** Updated 19-6-2018 HTML Conversion Single/Double Column ***
+
+
+                return new Tuple<bool, string>(_flag, _servicereturn);
+            }
+            catch (Exception ex)
+            {
+                _flag = false;
+                oErrorLog.WriteErrorLog(ex);
+                return new Tuple<bool, string>(_flag, _servicereturn);
+            }
+        }
+
+        #endregion
+
+        #region Kill events
+
+        private void KillWordEvent()
+        {
+
+            Process[] Killword = Process.GetProcessesByName("winword");
+            for (int i = 0; i < Killword.Length; i++)
+            {
+                Killword[i].Kill();
+            }
+
+        }
+
+        #endregion
+
+        private void btnAddTemplate_Click(object sender, EventArgs e)
+        {
+            string validationPath = @"c:\ACM_EnhancedTemplate.dotm";
+            string RefFile = @"C:\PowerEdit\Samples\TAJE_A_773654.docx";
+            try
+            {
+                Microsoft.Office.Interop.Word.Application wordApp = new Microsoft.Office.Interop.Word.Application();
+                Microsoft.Office.Interop.Word.Document worddoc = wordApp.Documents.Open(RefFile);
+                worddoc.Activate();
+                //Filename = wordApp.ActiveDocument.Path + "\\" + wordApp.ActiveDocument.Name;
+                //objFileName = wordApp.ActiveDocument.Path + "\\" + wordApp.ActiveDocument.Name;
+                //wordApp.ActiveDocument.SaveAs(ref objFileName, ref missing, ref  objFalse, ref missing, ref objTrue, ref missing, ref objFalse, ref objFalse, ref  objFalse, ref objFalse, ref objFalse);
+                Object oTrue = true;
+                Object oApp = wordApp.Application;
+                //MessageBox.Show("Template process");
+                wordApp.Application.AddIns.Add(validationPath, ref oTrue);
+                //MessageBox.Show("Template Added");
+                //wordApp.Application.GetType().InvokeMember("Run", BindingFlags.Default | BindingFlags.InvokeMethod, null, oApp, new object[] { "Revert_to_PE_Styles.Revert_to_PE_Styles" });
+                //MessageBox.Show("Template Run");
+                //wordApp.Application.ActiveDocument.Save();
+
+            }
+            catch (Exception ex)
+            {
+                //_result = "";
+                //_action = "InvalidFile";
+                //MessageBox.Show("Validation Path: " + validationPath + " , " + ex.Message);
+                //return new Tuple<string, string>(_action, _result);
+
+
+            }
+        }
+
+        public bool UnZipIndexFile(string FilePath, string Desti_ZIP_File_Name)
+        {
+            bool flag = false;
+
+            try
+            {
+                if (File.Exists(FilePath + "//" + Desti_ZIP_File_Name + ".zip"))
+                {
+                    using (var zip = ZipFile.Read(FilePath + "//" + Desti_ZIP_File_Name + ".zip"))
+                    {
+                        foreach (ZipEntry ze in zip.EntriesSorted)
+                        {
+                            ze.Extract(FilePath, ExtractExistingFileAction.OverwriteSilently);
+
+                        }
+                        flag = true;
+                    }
+                }
+                return flag;
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+                return flag = false;
+            }
+        }
+
+        public bool RenameIndexFile(string FilePath, string Org_File_Name)
+        {
+            bool flag = false;
+
+            try
+            {
+                if (File.Exists(FilePath + "//" + "index" + ".html"))
+                {
+                    File.Move(FilePath + "//" + "index" + ".html", FilePath + "//" + Org_File_Name + ".html");
+                    flag = true;
+                }
+                return flag;
+
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+                return flag = false;
+            }
+        }
+
+        public void DeleteIndexZip(string FilePath, string Desti_ZIP_File_Name)
+        {
+            try
+            {
+                if (File.Exists(FilePath + "//" + Desti_ZIP_File_Name + ".zip"))
+                {
+                    File.Delete(FilePath + "//" + Desti_ZIP_File_Name + ".zip");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                oErrorLog.WriteErrorLog(ex);
+
+            }
+        }
+
+        private void dlgIniFiles_HelpRequest(object sender, EventArgs e)
+        {
+
+        }
+    }
+    public static class StringExtensions
+    {
+        public static string Repeat(this char chatToRepeat, int repeat)
+        {
+            return new string(chatToRepeat, repeat);
+        }
+        public static string Repeat(this string stringToRepeat, int repeat)
+        {
+            var builder = new StringBuilder(repeat * stringToRepeat.Length);
+            for (int i = 0; i < repeat; i++)
+            {
+                builder.Append(stringToRepeat);
+            }
+            return builder.ToString();
+        }
+    }
+
+
+
+}
